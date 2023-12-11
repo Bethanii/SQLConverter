@@ -22,28 +22,6 @@ public class SQLApplication extends Application {
     }
 
     public static void main(String[] args) {
-        try {
-         //   String url = "jdbc:mysql://localhost:3306/SQLConverter";
-            String url = "jdbc:mysql://127.0.0.1:3306/SQLConverter?user=username&password=password";
-            String username = "username";
-            String password = "password";
-
-            Class.forName("com.mysql.cj.jdbc.Driver");
-
-            try (Connection dbConnection = DriverManager.getConnection(url, username, password)) {
-                if (dbConnection != null) {
-                    System.out.println("Successfully connected to MySQL database SQLConverter");
-                    launch(args);
-                }
-            }
-        } catch (SQLException | ClassNotFoundException ex) {
-            System.out.println("An error occurred while connecting to the MySQL database");
-            ex.printStackTrace();
-        }
         launch();
     }
 }
-        //}
- /*   public static void main(String[] args) {
-        launch();
-    } */

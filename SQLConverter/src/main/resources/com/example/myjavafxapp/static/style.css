@@ -23,7 +23,7 @@
     -fx-font-size: 24px;
 }
 
-#signInButton, #createAccountButton {
+#signInButton, #createAccountButton, #emailInputField {
     -fx-focus-color: transparent;
     -fx-background-radius: 20;
     -fx-font-family: 'Open Sans', sans-serif;
@@ -43,4 +43,8 @@
 
 #forgotPasswordLink {
 -fx-text-fill: #B3B3B3;
+}
+
+#emailInputField {
+    -fx-font-size: 22px;
 }
