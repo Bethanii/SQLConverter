@@ -23,7 +23,7 @@
     -fx-font-size: 24px;
 }
 
-#signInButton, #createAccountButton, #emailInputField {
+#signInButton, #createAccountButton, #signInPageButton, #emailInputField {
     -fx-focus-color: transparent;
     -fx-background-radius: 20;
     -fx-font-family: 'Open Sans', sans-serif;
@@ -36,6 +36,15 @@
         -fx-arc-width: 40.0;
 }
 
+#textField {
+     -fx-prompt-text-fill: grey;
+     -fx-font-size: 58px
+}
+
+#textField:focused {
+    -fx-prompt-text-fill: transparent;
+}
+
 .label {
     -fx-font-size: 26px;
     -fx-text-fill: #B3B3B3;
@@ -45,6 +54,6 @@
 -fx-text-fill: #B3B3B3;
 }
 
-#emailInputField {
-    -fx-font-size: 22px;
+#signInPageButton {
+    -fx-font-size: 18px;
 }
