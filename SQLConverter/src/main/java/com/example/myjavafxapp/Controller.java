@@ -19,6 +19,8 @@ public class Controller {
     @FXML
     private TextField passwordInputField;
     private AnchorPane signInPage;
+    @FXML
+    private Label validationErrorMessage;
 
 
     @FXML
@@ -64,6 +66,7 @@ public class Controller {
 
     @FXML
     protected void onSignInPageButtonClick() throws IOException {
+        validationErrorMessage.setVisible(false);
         validateUserLogin();
     }
 
@@ -76,13 +79,18 @@ public class Controller {
     }
 
     @FXML
-    private void displayLoginValidationError () throws IOException {
-        Stage stage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(SQLApplication.class.getResource("login-validation-error.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 820, 500);
-        stage.setTitle("Login Validation Error");
-        stage.setScene(scene);
-        stage.show();
+    private void displayLoginValidationError (String validationMessage, Boolean isDisplayed) throws IOException {
+        if (isDisplayed = true)
+        {
+            validationErrorMessage.setText(validationMessage);
+            validationErrorMessage.setVisible(true);
+        }
+        else
+        {
+            validationErrorMessage.setText(validationMessage);
+            validationErrorMessage.setVisible(false);
+        }
+
     }
 
     @FXML
@@ -102,7 +110,7 @@ public class Controller {
                          System.out.println("User exists in the database.");
                      } else {
                          System.out.println("User does not exist in the database.");
-                         displayLoginValidationError();
+                         displayLoginValidationError("Email or password is incorrect", true);
                      }
                  }
              }

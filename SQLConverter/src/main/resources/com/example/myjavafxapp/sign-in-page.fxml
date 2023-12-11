@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
+<?import java.lang.*?>
 <?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -16,9 +16,10 @@
       <Rectangle id="signInLabelField" arcHeight="5.0" arcWidth="5.0" height="298.0" layoutX="261.0" layoutY="115.0" stroke="BLACK" strokeType="INSIDE" width="298.0" />
       <Label layoutX="379.0" layoutY="136.0" text="Login" />
       <TextField fx:id="emailInputField" layoutX="285.0" layoutY="185.0" prefHeight="45.0" prefWidth="251.0" promptText="Email" />
-      <Hyperlink id="forgotPasswordLink" layoutX="376.0" layoutY="361.0" text="Forgot password?" />
-      <Button id="signInPageButton" layoutX="284.0" layoutY="307.0" mnemonicParsing="false" onAction="#onSignInPageButtonClick" prefHeight="43.0" prefWidth="258.0" text="Sign In" />
+      <Hyperlink id="forgotPasswordLink" layoutX="354.0" layoutY="367.0" text="Forgot password?" />
+      <Button id="signInPageButton" layoutX="280.0" layoutY="327.0" mnemonicParsing="false" onAction="#onSignInPageButtonClick" prefHeight="43.0" prefWidth="258.0" text="Sign In" />
       <TextField fx:id="passwordInputField" layoutX="284.0" layoutY="248.0" prefHeight="45.0" prefWidth="251.0" promptText="Password" />
+      <Label id="validationErrorMessage" layoutX="320.0" layoutY="298.0" text="Email or Password is incorrect" />
    </children>
 
 </AnchorPane>

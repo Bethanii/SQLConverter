@@ -51,9 +51,14 @@
 }
 
 #forgotPasswordLink {
--fx-text-fill: #B3B3B3;
+     -fx-text-fill: #B3B3B3;
 }
 
 #signInPageButton {
     -fx-font-size: 18px;
+}
+
+#validationErrorMessage {
+     -fx-text-fill: #FF0000;
+     -fx-font-size: 14px;
 }
