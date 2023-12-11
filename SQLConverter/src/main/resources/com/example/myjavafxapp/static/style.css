@@ -1,0 +1,46 @@
+
+#landingPage {
+     -fx-background-color: linear-gradient(to right, #E3C5BD 0%, #E3C5BD 50%, #DAF8F0 50%, #DAF8F0 100%);
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+}
+
+#signInPage {
+    -fx-background-color: #DAF8F0;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+}
+
+#landingPage .text {
+    -fx-font-size: 18px;
+    -fx-text-fill: #333333;
+}
+
+#signInText, #createAccountText {
+    -fx-font-family: "Open Sans", sans-serif;
+    -fx-font-size: 24px;
+}
+
+#signInButton, #createAccountButton {
+    -fx-focus-color: transparent;
+    -fx-background-radius: 20;
+    -fx-font-family: 'Open Sans', sans-serif;
+    -fx-font-size: 14px;
+}
+
+#signInLabelField {
+        -fx-fill: white;
+        -fx-arc-height: 40.0;
+        -fx-arc-width: 40.0;
+}
+
+.label {
+    -fx-font-size: 26px;
+    -fx-text-fill: #B3B3B3;
+}
+
+#forgotPasswordLink {
+-fx-text-fill: #B3B3B3;
+}

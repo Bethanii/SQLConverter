@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import java.net.URL?>
+
+<AnchorPane id="signInPage" prefHeight="482.0" prefWidth="852.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.myjavafxapp.Controller">
+
+    <stylesheets>
+        <URL value="@static/style.css" />
+    </stylesheets>
+    
+   <children>
+      <Rectangle id="signInLabelField" arcHeight="5.0" arcWidth="5.0" height="298.0" layoutX="261.0" layoutY="115.0" stroke="BLACK" strokeType="INSIDE" width="298.0" />
+      <Label layoutX="379.0" layoutY="136.0" text="Login" />
+      <TextField id="emailInput" layoutX="292.0" layoutY="189.0" prefHeight="43.0" prefWidth="237.0" />
+      <Hyperlink id="forgotPasswordLink" layoutX="355.0" layoutY="361.0" text="Forgot password?" />
+      <Button id="signInButton" onAction="#onSignInPageButtonClick" layoutX="279.0" layoutY="275.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="261.0" text="Sign In" />
+   </children>
+
+</AnchorPane>
