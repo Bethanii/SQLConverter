@@ -19,7 +19,7 @@
       <Hyperlink id="forgotPasswordLink" layoutX="354.0" layoutY="367.0" text="Forgot password?" />
       <Button id="signInPageButton" layoutX="280.0" layoutY="327.0" mnemonicParsing="false" onAction="#onSignInPageButtonClick" prefHeight="43.0" prefWidth="258.0" text="Sign In" />
       <TextField fx:id="passwordInputField" layoutX="284.0" layoutY="248.0" prefHeight="45.0" prefWidth="251.0" promptText="Password" />
-      <Label id="validationErrorMessage" layoutX="320.0" layoutY="298.0" text="Email or Password is incorrect" />
+
    </children>
 
 </AnchorPane>

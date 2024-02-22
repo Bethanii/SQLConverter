@@ -60,14 +60,20 @@ public class Controller {
     }
 
     @FXML
-    protected void onCreateAccountButtonClick() {
-        welcomeText.setText("");
+    protected void onCreateAccountButtonClick() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(SQLApplication.class.getResource("create-account-page.fxml"));
+
+        createAccountPage = fxmlLoader.load();
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(signInPage);
+        signInPage.requestFocus();
     }
 
     @FXML
     protected void onSignInPageButtonClick() throws IOException {
-        validationErrorMessage.setVisible(false);
-        validateUserLogin();
+           validationErrorMessage.setVisible(false);
+       validateUserLogin();
     }
 
     @FXML
@@ -110,7 +116,7 @@ public class Controller {
                          System.out.println("User exists in the database.");
                      } else {
                          System.out.println("User does not exist in the database.");
-                         displayLoginValidationError("Email or password is incorrect", true);
+                     //    displayLoginValidationError("Email or password is incorrect", true);
                      }
                  }
              }
