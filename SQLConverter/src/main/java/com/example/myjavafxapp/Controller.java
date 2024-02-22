@@ -1,5 +1,6 @@
 package com.example.myjavafxapp;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -9,6 +10,7 @@ import javafx.stage.Stage;
 import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
 import java.sql.*;
+import javafx.scene.image.ImageView;
 
 public class Controller {
 
@@ -19,9 +21,9 @@ public class Controller {
     @FXML
     private TextField passwordInputField;
     private AnchorPane signInPage;
+    private AnchorPane selectAccountPage;
     @FXML
     private Label validationErrorMessage;
-
 
     @FXML
     private Connection DatabaseConnection() throws IOException {
@@ -62,12 +64,46 @@ public class Controller {
     @FXML
     protected void onCreateAccountButtonClick() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(SQLApplication.class.getResource("create-account-page.fxml"));
+        fxmlLoader.setLocation(SQLApplication.class.getResource("select-account-type-page.fxml"));
 
-        createAccountPage = fxmlLoader.load();
+        selectAccountPage = fxmlLoader.load();
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(selectAccountPage);
+        selectAccountPage.requestFocus();
+
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle("Create Account");
+    }
+
+    @FXML
+    protected void onEnterpriseAccountButtonClick() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(SQLApplication.class.getResource("sign-in-page.fxml"));
+
+        signInPage = fxmlLoader.load();
         Scene currentScene = welcomeText.getScene();
         currentScene.setRoot(signInPage);
         signInPage.requestFocus();
+
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle("Sign In");
+    }
+
+    @FXML
+    protected void onStandardAccountButtonClick() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(SQLApplication.class.getResource("sign-in-page.fxml"));
+
+        signInPage = fxmlLoader.load();
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(signInPage);
+        signInPage.requestFocus();
+
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle("Sign In");
     }
 
     @FXML
@@ -123,5 +159,8 @@ public class Controller {
          } catch (SQLException e) {
              e.printStackTrace();
          }
+    }
+
+    public void onNextButtonClick(ActionEvent actionEvent) {
     }
 }

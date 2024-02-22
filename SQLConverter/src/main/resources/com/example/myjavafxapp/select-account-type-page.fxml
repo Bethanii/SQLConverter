@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.image.*?>
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+
+<AnchorPane id="selectAccountPage" prefHeight="482.0" prefWidth="852.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.Controller">
+
+    <stylesheets>
+        <URL value="@static/style.css" />
+    </stylesheets>
+
+    <children>
+      <Label fx:id="welcomeText" styleClass="labelStyle" />
+      <Box layoutX="51.0" layoutY="107.0" />
+      <ImageView id="standardAccountImage" fitHeight="150.0" fitWidth="172.0" layoutX="191.0" layoutY="113.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fitHeight="180.0" fitWidth="239.0" layoutX="468.0" layoutY="98.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+             <Image url="@images/singleUser.png" />
+         </image>
+      </ImageView>
+      <ImageView id="enterpriseAccountImage" fitHeight="169.0" fitWidth="197.0" layoutX="150.0" layoutY="110.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+             <Image url="@images/multipleUsers.png" />
+         </image>
+      </ImageView>
+      <Button id="enterpriseAccountButton" layoutX="468.0" layoutY="314.0" mnemonicParsing="false" onAction="#onEnterpriseAccountButtonClick" prefHeight="43.0" prefWidth="258.0" text="Enterprise Account" />
+      <Button id="standardAccountButton" layoutX="116.0" layoutY="314.0" mnemonicParsing="false" onAction="#onStandardAccountButtonClick" prefHeight="43.0" prefWidth="258.0" text="Standard Account" />
+    </children>
+</AnchorPane>

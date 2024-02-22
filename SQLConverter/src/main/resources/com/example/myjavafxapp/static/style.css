@@ -6,14 +6,14 @@
     -fx-background-size: cover;
 }
 
-#signInPage {
+#signInPage, #createAccountPage {
     -fx-background-color: #DAF8F0;
     -fx-background-position: center center;
     -fx-background-repeat: no-repeat;
     -fx-background-size: cover;
 }
 
-#landingPage .text {
+#landingPage #createAccountPage .text {
     -fx-font-size: 18px;
     -fx-text-fill: #333333;
 }
@@ -28,6 +28,13 @@
     -fx-background-radius: 20;
     -fx-font-family: 'Open Sans', sans-serif;
     -fx-font-size: 14px;
+}
+
+#enterpriseAccountButton, #standardAccountButton {
+    -fx-focus-color: transparent;
+    -fx-background-radius: 20;
+    -fx-font-family: 'Open Sans', sans-serif;
+    -fx-font-size: 18px;
 }
 
 #signInLabelField {
