@@ -23,6 +23,8 @@ public class Controller {
     private AnchorPane signInPage;
     private AnchorPane selectAccountPage;
     @FXML
+    private AnchorPane enterpriseAccountPage;
+    @FXML
     private Label validationErrorMessage;
 
     @FXML
@@ -79,16 +81,16 @@ public class Controller {
     @FXML
     protected void onEnterpriseAccountButtonClick() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(SQLApplication.class.getResource("sign-in-page.fxml"));
+        fxmlLoader.setLocation(SQLApplication.class.getResource("enterprise-account-page.fxml"));
 
-        signInPage = fxmlLoader.load();
+        enterpriseAccountPage = fxmlLoader.load();
         Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(signInPage);
-        signInPage.requestFocus();
+        currentScene.setRoot(enterpriseAccountPage);
+        enterpriseAccountPage.requestFocus();
 
         Stage stage = (Stage) currentScene.getWindow();
         stage.sizeToScene();
-        stage.setTitle("Sign In");
+        stage.setTitle("Enterprise Account Information");
     }
 
     @FXML
