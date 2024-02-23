@@ -25,6 +25,8 @@ public class Controller {
     @FXML
     private AnchorPane enterpriseAccountPage;
     @FXML
+    private AnchorPane enterpriseAccountSubUserPage;
+    @FXML
     private Label validationErrorMessage;
 
     @FXML

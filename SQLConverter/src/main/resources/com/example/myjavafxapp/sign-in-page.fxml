@@ -14,11 +14,11 @@
     
    <children>
       <Rectangle id="signInLabelField" arcHeight="5.0" arcWidth="5.0" height="298.0" layoutX="261.0" layoutY="115.0" stroke="BLACK" strokeType="INSIDE" width="298.0" />
-      <Label layoutX="379.0" layoutY="136.0" text="Login" />
-      <TextField fx:id="emailInputField" layoutX="285.0" layoutY="185.0" prefHeight="45.0" prefWidth="251.0" promptText="Email" />
+      <Label layoutX="379.0" styleClass="signInLabel" layoutY="136.0" text="Login" />
+      <TextField fx:id="signInEmailInputField" layoutX="285.0" layoutY="185.0" prefHeight="45.0" prefWidth="251.0" promptText="Email" />
       <Hyperlink id="forgotPasswordLink" layoutX="354.0" layoutY="367.0" text="Forgot password?" />
       <Button id="signInPageButton" layoutX="280.0" layoutY="327.0" mnemonicParsing="false" onAction="#onSignInPageButtonClick" prefHeight="43.0" prefWidth="258.0" text="Sign In" />
-      <TextField fx:id="passwordInputField" layoutX="284.0" layoutY="248.0" prefHeight="45.0" prefWidth="251.0" promptText="Password" />
+      <TextField fx:id="signInPasswordInputField" layoutX="284.0" layoutY="248.0" prefHeight="45.0" prefWidth="251.0" promptText="Password" />
 
    </children>
 
