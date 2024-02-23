@@ -24,10 +24,6 @@ public class Controller {
     private AnchorPane selectAccountPage;
     @FXML
     private AnchorPane enterpriseAccountPage;
-    @FXML
-    private AnchorPane enterpriseAccountSubUserPage;
-    @FXML
-    private Label validationErrorMessage;
 
     @FXML
     private Connection DatabaseConnection() throws IOException {
@@ -111,32 +107,11 @@ public class Controller {
     }
 
     @FXML
-    protected void onSignInPageButtonClick() throws IOException {
-           validationErrorMessage.setVisible(false);
-       validateUserLogin();
-    }
-
-    @FXML
     private String getUserInput(TextField userInputField) throws IOException {
         String userInput = userInputField.getText();
         System.out.println("User Input: " + userInput);
 
         return userInput;
-    }
-
-    @FXML
-    private void displayLoginValidationError (String validationMessage, Boolean isDisplayed) throws IOException {
-        if (isDisplayed = true)
-        {
-            validationErrorMessage.setText(validationMessage);
-            validationErrorMessage.setVisible(true);
-        }
-        else
-        {
-            validationErrorMessage.setText(validationMessage);
-            validationErrorMessage.setVisible(false);
-        }
-
     }
 
     @FXML
@@ -156,15 +131,11 @@ public class Controller {
                          System.out.println("User exists in the database.");
                      } else {
                          System.out.println("User does not exist in the database.");
-                     //    displayLoginValidationError("Email or password is incorrect", true);
                      }
                  }
              }
          } catch (SQLException e) {
              e.printStackTrace();
          }
-    }
-
-    public void onNextButtonClick(ActionEvent actionEvent) {
     }
 }

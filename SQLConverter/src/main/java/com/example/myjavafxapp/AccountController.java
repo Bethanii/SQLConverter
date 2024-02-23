@@ -1,6 +1,5 @@
 package com.example.myjavafxapp;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -8,17 +7,28 @@ import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import javafx.scene.Node;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.scene.control.TextArea;
 
 public class AccountController {
 
     @FXML
     private Label welcomeText;
     private AnchorPane signInPage;
-    private AnchorPane selectAccountPage;
+    @FXML
+    public TextField subUserEmailInputField;
     @FXML
     private AnchorPane enterpriseAccountPage;
     @FXML
     private AnchorPane enterpriseAccountSubUserPage;
+    @FXML
+    private List<String> emails = new ArrayList<>();
+    @FXML
+    private TextArea emailsDisplayArea;
 
     @FXML
     protected void onEnterpriseAccountButtonClick() throws IOException {
@@ -62,5 +72,17 @@ public class AccountController {
         Stage stage = (Stage) currentScene.getWindow();
         stage.sizeToScene();
         stage.setTitle("Enterprise Account Sub User Information");
+    }
+    @FXML
+    protected void addEmailField() throws IOException {
+        String emailText = subUserEmailInputField.getText().trim();
+        emails.add(emailText);
+        displayEmails(emails);
+        subUserEmailInputField.clear();
+    }
+
+    public void displayEmails(List<String> emails) {
+        String content = String.join("\n", emails);
+        emailsDisplayArea.setText(content);
     }
 }

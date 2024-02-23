@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import java.net.*?>
 <?import javafx.scene.control.*?>
@@ -8,43 +7,32 @@
 <?import javafx.scene.shape.*?>
 
 <AnchorPane id="enterpriseAccountSubUserPage" prefHeight="482.0" prefWidth="852.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.AccountController">
-
     <stylesheets>
         <URL value="@static/style.css" />
     </stylesheets>
-
     <children>
-        <Label fx:id="welcomeText" styleClass="labelStyle" />
-        <Label layoutX="106.0" layoutY="105.0" prefHeight="38.0" prefWidth="80.0" text="Email">
-            <font>
-                <Font size="20.0" />
-            </font></Label>
-        <TextField layoutX="105.0" layoutY="141.0" prefHeight="45.0" prefWidth="251.0" promptText="Email" text="Email">
-            <font>
-                <Font size="20.0" />
-            </font></TextField>
-        <TextField layoutX="467.0" layoutY="138.0" prefHeight="45.0" prefWidth="251.0" promptText="Password" text="Password">
-            <font>
-                <Font size="20.0" />
-            </font></TextField>
-        <Label layoutX="468.0" layoutY="109.0" text="Password" wrapText="true">
-            <font>
-                <Font size="20.0" />
-            </font></Label>
-        <Label layoutX="190.0" layoutY="34.0" text="Please Enter your account information below">
-            <font>
-                <Font size="22.0" />
-            </font></Label>
-        <Label styleClass="textField" layoutX="470.0" layoutY="209.0" text="Confirm Password">
-            <font>
-                <Font size="20.0" />
-            </font></Label>
-        <TextField layoutX="469.0" layoutY="237.0" prefHeight="45.0" prefWidth="251.0" promptText="Confirm password" text="Confirm password">
-            <font>
-                <Font size="20.0" />
-            </font></TextField>
-        <Button layoutX="277.0" layoutY="384.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="246.0" text="Next" />
+        <Label fx:id="welcomeText" styleClass="labelStyle" layoutX="106.0" layoutY="34.0" text="Add the users you want to have access to the database" />
 
+        <Label layoutX="106.0" layoutY="105.0" text="Sub User Email">
+            <font>
+                <Font size="20.0" />
+            </font>
+        </Label>
+
+        <VBox fx:id="emailFieldsVBox" layoutX="105.0" layoutY="141.0" prefWidth="559.0" spacing="10">
+            <children>
+                <TextField fx:id="subUserEmailInputField" prefHeight="45.0" promptText="Enter Email" style="-fx-font-size: 20;" />
+            </children>
+        </VBox>
+
+        <Button layoutX="667.0" layoutY="141.0" mnemonicParsing="false" text="Add Email" onAction="#addEmailField" />
+
+        <ScrollPane layoutX="105.0" layoutY="200.0" prefWidth="559.0" prefHeight="150.0">
+            <content>
+                <TextArea fx:id="emailsDisplayArea" editable="false" wrapText="true" />
+            </content>
+        </ScrollPane>
+
+        <Button layoutX="277.0" layoutY="384.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="246.0" text="Next" onAction="#onNextButtonClick" />
     </children>
-
 </AnchorPane>
