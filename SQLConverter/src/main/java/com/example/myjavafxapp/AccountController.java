@@ -27,12 +27,15 @@ public class AccountController {
     @FXML
     private AnchorPane securityQuestionPage;
     @FXML
+    private AnchorPane standardAccountPage;
+    @FXML
     private List<String> emails = new ArrayList<>();
     @FXML
     private TextArea emailsDisplayArea;
     @FXML
     private ChoiceBox<String> firstSecurityQuestion;
-
+    @FXML
+    private ChoiceBox<String> secondSecurityQuestion;
 
 
     @FXML
@@ -53,16 +56,16 @@ public class AccountController {
     @FXML
     protected void onStandardAccountButtonClick() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(SQLApplication.class.getResource("sign-in-page.fxml"));
+        fxmlLoader.setLocation(SQLApplication.class.getResource("standard-account-page.fxml"));
 
-        signInPage = fxmlLoader.load();
+        standardAccountPage = fxmlLoader.load();
         Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(signInPage);
-        signInPage.requestFocus();
+        currentScene.setRoot(standardAccountPage);
+        standardAccountPage.requestFocus();
 
         Stage stage = (Stage) currentScene.getWindow();
         stage.sizeToScene();
-        stage.setTitle("Sign In");
+        stage.setTitle("Standard Account Information");
     }
     @FXML
     protected void onEnterpriseAccountNextButtonClick() throws IOException {
@@ -99,6 +102,13 @@ public class AccountController {
 
     public void setFirstSecurityQuestionOptions() {
         firstSecurityQuestion.getItems().addAll(
+                "What was your first pet's name?",
+                "What's mother's maiden name?",
+                "What city were you born in?",
+                "What's your favorite color?"
+        );
+
+        secondSecurityQuestion.getItems().addAll(
                 "What was your first pet's name?",
                 "What's mother's maiden name?",
                 "What city were you born in?",

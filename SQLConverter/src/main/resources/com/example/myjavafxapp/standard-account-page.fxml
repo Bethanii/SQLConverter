@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="standardAccountPage" prefHeight="482.0" prefWidth="852.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.AccountController">
+
+    <stylesheets>
+        <URL value="@static/style.css" />
+    </stylesheets>
+
+    <children>
+        <Label fx:id="welcomeText" styleClass="labelStyle" />
+        <Label layoutX="106.0" layoutY="105.0" prefHeight="38.0" prefWidth="80.0" text="Email">
+            <font>
+                <Font size="20.0" />
+            </font></Label>
+        <TextField fx:id="standardEmailInputField" layoutX="105.0" layoutY="141.0" prefHeight="45.0" prefWidth="251.0" promptText="Email" text="Email">
+            <font>
+                <Font size="20.0" />
+            </font></TextField>
+        <TextField fx:id="standardPasswordInputField" layoutX="467.0" layoutY="138.0" prefHeight="45.0" prefWidth="251.0" promptText="Password" text="Password">
+            <font>
+                <Font size="20.0" />
+            </font></TextField>
+        <Label layoutX="468.0" layoutY="109.0" text="Password" wrapText="true">
+            <font>
+                <Font size="20.0" />
+            </font></Label>
+        <Label layoutX="190.0" layoutY="34.0" text="Please Enter your account information below">
+            <font>
+                <Font size="22.0" />
+            </font></Label>
+        <Label styleClass="textField" layoutX="470.0" layoutY="209.0" text="Confirm Password">
+            <font>
+                <Font size="20.0" />
+            </font></Label>
+        <TextField fx:id ="standardConfirmPasswordField" layoutX="469.0" layoutY="237.0" prefHeight="45.0" prefWidth="251.0" promptText="Confirm password" text="Confirm password">
+            <font>
+                <Font size="20.0" />
+            </font></TextField>
+        <Button fx:id ="standardNextButton" layoutX="277.0" layoutY="384.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="246.0" text="Next" />
+    </children>
+</AnchorPane>

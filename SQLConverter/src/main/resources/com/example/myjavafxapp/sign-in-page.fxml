@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -17,7 +16,7 @@
       <Label layoutX="379.0" styleClass="signInLabel" layoutY="136.0" text="Login" />
       <TextField fx:id="signInEmailInputField" layoutX="285.0" layoutY="185.0" prefHeight="45.0" prefWidth="251.0" promptText="Email" />
       <Hyperlink id="forgotPasswordLink" layoutX="354.0" layoutY="367.0" text="Forgot password?" />
-      <Button id="signInPageButton" layoutX="280.0" layoutY="327.0" mnemonicParsing="false" onAction="#onSignInPageButtonClick" prefHeight="43.0" prefWidth="258.0" text="Sign In" />
+      <Button id="signInPageButton" layoutX="280.0" layoutY="327.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="258.0" text="Sign In" />
       <TextField fx:id="signInPasswordInputField" layoutX="284.0" layoutY="248.0" prefHeight="45.0" prefWidth="251.0" promptText="Password" />
 
    </children>
