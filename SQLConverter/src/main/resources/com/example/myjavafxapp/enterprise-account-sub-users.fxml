@@ -4,7 +4,6 @@
 <?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
 
 <AnchorPane id="enterpriseAccountSubUserPage" prefHeight="482.0" prefWidth="852.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.AccountController">
     <stylesheets>
@@ -33,6 +32,6 @@
             </content>
         </ScrollPane>
 
-        <Button layoutX="277.0" layoutY="384.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="246.0" text="Next" onAction="#onNextButtonClick" />
+        <Button layoutX="277.0" layoutY="384.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="246.0" text="Next" onAction="#onEnterpriseSubUsersNextButtonClick" />
     </children>
 </AnchorPane>

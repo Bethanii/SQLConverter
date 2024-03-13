@@ -6,7 +6,7 @@
     -fx-background-size: cover;
 }
 
-#signInPage, #selectAccountPage, #enterpriseAccountPage, #enterpriseAccountSubUserPage {
+#signInPage, #selectAccountPage, #enterpriseAccountPage, #enterpriseAccountSubUserPage, #securityQuestionPage {
     -fx-background-color: #DAF8F0;
     -fx-background-position: center center;
     -fx-background-repeat: no-repeat;

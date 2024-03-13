@@ -10,7 +10,6 @@ import javafx.stage.Stage;
 import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
 import java.sql.*;
-import javafx.scene.image.ImageView;
 
 public class Controller {
 
@@ -74,36 +73,6 @@ public class Controller {
         Stage stage = (Stage) currentScene.getWindow();
         stage.sizeToScene();
         stage.setTitle("Create Account");
-    }
-
-    @FXML
-    protected void onEnterpriseAccountButtonClick() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(SQLApplication.class.getResource("enterprise-account-page.fxml"));
-
-        enterpriseAccountPage = fxmlLoader.load();
-        Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(enterpriseAccountPage);
-        enterpriseAccountPage.requestFocus();
-
-        Stage stage = (Stage) currentScene.getWindow();
-        stage.sizeToScene();
-        stage.setTitle("Enterprise Account Information");
-    }
-
-    @FXML
-    protected void onStandardAccountButtonClick() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(SQLApplication.class.getResource("sign-in-page.fxml"));
-
-        signInPage = fxmlLoader.load();
-        Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(signInPage);
-        signInPage.requestFocus();
-
-        Stage stage = (Stage) currentScene.getWindow();
-        stage.sizeToScene();
-        stage.setTitle("Sign In");
     }
 
     @FXML
