@@ -19,10 +19,12 @@ public class Controller {
     private TextField emailInputField;
     @FXML
     private TextField passwordInputField;
-    private AnchorPane signInPage;
-    private AnchorPane selectAccountPage;
+    @FXML
+    private AnchorPane standardAccountPage;
     @FXML
     private AnchorPane enterpriseAccountPage;
+    private AnchorPane signInPage;
+    private AnchorPane selectAccountPage;
 
     @FXML
     private Connection DatabaseConnection() throws IOException {
@@ -59,7 +61,35 @@ public class Controller {
         stage.sizeToScene();
         stage.setTitle("Sign In");
     }
+    @FXML
+    protected void onEnterpriseAccountButtonClick() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(SQLApplication.class.getResource("enterprise-account-page.fxml"));
 
+        enterpriseAccountPage = fxmlLoader.load();
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(enterpriseAccountPage);
+        enterpriseAccountPage.requestFocus();
+
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle("Enterprise Account Information");
+    }
+
+    @FXML
+    protected void onStandardAccountButtonClick() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(SQLApplication.class.getResource("standard-account-page.fxml"));
+
+        standardAccountPage = fxmlLoader.load();
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(standardAccountPage);
+        standardAccountPage.requestFocus();
+
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle("Standard Account Information");
+    }
     @FXML
     protected void onCreateAccountButtonClick() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();

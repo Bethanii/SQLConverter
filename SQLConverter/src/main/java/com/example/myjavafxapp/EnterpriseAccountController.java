@@ -13,60 +13,22 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ChoiceBox;
 
-public class AccountController {
+public class EnterpriseAccountController {
 
     @FXML
     private Label welcomeText;
-    private AnchorPane signInPage;
     @FXML
     public TextField subUserEmailInputField;
-    @FXML
-    private AnchorPane enterpriseAccountPage;
     @FXML
     private AnchorPane enterpriseAccountSubUserPage;
     @FXML
     private AnchorPane securityQuestionPage;
     @FXML
-    private AnchorPane standardAccountPage;
-    @FXML
     private List<String> emails = new ArrayList<>();
     @FXML
     private TextArea emailsDisplayArea;
-    @FXML
-    private ChoiceBox<String> firstSecurityQuestion;
-    @FXML
-    private ChoiceBox<String> secondSecurityQuestion;
 
 
-    @FXML
-    protected void onEnterpriseAccountButtonClick() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(SQLApplication.class.getResource("enterprise-account-page.fxml"));
-
-        enterpriseAccountPage = fxmlLoader.load();
-        Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(enterpriseAccountPage);
-        enterpriseAccountPage.requestFocus();
-
-        Stage stage = (Stage) currentScene.getWindow();
-        stage.sizeToScene();
-        stage.setTitle("Enterprise Account Information");
-    }
-
-    @FXML
-    protected void onStandardAccountButtonClick() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(SQLApplication.class.getResource("standard-account-page.fxml"));
-
-        standardAccountPage = fxmlLoader.load();
-        Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(standardAccountPage);
-        standardAccountPage.requestFocus();
-
-        Stage stage = (Stage) currentScene.getWindow();
-        stage.sizeToScene();
-        stage.setTitle("Standard Account Information");
-    }
     @FXML
     protected void onEnterpriseAccountNextButtonClick() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
@@ -92,28 +54,12 @@ public class AccountController {
         currentScene.setRoot(securityQuestionPage);
         securityQuestionPage.requestFocus();
 
-        AccountController securityQuestionController = fxmlLoader.getController();
-        securityQuestionController.setFirstSecurityQuestionOptions();
+        StandardAccountController securityQuestionController = fxmlLoader.getController();
+        securityQuestionController.setSecurityQuestionOptions();
 
         Stage stage = (Stage) currentScene.getWindow();
         stage.sizeToScene();
         stage.setTitle("Enterprise Account Security Questions");
-    }
-
-    public void setFirstSecurityQuestionOptions() {
-        firstSecurityQuestion.getItems().addAll(
-                "What was your first pet's name?",
-                "What's mother's maiden name?",
-                "What city were you born in?",
-                "What's your favorite color?"
-        );
-
-        secondSecurityQuestion.getItems().addAll(
-                "What was your first pet's name?",
-                "What's mother's maiden name?",
-                "What city were you born in?",
-                "What's your favorite color?"
-        );
     }
 
     @FXML

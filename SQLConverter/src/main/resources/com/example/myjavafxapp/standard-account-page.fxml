@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="standardAccountPage" prefHeight="482.0" prefWidth="852.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.AccountController">
+<AnchorPane id="standardAccountPage" prefHeight="482.0" prefWidth="852.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.StandardAccountController">
 
     <stylesheets>
         <URL value="@static/style.css" />
@@ -41,6 +41,6 @@
             <font>
                 <Font size="20.0" />
             </font></TextField>
-        <Button fx:id ="standardNextButton" layoutX="277.0" layoutY="384.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="246.0" text="Next" />
+        <Button fx:id ="standardNextButton" onAction="#onStandardAccountNextButtonClick" layoutX="277.0" layoutY="384.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="246.0" text="Next" />
     </children>
 </AnchorPane>
