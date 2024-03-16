@@ -17,11 +17,11 @@
          <font>
             <Font size="20.0" />
          </font></Label>
-        <TextField fx:id="enterpriseEmailInputField" layoutX="105.0" layoutY="141.0" prefHeight="45.0" prefWidth="251.0" promptText="Email" text="Email">
+        <TextField fx:id="enterpriseEmailInputField" layoutX="105.0" layoutY="141.0" prefHeight="45.0" prefWidth="251.0" promptText="Email" >
          <font>
             <Font size="20.0" />
          </font></TextField>
-      <TextField fx:id="enterprisePasswordInputField" layoutX="467.0" layoutY="138.0" prefHeight="45.0" prefWidth="251.0" promptText="Password" text="Password">
+      <TextField fx:id="enterprisePasswordInputField" layoutX="467.0" layoutY="138.0" prefHeight="45.0" prefWidth="251.0" promptText="Password" >
          <font>
             <Font size="20.0" />
          </font></TextField>
@@ -37,7 +37,7 @@
          <font>
             <Font size="20.0" />
          </font></Label>
-      <TextField fx:id ="enterpriseConfirmPasswordField" layoutX="469.0" layoutY="237.0" prefHeight="45.0" prefWidth="251.0" promptText="Confirm password" text="Confirm password">
+      <TextField fx:id ="enterpriseConfirmPasswordField" layoutX="469.0" layoutY="237.0" prefHeight="45.0" prefWidth="251.0" promptText="Confirm password" >
          <font>
             <Font size="20.0" />
          </font></TextField>

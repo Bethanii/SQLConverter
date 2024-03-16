@@ -9,6 +9,7 @@ import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
 import java.sql.Connection;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextField;
 
 public class StandardAccountController {
 
@@ -17,8 +18,9 @@ public class StandardAccountController {
     @FXML
     private AnchorPane securityQuestionPage;
     @FXML
-    private AnchorPane standardAccountPage;
-
+    private TextField standardEmailInputField;
+    @FXML
+    private TextField standardPasswordInputField;
     @FXML
     private ChoiceBox<String> firstSecurityQuestion;
     @FXML
@@ -27,8 +29,13 @@ public class StandardAccountController {
 
     @FXML
     protected void onStandardAccountNextButtonClick() throws IOException {
-        DatabaseConnection databaseController = new DatabaseConnection();
-        Connection connection = databaseController.DatabaseConnection();
+        String emailInput = standardEmailInputField.getText();
+        String passwordInput = standardPasswordInputField.getText();
+
+        DatabaseManager databaseManager = new DatabaseManager();
+        Connection connection = databaseManager.DatabaseConnection();
+        databaseManager.getUserDetails(connection, emailInput, passwordInput);
+
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(SQLApplication.class.getResource("security-question-page.fxml"));
 

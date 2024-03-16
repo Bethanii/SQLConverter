@@ -3,10 +3,9 @@ package com.example.myjavafxapp;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-public class DatabaseConnection {
+import java.sql.*;
+
+public class DatabaseManager {
 
     public Connection DatabaseConnection() throws IOException {
         String serverName = "sqlconverterserver.database.windows.net";
@@ -31,6 +30,21 @@ public class DatabaseConnection {
             System.out.println("Could not connect, error: " + e.getMessage());
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public void getUserDetails(Connection connection, String email, String password) {
+        String sql = "INSERT INTO Users (Email, password) VALUES (?, ?);";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, password);
+            preparedStatement.executeUpdate();
+
+            System.out.println("User email inserted successfully.");
+        } catch (SQLException e) {
+            System.out.println("Could not insert user, error: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

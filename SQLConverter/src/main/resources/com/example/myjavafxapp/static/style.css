@@ -30,12 +30,6 @@
     -fx-font-size: 14px;
 }
 
-#enterpriseEmailInputField, #enterprisePasswordInputField, #enterpriseConfirmPasswordField {
-    -fx-focus-color: transparent;
-    -fx-font-family: 'Open Sans', sans-serif;
-    -fx-font-size: 14px;
-}
-
 #enterpriseAccountButton, #standardAccountButton, #enterpriseNextButton, #securityQuestionNextButton, #enterpriseSubUsersNextButton, #standardNextButton {
     -fx-focus-color: transparent;
     -fx-background-radius: 20;
