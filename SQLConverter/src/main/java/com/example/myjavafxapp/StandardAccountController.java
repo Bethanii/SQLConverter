@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
+import java.sql.Connection;
 import javafx.scene.control.ChoiceBox;
 
 public class StandardAccountController {
@@ -26,6 +27,8 @@ public class StandardAccountController {
 
     @FXML
     protected void onStandardAccountNextButtonClick() throws IOException {
+        DatabaseConnection databaseController = new DatabaseConnection();
+        Connection connection = databaseController.DatabaseConnection();
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(SQLApplication.class.getResource("security-question-page.fxml"));
 

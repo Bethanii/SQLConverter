@@ -21,10 +21,11 @@ public class Controller {
     private TextField passwordInputField;
     @FXML
     private AnchorPane standardAccountPage;
-    @FXML
-    private AnchorPane enterpriseAccountPage;
+
     private AnchorPane signInPage;
     private AnchorPane selectAccountPage;
+    @FXML
+    private AnchorPane enterpriseAccountPage;
 
     @FXML
     private Connection DatabaseConnection() throws IOException {
