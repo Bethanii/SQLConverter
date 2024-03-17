@@ -83,3 +83,22 @@
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
+
+#addRowScrollPane {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-border-insets: 0;
+}
+
+#addRowScrollPane .viewport {
+    -fx-background-color: transparent;
+}
+
+#addRowScrollPane .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+#addRowScrollPane .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
