@@ -3,6 +3,7 @@ package com.example.myjavafxapp;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -33,7 +34,7 @@ public class Controller
     @FXML
     protected void onSignInSelectionClick() throws IOException
     {
-        FXMLLoader fxmlLoader = new FXMLLoader();
+/*        FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(SQLApplication.class.getResource("sign-in-page.fxml"));
 
         signInPage = fxmlLoader.load();
@@ -43,7 +44,19 @@ public class Controller
 
         Stage stage = (Stage) currentScene.getWindow();
         stage.sizeToScene();
-        stage.setTitle("Sign In");
+        stage.setTitle("Sign In"); */
+
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(SQLApplication.class.getResource("sql-converter.fxml"));
+
+        sqlConverterPage = fxmlLoader.load();
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(sqlConverterPage);
+        sqlConverterPage.requestFocus();
+
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle("SQL Converter");
     }
 
     @FXML

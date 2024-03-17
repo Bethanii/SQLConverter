@@ -1,21 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
 <?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="sqlConverterPage" prefHeight="482.0" prefWidth="852.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.Controller">
+<AnchorPane fx:id="sqlConverterPage" prefHeight="482.0" prefWidth="852.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.SQLConverterController">
 
     <stylesheets>
         <URL value="@static/style.css" />
     </stylesheets>
     <children>
         <Label fx:id="welcomeText" styleClass="labelStyle" />
-        <Label fx:id="emailExistsError" layoutX="379.0" layoutY="186.0" text="Welcome">
-            <font>
-                <Font size="14.0" />
-            </font>
-        </Label>
+      <ScrollPane layoutX="470.0" layoutY="97.0" prefHeight="315.0" prefWidth="333.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <ListView layoutX="-4.0" prefHeight="315.0" prefWidth="333.0" />
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+      <ChoiceBox fx:id="searchRow1" layoutX="283.0" layoutY="102.0" prefHeight="33.0" prefWidth="167.0" />
+      <TextField fx:id="searchField1" layoutX="35.0" layoutY="102.0" prefHeight="33.0" prefWidth="250.0" promptText="Enter value">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextField>
+      <Button layoutX="582.0" layoutY="427.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="110.0" text="Export Data">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Label layoutX="570.0" layoutY="52.0" prefHeight="17.0" prefWidth="134.0" text="Search Results">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <TextField id="searchRow2" layoutX="35.0" layoutY="161.0" prefHeight="33.0" prefWidth="250.0" promptText="Enter value">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextField>
+      <ChoiceBox layoutX="283.0" layoutY="161.0" prefHeight="33.0" prefWidth="167.0" />
+      <Button id="addRow" layoutX="194.0" layoutY="229.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="110.0" text="Add Row">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Button id="connectButton" layoutX="117.0" layoutY="412.0" mnemonicParsing="false" onAction="#onConnectButtonClick" prefHeight="25.0" prefWidth="110.0" text="Connect">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
+      <Button id="searchButton" layoutX="267.0" layoutY="412.0" mnemonicParsing="false" onAction="#onSearchButtonClick" prefHeight="25.0" prefWidth="110.0" text="Search">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
     </children>
 </AnchorPane>

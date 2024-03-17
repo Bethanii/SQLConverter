@@ -8,8 +8,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import java.io.IOException;
 
-public class SQLApplication extends Application {
-
+public class SQLApplication extends Application
+{
     @FXML
     private AnchorPane landingPage;
     @Override
