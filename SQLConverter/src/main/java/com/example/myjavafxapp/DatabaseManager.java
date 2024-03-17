@@ -33,7 +33,7 @@ public class DatabaseManager {
         }
     }
 
-    public void getUserDetails(Connection connection, String email, String password) {
+    public void SaveUserDetails(Connection connection, String email, String password) {
         String sql = "INSERT INTO Users (Email, password) VALUES (?, ?);";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -62,11 +62,25 @@ public class DatabaseManager {
         }
     }
 
-    @FXML
-    private String getUserInput(TextField userInputField) throws IOException {
-        String userInput = userInputField.getText();
-        System.out.println("User Input: " + userInput);
+    public String GetUserPassword(Connection connection, String emailInput) {
+        System.out.println("User Input: " + emailInput);
 
-        return userInput;
+        String sql = "SELECT Password FROM Users WHERE Email = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, emailInput);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("Password");
+                } else {
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
+
 }

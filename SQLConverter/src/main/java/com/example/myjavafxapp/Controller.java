@@ -54,9 +54,9 @@ public class Controller {
 
         if (missingFields == false)
         {
-            boolean emailExists = LoginValidation(emailInput);
+            boolean validLogin = LoginValidation();
 
-            if (emailExists == true)
+            if (validLogin == true)
             {
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(SQLApplication.class.getResource("sql-converter.fxml"));
@@ -73,7 +73,37 @@ public class Controller {
         }
     }
 
-    public boolean LoginValidation(String emailInput) throws IOException {
+    public boolean LoginValidation() {
+        String emailInput = signInEmailInputField.getText();
+        String passwordInput = signInPasswordInputField.getText();
+
+        DatabaseManager databaseManager = new DatabaseManager();
+
+        try (Connection connection = databaseManager.DatabaseConnection()) {
+            boolean emailExists = UserExists(emailInput);
+            if (emailExists) {
+                String storedPassword = databaseManager.GetUserPassword(connection, emailInput);
+
+                if (storedPassword != null && storedPassword.equals(passwordInput)) {
+                    return true;
+                } else {
+                    emailExistsError.setText("Invalid email or password, please try again");
+                    return false;
+                }
+            } else {
+                emailExistsError.setText("Invalid email or password, please try again");
+                return false;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            emailExistsError.setText("Invalid email or password, please try again");
+            return false;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean UserExists(String emailInput) throws IOException {
         DatabaseManager databaseManager = new DatabaseManager();
         Connection connection = databaseManager.DatabaseConnection();
 

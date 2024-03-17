@@ -64,7 +64,7 @@ public class StandardAccountController {
             }
             else if (passwordValidation == true)
             {
-                databaseManager.getUserDetails(connection, emailInput, passwordInput);
+                databaseManager.SaveUserDetails(connection, emailInput, passwordInput);
 
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(SQLApplication.class.getResource("security-question-page.fxml"));

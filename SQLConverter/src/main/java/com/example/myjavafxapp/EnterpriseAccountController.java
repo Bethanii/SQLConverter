@@ -71,7 +71,7 @@ public class EnterpriseAccountController {
                 enterprisePasswordInputField.getStyleClass().add("text-field-error");
                 enterpriseConfirmPasswordField.getStyleClass().add("text-field-error");
             } else if (passwordValidation == true) {
-                databaseManager.getUserDetails(connection, emailInput, passwordInput);
+                databaseManager.SaveUserDetails(connection, emailInput, passwordInput);
 
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(SQLApplication.class.getResource("enterprise-account-sub-users.fxml"));
