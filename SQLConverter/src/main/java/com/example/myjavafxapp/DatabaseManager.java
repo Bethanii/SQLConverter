@@ -1,13 +1,32 @@
 package com.example.myjavafxapp;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
 import java.io.IOException;
 import java.sql.*;
 
 public class DatabaseManager {
 
-    public Connection DatabaseConnection() throws IOException {
+    public Connection ConnectUserDatabase(String serverName, String databaseName, String username, String password) throws IOException
+    {
+        String connectionUrl = "jdbc:sqlserver://" + serverName + ":1433;"
+                + "database=" + databaseName + ";"
+                + "user=" + username + ";"
+                + "password=" + password + ";"
+                + "encrypt=true;"
+                + "trustServerCertificate=false;"
+                + "loginTimeout=30;";
+        try {
+            Connection connection = DriverManager.getConnection(connectionUrl);
+            System.out.println("Connected to SQL Server User Database successfully.");
+            return connection;
+        } catch (SQLException e) {
+            System.out.println("Could not connect, error: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Connection DatabaseConnection() throws IOException
+    {
         String serverName = "sqlconverterserver.database.windows.net";
         String databaseName = "SQLConverterDB";
         String username = "Bethany";
@@ -33,7 +52,8 @@ public class DatabaseManager {
         }
     }
 
-    public void SaveUserDetails(Connection connection, String email, String password) {
+    public void SaveUserDetails(Connection connection, String email, String password)
+    {
         String sql = "INSERT INTO Users (Email, password) VALUES (?, ?);";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -47,7 +67,8 @@ public class DatabaseManager {
         }
     }
 
-    public boolean CheckIfColumnValueExists(Connection connection, String columnName, String columnValue) {
+    public boolean CheckIfColumnValueExists(Connection connection, String columnName, String columnValue)
+    {
         String sql = "SELECT * FROM Users WHERE " + columnName + " = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -62,7 +83,8 @@ public class DatabaseManager {
         }
     }
 
-    public String GetUserPassword(Connection connection, String emailInput) {
+    public String GetUserPassword(Connection connection, String emailInput)
+    {
         System.out.println("User Input: " + emailInput);
 
         String sql = "SELECT Password FROM Users WHERE Email = ?";

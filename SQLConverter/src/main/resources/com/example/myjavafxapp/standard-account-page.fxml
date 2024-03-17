@@ -43,7 +43,7 @@
                 <Font size="20.0" />
             </font>
         </Label>
-        <Label layoutX="190.0" layoutY="34.0" text="Please Enter your account information below">
+        <Label layoutX="190.0" layoutY="34.0" text="Please enter your account information below">
             <font>
                 <Font size="22.0" />
             </font>

@@ -1,6 +1,5 @@
 package com.example.myjavafxapp;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -11,7 +10,8 @@ import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
 import java.sql.*;
 
-public class Controller {
+public class Controller
+{
 
     @FXML
     private Label welcomeText;
@@ -31,7 +31,8 @@ public class Controller {
     private AnchorPane sqlConverterPage;
 
     @FXML
-    protected void onSignInSelectionClick() throws IOException {
+    protected void onSignInSelectionClick() throws IOException
+    {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(SQLApplication.class.getResource("sign-in-page.fxml"));
 
@@ -46,10 +47,8 @@ public class Controller {
     }
 
     @FXML
-    protected void onSignInButtonClick() throws IOException {
-        String emailInput = signInEmailInputField.getText();
-        String passwordInput = signInPasswordInputField.getText();
-
+    protected void onSignInButtonClick() throws IOException
+    {
         boolean missingFields = RequiredFieldsMissing();
 
         if (missingFields == false)
@@ -73,18 +72,22 @@ public class Controller {
         }
     }
 
-    public boolean LoginValidation() {
+    public boolean LoginValidation()
+    {
         String emailInput = signInEmailInputField.getText();
         String passwordInput = signInPasswordInputField.getText();
 
         DatabaseManager databaseManager = new DatabaseManager();
 
-        try (Connection connection = databaseManager.DatabaseConnection()) {
+        try (Connection connection = databaseManager.DatabaseConnection())
+        {
             boolean emailExists = UserExists(emailInput);
-            if (emailExists) {
+            if (emailExists)
+            {
                 String storedPassword = databaseManager.GetUserPassword(connection, emailInput);
 
-                if (storedPassword != null && storedPassword.equals(passwordInput)) {
+                if (storedPassword != null && storedPassword.equals(passwordInput))
+                {
                     return true;
                 } else {
                     emailExistsError.setText("Invalid email or password, please try again");
@@ -103,7 +106,8 @@ public class Controller {
         }
     }
 
-    public boolean UserExists(String emailInput) throws IOException {
+    public boolean UserExists(String emailInput) throws IOException
+    {
         DatabaseManager databaseManager = new DatabaseManager();
         Connection connection = databaseManager.DatabaseConnection();
 
@@ -148,7 +152,8 @@ public class Controller {
     }
 
     @FXML
-    protected void onEnterpriseAccountButtonClick() throws IOException {
+    protected void onEnterpriseAccountButtonClick() throws IOException
+    {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(SQLApplication.class.getResource("enterprise-account-page.fxml"));
 
@@ -163,7 +168,8 @@ public class Controller {
     }
 
     @FXML
-    protected void onStandardAccountButtonClick() throws IOException {
+    protected void onStandardAccountButtonClick() throws IOException
+    {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(SQLApplication.class.getResource("standard-account-page.fxml"));
 
@@ -176,8 +182,10 @@ public class Controller {
         stage.sizeToScene();
         stage.setTitle("Standard Account Information");
     }
+
     @FXML
-    protected void onCreateAccountButtonClick() throws IOException {
+    protected void onCreateAccountButtonClick() throws IOException
+    {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(SQLApplication.class.getResource("select-account-type-page.fxml"));
 
@@ -189,13 +197,5 @@ public class Controller {
         Stage stage = (Stage) currentScene.getWindow();
         stage.sizeToScene();
         stage.setTitle("Create Account");
-    }
-
-    @FXML
-    private String getUserInput(TextField userInputField) throws IOException {
-        String userInput = userInputField.getText();
-        System.out.println("User Input: " + userInput);
-
-        return userInput;
     }
 }

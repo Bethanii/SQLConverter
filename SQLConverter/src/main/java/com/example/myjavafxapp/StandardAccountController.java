@@ -25,11 +25,21 @@ public class StandardAccountController {
     @FXML
     private AnchorPane securityQuestionPage;
     @FXML
+    private AnchorPane userDatabaseSetupPage;
+    @FXML
     private TextField standardEmailInputField;
     @FXML
     private TextField standardPasswordInputField;
     @FXML
     private TextField standardConfirmPasswordField;
+    @FXML
+    private TextField serverNameField;
+    @FXML
+    private TextField dbUsernameField;
+    @FXML
+    private TextField dbPasswordField;
+    @FXML
+    private TextField databaseNameField;
     @FXML
     private ChoiceBox<String> firstSecurityQuestion;
     @FXML
@@ -112,4 +122,43 @@ public class StandardAccountController {
         );
     }
 
+    @FXML
+    protected void onSecurityQuestionNextButtonClick() throws IOException
+    {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(SQLApplication.class.getResource("user-database-setup-page.fxml"));
+
+        userDatabaseSetupPage = fxmlLoader.load();
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(userDatabaseSetupPage);
+        userDatabaseSetupPage.requestFocus();
+
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle("Database Setup Information");
+    }
+
+    @FXML
+    protected void onDatabaseSetupNextButton() throws IOException
+    {
+        String serverName = serverNameField.getText();
+        String databaseName = databaseNameField.getText();
+        String dbUsername = dbUsernameField.getText();
+        String dbPassword = dbPasswordField.getText();
+
+        DatabaseManager databaseManager = new DatabaseManager();
+        Connection userConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword);
+
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(SQLApplication.class.getResource("sql-converter.fxml"));
+
+        userDatabaseSetupPage = fxmlLoader.load();
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(userDatabaseSetupPage);
+        userDatabaseSetupPage.requestFocus();
+
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle("Database Setup Information");
+    }
 }
