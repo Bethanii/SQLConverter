@@ -9,7 +9,6 @@ import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.Objects;
-
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 
@@ -46,38 +45,43 @@ public class StandardAccountController {
         DatabaseManager databaseManager = new DatabaseManager();
         Connection connection = databaseManager.DatabaseConnection();
 
-        Boolean emailValidation = databaseManager.CheckIfColumnValueExists(connection, "Users", emailInput);
+        Boolean emailValidation = databaseManager.CheckIfColumnValueExists(connection, "Email", emailInput);
         Boolean passwordValidation = ValidatePasswordEntry(passwordInput, passwordInputConfirmation);
 
         if (emailValidation == true)
         {
             emailExistsError.setVisible(true);
+            standardEmailInputField.getStyleClass().add("text-field-error");
         }
 
-        if (passwordValidation == false)
+        else if (emailValidation != true)
         {
-            passwordError.setVisible(true);
-            confPasswordError.setVisible(true);
-        }
+            if (passwordValidation == false)
+            {
+                passwordError.setVisible(true);
+                confPasswordError.setVisible(true);
+                standardEmailInputField.getStyleClass().add("text-field-error");
+                standardConfirmPasswordField.getStyleClass().add("text-field-error");
+            }
+            else if (passwordValidation == true)
+            {
+                databaseManager.getUserDetails(connection, emailInput, passwordInput);
 
-        else if (passwordValidation == true)
-        {
-            databaseManager.getUserDetails(connection, emailInput, passwordInput);
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(SQLApplication.class.getResource("security-question-page.fxml"));
 
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(SQLApplication.class.getResource("security-question-page.fxml"));
+                securityQuestionPage = fxmlLoader.load();
+                Scene currentScene = welcomeText.getScene();
+                currentScene.setRoot(securityQuestionPage);
+                securityQuestionPage.requestFocus();
 
-            securityQuestionPage = fxmlLoader.load();
-            Scene currentScene = welcomeText.getScene();
-            currentScene.setRoot(securityQuestionPage);
-            securityQuestionPage.requestFocus();
+                StandardAccountController standardAccountController = fxmlLoader.getController();
+                standardAccountController.setSecurityQuestionOptions();
 
-            StandardAccountController standardAccountController = fxmlLoader.getController();
-            standardAccountController.setSecurityQuestionOptions();
-
-            Stage stage = (Stage) currentScene.getWindow();
-            stage.sizeToScene();
-            stage.setTitle("Standard Account Security Questions");
+                Stage stage = (Stage) currentScene.getWindow();
+                stage.sizeToScene();
+                stage.setTitle("Standard Account Security Questions");
+            }
         }
     }
 

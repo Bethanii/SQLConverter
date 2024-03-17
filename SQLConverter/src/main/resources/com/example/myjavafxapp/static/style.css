@@ -69,3 +69,7 @@
      -fx-text-fill: #FF0000;
      -fx-font-size: 14px;
 }
+
+.text-field-error {
+    -fx-border-color: red;
+}

@@ -23,7 +23,7 @@
                 <Font size="20.0" />
             </font>
         </TextField>
-        <Label fx:id="emailExistsError" layoutX="469.0" layoutY="290.0" textFill="red" visible="false" text="Email already registered, please log in">
+        <Label fx:id="emailExistsError" layoutX="105.0" layoutY="190.0" textFill="red" visible="false" text="Email already registered, please log in">
             <font>
                 <Font size="14.0" />
             </font>

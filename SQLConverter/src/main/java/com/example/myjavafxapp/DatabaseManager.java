@@ -47,14 +47,15 @@ public class DatabaseManager {
         }
     }
 
-    public boolean CheckIfColumnValueExists(Connection connection, String columnName, String columnValue)
-    {
-        String sql = "SELECT * FROM Users WHERE " + columnName + " = (?);";
+    public boolean CheckIfColumnValueExists(Connection connection, String columnName, String columnValue) {
+        String sql = "SELECT * FROM Users WHERE " + columnName + " = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, columnValue);
-            preparedStatement.executeUpdate();
-            return true;
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.next();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
