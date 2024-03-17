@@ -21,9 +21,11 @@ public class EnterpriseAccountController {
     @FXML
     private Label welcomeText;
     @FXML
-    private Label errorMessage1;
+    private Label emailExistsError;
     @FXML
-    private Label errorMessage2;
+    private Label passwordError;
+    @FXML
+    private Label confPasswordError;
     @FXML
     public TextField subUserEmailInputField;
     @FXML
@@ -44,38 +46,45 @@ public class EnterpriseAccountController {
     private ChoiceBox<String> firstSecurityQuestion;
     @FXML
     private ChoiceBox<String> secondSecurityQuestion;
-
     @FXML
     protected void onEnterpriseAccountNextButtonClick() throws IOException {
         String emailInput = enterpriseEmailInputField.getText();
         String passwordInput = enterprisePasswordInputField.getText();
         String passwordInputConfirmation = enterpriseConfirmPasswordField.getText();
 
+        DatabaseManager databaseManager = new DatabaseManager();
+        Connection connection = databaseManager.DatabaseConnection();
+
+        Boolean emailValidation = databaseManager.CheckIfColumnValueExists(connection, "Email", emailInput);
         Boolean passwordValidation = ValidatePasswordEntry(passwordInput, passwordInputConfirmation);
 
-        if (passwordValidation == false)
+        if (emailValidation == true)
         {
-            errorMessage1.setVisible(true);
-            errorMessage2.setVisible(true);
+            emailExistsError.setVisible(true);
+            enterpriseEmailInputField.getStyleClass().add("text-field-error");
         }
 
-        else if (passwordValidation == true)
-        {
-            DatabaseManager databaseManager = new DatabaseManager();
-            Connection connection = databaseManager.DatabaseConnection();
-            databaseManager.getUserDetails(connection, emailInput, passwordInput);
+        else if (emailValidation != true) {
+            if (passwordValidation == false) {
+                passwordError.setVisible(true);
+                confPasswordError.setVisible(true);
+                enterprisePasswordInputField.getStyleClass().add("text-field-error");
+                enterpriseConfirmPasswordField.getStyleClass().add("text-field-error");
+            } else if (passwordValidation == true) {
+                databaseManager.getUserDetails(connection, emailInput, passwordInput);
 
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(SQLApplication.class.getResource("enterprise-account-sub-users.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(SQLApplication.class.getResource("enterprise-account-sub-users.fxml"));
 
-            enterpriseAccountSubUserPage = fxmlLoader.load();
-            Scene currentScene = welcomeText.getScene();
-            currentScene.setRoot(enterpriseAccountSubUserPage);
-            enterpriseAccountSubUserPage.requestFocus();;
+                enterpriseAccountSubUserPage = fxmlLoader.load();
+                Scene currentScene = welcomeText.getScene();
+                currentScene.setRoot(enterpriseAccountSubUserPage);
+                enterpriseAccountSubUserPage.requestFocus();
 
-            Stage stage = (Stage) currentScene.getWindow();
-            stage.sizeToScene();
-            stage.setTitle("Enterprise Account Sub User Information");
+                Stage stage = (Stage) currentScene.getWindow();
+                stage.sizeToScene();
+                stage.setTitle("Enterprise Account Sub User Information");
+            }
         }
     }
 

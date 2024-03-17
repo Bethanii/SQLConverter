@@ -35,7 +35,6 @@ public class StandardAccountController {
     @FXML
     private ChoiceBox<String> secondSecurityQuestion;
 
-
     @FXML
     protected void onStandardAccountNextButtonClick() throws IOException {
         String emailInput = standardEmailInputField.getText();

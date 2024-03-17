@@ -10,7 +10,6 @@
     <stylesheets>
         <URL value="@static/style.css" />
     </stylesheets>
-
     <children>
         <Label fx:id="welcomeText" styleClass="labelStyle" />
         <Label layoutX="106.0" layoutY="105.0" prefHeight="38.0" prefWidth="80.0" text="Email">
@@ -23,10 +22,21 @@
             <Font size="20.0" />
          </font>
         </TextField>
+        <Label fx:id="emailExistsError" layoutX="105.0" layoutY="190.0" textFill="red" visible="false" text="Email already registered, please log in">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
       <TextField fx:id="enterprisePasswordInputField" layoutX="467.0" layoutY="138.0" prefHeight="45.0" prefWidth="251.0" promptText="Password" >
          <font>
             <Font size="20.0" />
-         </font></TextField>
+         </font>
+      </TextField>
+        <Label fx:id="passwordError" layoutX="467.0" layoutY="189.0" textFill="red" visible="false" text="Password and Confirmation Password don't match">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
       <Label layoutX="468.0" layoutY="109.0" text="Password" wrapText="true">
          <font>
             <Font size="20.0" />
@@ -47,6 +57,11 @@
             <Font size="20.0" />
          </font>
       </TextField>
+        <Label fx:id="confPasswordError" layoutX="469.0" layoutY="290.0" textFill="red" visible="false" text="Password and Confirmation Password don't match">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
       <Button fx:id ="enterpriseNextButton" onAction="#onEnterpriseAccountNextButtonClick" layoutX="277.0" layoutY="384.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="246.0" text="Next" />
     </children>
 </AnchorPane>
