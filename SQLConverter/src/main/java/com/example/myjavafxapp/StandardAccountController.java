@@ -8,6 +8,8 @@ import javafx.stage.Stage;
 import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.Objects;
+
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 
@@ -16,11 +18,19 @@ public class StandardAccountController {
     @FXML
     private Label welcomeText;
     @FXML
+    private Label passwordError;
+    @FXML
+    private Label confPasswordError;
+    @FXML
+    private Label emailExistsError;
+    @FXML
     private AnchorPane securityQuestionPage;
     @FXML
     private TextField standardEmailInputField;
     @FXML
     private TextField standardPasswordInputField;
+    @FXML
+    private TextField standardConfirmPasswordField;
     @FXML
     private ChoiceBox<String> firstSecurityQuestion;
     @FXML
@@ -31,25 +41,56 @@ public class StandardAccountController {
     protected void onStandardAccountNextButtonClick() throws IOException {
         String emailInput = standardEmailInputField.getText();
         String passwordInput = standardPasswordInputField.getText();
+        String passwordInputConfirmation = standardConfirmPasswordField.getText();
 
         DatabaseManager databaseManager = new DatabaseManager();
         Connection connection = databaseManager.DatabaseConnection();
-        databaseManager.getUserDetails(connection, emailInput, passwordInput);
 
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(SQLApplication.class.getResource("security-question-page.fxml"));
+        Boolean emailValidation = databaseManager.CheckIfColumnValueExists(connection, "Users", emailInput);
+        Boolean passwordValidation = ValidatePasswordEntry(passwordInput, passwordInputConfirmation);
 
-        securityQuestionPage = fxmlLoader.load();
-        Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(securityQuestionPage);
-        securityQuestionPage.requestFocus();
+        if (emailValidation == true)
+        {
+            emailExistsError.setVisible(true);
+        }
 
-        StandardAccountController securityQuestionController = fxmlLoader.getController();
-        securityQuestionController.setSecurityQuestionOptions();
+        if (passwordValidation == false)
+        {
+            passwordError.setVisible(true);
+            confPasswordError.setVisible(true);
+        }
 
-        Stage stage = (Stage) currentScene.getWindow();
-        stage.sizeToScene();
-        stage.setTitle("Standard Account Security Questions");
+        else if (passwordValidation == true)
+        {
+            databaseManager.getUserDetails(connection, emailInput, passwordInput);
+
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(SQLApplication.class.getResource("security-question-page.fxml"));
+
+            securityQuestionPage = fxmlLoader.load();
+            Scene currentScene = welcomeText.getScene();
+            currentScene.setRoot(securityQuestionPage);
+            securityQuestionPage.requestFocus();
+
+            StandardAccountController standardAccountController = fxmlLoader.getController();
+            standardAccountController.setSecurityQuestionOptions();
+
+            Stage stage = (Stage) currentScene.getWindow();
+            stage.sizeToScene();
+            stage.setTitle("Standard Account Security Questions");
+        }
+    }
+
+    public boolean ValidatePasswordEntry(String password, String passwordConfirmation)
+    {
+        if (!Objects.equals(password, passwordConfirmation))
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     public void setSecurityQuestionOptions() {
@@ -67,4 +108,5 @@ public class StandardAccountController {
                 "What's your favorite color?"
         );
     }
+
 }

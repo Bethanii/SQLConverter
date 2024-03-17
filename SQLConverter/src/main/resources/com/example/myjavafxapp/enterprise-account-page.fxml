@@ -14,13 +14,15 @@
     <children>
         <Label fx:id="welcomeText" styleClass="labelStyle" />
         <Label layoutX="106.0" layoutY="105.0" prefHeight="38.0" prefWidth="80.0" text="Email">
-         <font>
-            <Font size="20.0" />
-         </font></Label>
+            <font>
+                <Font size="20.0" />
+            </font>
+        </Label>
         <TextField fx:id="enterpriseEmailInputField" layoutX="105.0" layoutY="141.0" prefHeight="45.0" prefWidth="251.0" promptText="Email" >
          <font>
             <Font size="20.0" />
-         </font></TextField>
+         </font>
+        </TextField>
       <TextField fx:id="enterprisePasswordInputField" layoutX="467.0" layoutY="138.0" prefHeight="45.0" prefWidth="251.0" promptText="Password" >
          <font>
             <Font size="20.0" />
@@ -28,19 +30,23 @@
       <Label layoutX="468.0" layoutY="109.0" text="Password" wrapText="true">
          <font>
             <Font size="20.0" />
-         </font></Label>
+         </font>
+      </Label>
       <Label layoutX="190.0" layoutY="34.0" text="Please Enter your account information below">
          <font>
             <Font size="22.0" />
-         </font></Label>
+         </font>
+      </Label>
       <Label styleClass="textField" layoutX="470.0" layoutY="209.0" text="Confirm Password">
          <font>
             <Font size="20.0" />
-         </font></Label>
+         </font>
+      </Label>
       <TextField fx:id ="enterpriseConfirmPasswordField" layoutX="469.0" layoutY="237.0" prefHeight="45.0" prefWidth="251.0" promptText="Confirm password" >
          <font>
             <Font size="20.0" />
-         </font></TextField>
+         </font>
+      </TextField>
       <Button fx:id ="enterpriseNextButton" onAction="#onEnterpriseAccountNextButtonClick" layoutX="277.0" layoutY="384.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="246.0" text="Next" />
     </children>
 </AnchorPane>

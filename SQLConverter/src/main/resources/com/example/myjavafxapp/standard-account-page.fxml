@@ -16,31 +16,53 @@
         <Label layoutX="106.0" layoutY="105.0" prefHeight="38.0" prefWidth="80.0" text="Email">
             <font>
                 <Font size="20.0" />
-            </font></Label>
+            </font>
+        </Label>
         <TextField fx:id="standardEmailInputField" layoutX="105.0" layoutY="141.0" prefHeight="45.0" prefWidth="251.0" promptText="Email">
             <font>
                 <Font size="20.0" />
-            </font></TextField>
-        <TextField fx:id="standardPasswordInputField" layoutX="467.0" layoutY="138.0" prefHeight="45.0" prefWidth="251.0"  promptText="Password">
+            </font>
+        </TextField>
+        <Label fx:id="emailExistsError" layoutX="469.0" layoutY="290.0" textFill="red" visible="false" text="Email already registered, please log in">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
+        <TextField fx:id="standardPasswordInputField" layoutX="467.0" layoutY="138.0" prefHeight="45.0" prefWidth="251.0" promptText="Password">
             <font>
                 <Font size="20.0" />
-            </font></TextField>
+            </font>
+        </TextField>
+        <Label fx:id="passwordError" layoutX="467.0" layoutY="189.0" textFill="red" visible="false" text="Password and Confirmation Password don't match">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
         <Label layoutX="468.0" layoutY="109.0" text="Password" wrapText="true">
             <font>
                 <Font size="20.0" />
-            </font></Label>
+            </font>
+        </Label>
         <Label layoutX="190.0" layoutY="34.0" text="Please Enter your account information below">
             <font>
                 <Font size="22.0" />
-            </font></Label>
+            </font>
+        </Label>
         <Label styleClass="textField" layoutX="470.0" layoutY="209.0" text="Confirm Password">
             <font>
                 <Font size="20.0" />
-            </font></Label>
-        <TextField fx:id ="standardConfirmPasswordField" layoutX="469.0" layoutY="237.0" prefHeight="45.0" prefWidth="251.0" promptText="Confirm password" >
+            </font>
+        </Label>
+        <TextField fx:id="standardConfirmPasswordField" layoutX="469.0" layoutY="237.0" prefHeight="45.0" prefWidth="251.0" promptText="Confirm password">
             <font>
                 <Font size="20.0" />
-            </font></TextField>
-        <Button fx:id ="standardNextButton" onAction="#onStandardAccountNextButtonClick" layoutX="277.0" layoutY="384.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="246.0" text="Next" />
+            </font>
+        </TextField>
+        <Label fx:id="confPasswordError" layoutX="469.0" layoutY="290.0" textFill="red" visible="false" text="Password and Confirmation Password don't match">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
+        <Button fx:id="standardNextButton" onAction="#onStandardAccountNextButtonClick" layoutX="277.0" layoutY="384.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="246.0" text="Next" />
     </children>
 </AnchorPane>

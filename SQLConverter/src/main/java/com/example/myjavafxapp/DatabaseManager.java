@@ -40,11 +40,24 @@ public class DatabaseManager {
             preparedStatement.setString(1, email);
             preparedStatement.setString(2, password);
             preparedStatement.executeUpdate();
-
             System.out.println("User email inserted successfully.");
         } catch (SQLException e) {
             System.out.println("Could not insert user, error: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    public boolean CheckIfColumnValueExists(Connection connection, String columnName, String columnValue)
+    {
+        String sql = "SELECT * FROM Users WHERE " + columnName + " = (?);";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, columnValue);
+            preparedStatement.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
