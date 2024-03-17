@@ -16,40 +16,22 @@ public class Controller {
     @FXML
     private Label welcomeText;
     @FXML
-    private TextField emailInputField;
+    private Label emailExistsError;
     @FXML
-    private TextField passwordInputField;
+    private TextField signInEmailInputField;
+    @FXML
+    private TextField signInPasswordInputField;
     @FXML
     private AnchorPane standardAccountPage;
-
     private AnchorPane signInPage;
     private AnchorPane selectAccountPage;
     @FXML
     private AnchorPane enterpriseAccountPage;
+    @FXML
+    private AnchorPane sqlConverterPage;
 
     @FXML
-    private Connection DatabaseConnection() throws IOException {
-        try {
-            String url = "jdbc:mysql://127.0.0.1:3306/SQLConverter?user=username&password=password";
-            String username = "username";
-            String password = "password";
-
-            Class.forName("com.mysql.cj.jdbc.Driver");
-
-            Connection dbConnection = DriverManager.getConnection(url, username, password);
-                if (dbConnection != null) {
-                    System.out.println("Successfully connected to MySQL database SQLConverter");
-
-                    return dbConnection;
-                }
-        } catch (SQLException | ClassNotFoundException ex) {
-            System.out.println("An error occurred while connecting to the MySQL database");
-        }
-        return null;
-    }
-
-    @FXML
-    protected void onSignInButtonClick() throws IOException {
+    protected void onSignInSelectionClick() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(SQLApplication.class.getResource("sign-in-page.fxml"));
 
@@ -62,6 +44,79 @@ public class Controller {
         stage.sizeToScene();
         stage.setTitle("Sign In");
     }
+
+    @FXML
+    protected void onSignInButtonClick() throws IOException {
+        String emailInput = signInEmailInputField.getText();
+        String passwordInput = signInPasswordInputField.getText();
+
+        boolean missingFields = RequiredFieldsMissing();
+
+        if (missingFields == false)
+        {
+            boolean emailExists = LoginValidation(emailInput);
+
+            if (emailExists == true)
+            {
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(SQLApplication.class.getResource("sql-converter.fxml"));
+
+                sqlConverterPage = fxmlLoader.load();
+                Scene currentScene = welcomeText.getScene();
+                currentScene.setRoot(sqlConverterPage);
+                sqlConverterPage.requestFocus();
+
+                Stage stage = (Stage) currentScene.getWindow();
+                stage.sizeToScene();
+                stage.setTitle("SQL Converter");
+            }
+        }
+    }
+
+    public boolean LoginValidation(String emailInput) throws IOException {
+        DatabaseManager databaseManager = new DatabaseManager();
+        Connection connection = databaseManager.DatabaseConnection();
+
+        Boolean emailExists = databaseManager.CheckIfColumnValueExists(connection, "Email", emailInput);
+
+        if (emailExists == true)
+        {
+            return true;
+        }
+        else
+        {
+            emailExistsError.setVisible(true);
+            return false;
+        }
+    }
+
+    public boolean RequiredFieldsMissing()
+    {
+        String emailInput = signInEmailInputField.getText();
+        String passwordInput = signInPasswordInputField.getText();
+
+        signInEmailInputField.getStyleClass().remove("text-field-error-rounded");
+        signInPasswordInputField.getStyleClass().remove("text-field-error-rounded");
+
+        if (emailInput.isBlank() && passwordInput.isBlank() == true)
+        {
+            signInEmailInputField.getStyleClass().add("text-field-error-rounded");
+            signInPasswordInputField.getStyleClass().add("text-field-error-rounded");
+            return true;
+        }
+        if (emailInput.isBlank() == true)
+        {
+            signInEmailInputField.getStyleClass().add("text-field-error-rounded");
+            return true;
+        }
+        if (passwordInput.isBlank() == true)
+        {
+            signInPasswordInputField.getStyleClass().add("text-field-error-rounded");
+            return true;
+        }
+        return false;
+    }
+
     @FXML
     protected void onEnterpriseAccountButtonClick() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
@@ -112,30 +167,5 @@ public class Controller {
         System.out.println("User Input: " + userInput);
 
         return userInput;
-    }
-
-    @FXML
-    private void validateUserLogin() throws IOException {
-        String userEmail = getUserInput(emailInputField);
-        String userPassword = getUserInput(passwordInputField);
-
-        Connection connection = DatabaseConnection();
-         try
-         {
-             String sql = "SELECT * FROM users WHERE email = ?";
-             try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                 statement.setString(1, userEmail);
-
-                 try (ResultSet resultSet = statement.executeQuery()) {
-                     if (resultSet.next()) {
-                         System.out.println("User exists in the database.");
-                     } else {
-                         System.out.println("User does not exist in the database.");
-                     }
-                 }
-             }
-         } catch (SQLException e) {
-             e.printStackTrace();
-         }
     }
 }

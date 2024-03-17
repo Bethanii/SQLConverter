@@ -65,11 +65,20 @@
     -fx-font-size: 18px;
 }
 
-#validationErrorMessage {
-     -fx-text-fill: #FF0000;
-     -fx-font-size: 14px;
-}
-
 .text-field-error {
     -fx-border-color: red;
+}
+
+.text-field-error-rounded {
+    -fx-background-color: white;
+    -fx-background-insets: 0;
+    -fx-background-radius: 20;
+    -fx-border-color: red;
+    -fx-border-width: 2;
+    -fx-border-radius: 20;
+    -fx-border-insets: -2;
+    -fx-font-family: 'Open Sans', sans-serif;
+    -fx-font-size: 14px;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
