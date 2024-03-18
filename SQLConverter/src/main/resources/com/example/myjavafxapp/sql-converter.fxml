@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import java.net.*?>
 <?import javafx.scene.control.*?>
@@ -14,13 +13,12 @@
     <children>
         <Label fx:id="welcomeText" styleClass="labelStyle" />
 
-        <ScrollPane layoutX="471.0" layoutY="97.0" prefHeight="315.0" prefWidth="333.0" fx:id="resultsWindow">
+        <ScrollPane layoutX="471.0" layoutY="97.0" prefHeight="315.0" prefWidth="333.0" fx:id="resultsWindow" hbarPolicy="AS_NEEDED">
             <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
-                    <VBox fx:id="resultsContainer" spacing="5" />
-                </AnchorPane>
+                <VBox fx:id="resultsContainer" spacing="5" />
             </content>
         </ScrollPane>
+
 
         <ScrollPane fx:id="addRowScrollPane" hbarPolicy="NEVER" layoutX="35.0" layoutY="97.0" prefHeight="243.0" prefWidth="430">
             <content>
@@ -37,7 +35,7 @@
             </content>
         </ScrollPane>
 
-      <Button layoutX="582.0" layoutY="427.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="110.0" text="Export Data">
+      <Button id="exportButton" onAction="#onExportButtonClick" layoutX="582.0" layoutY="427.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="110.0" text="Export Data">
          <font>
             <Font size="14.0" />
          </font>
