@@ -23,5 +23,4 @@
         <Text id="signInText" layoutX="132.0" layoutY="231.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Have an account?" textAlignment="CENTER" />
         <Text id="createAccountText" layoutX="486.0" layoutY="231.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Not registered yet?" textAlignment="CENTER" />
     </children>
-
 </AnchorPane>

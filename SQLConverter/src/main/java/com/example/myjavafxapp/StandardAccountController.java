@@ -8,6 +8,8 @@ import javafx.stage.Stage;
 import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Objects;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
@@ -22,6 +24,8 @@ public class StandardAccountController {
     private Label confPasswordError;
     @FXML
     private Label emailExistsError;
+    @FXML
+    private Label connectionError;
     @FXML
     private AnchorPane securityQuestionPage;
     @FXML
@@ -149,16 +153,41 @@ public class StandardAccountController {
         DatabaseManager databaseManager = new DatabaseManager();
         Connection userConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword);
 
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(SQLApplication.class.getResource("sql-converter.fxml"));
+        if (userConnection != null)
+        {
+            Connection connection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword);
 
-        userDatabaseSetupPage = fxmlLoader.load();
-        Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(userDatabaseSetupPage);
-        userDatabaseSetupPage.requestFocus();
+            String insertSQL = "INSERT INTO users (serverName, databaseName, dbUsername, dbPassword) VALUES (?, ?, ?, ?)";
 
-        Stage stage = (Stage) currentScene.getWindow();
-        stage.sizeToScene();
-        stage.setTitle("Database Setup Information");
+            try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
+                pstmt.setString(1, serverName);
+                pstmt.setString(2, databaseName);
+                pstmt.setString(3, dbUsername);
+                pstmt.setString(4, dbPassword);
+
+                pstmt.executeUpdate();
+            }
+            catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
+
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(SQLApplication.class.getResource("sql-converter.fxml"));
+
+            userDatabaseSetupPage = fxmlLoader.load();
+            Scene currentScene = welcomeText.getScene();
+            currentScene.setRoot(userDatabaseSetupPage);
+            userDatabaseSetupPage.requestFocus();
+
+            Stage stage = (Stage) currentScene.getWindow();
+            stage.sizeToScene();
+            stage.setTitle("Database Setup Information");
+        }
+        else
+        {
+            connectionError.setVisible(true);
+            connectionError.getStyleClass().add("text-field-error");
+        }
     }
 }

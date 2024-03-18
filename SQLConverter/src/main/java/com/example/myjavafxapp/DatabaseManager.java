@@ -14,11 +14,14 @@ public class DatabaseManager {
                 + "encrypt=true;"
                 + "trustServerCertificate=false;"
                 + "loginTimeout=30;";
-        try {
+        try
+        {
             Connection connection = DriverManager.getConnection(connectionUrl);
             System.out.println("Connected to SQL Server User Database successfully.");
             return connection;
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             System.out.println("Could not connect, error: " + e.getMessage());
             e.printStackTrace();
             return null;
@@ -41,11 +44,14 @@ public class DatabaseManager {
                 + "hostNameInCertificate=*.database.windows.net;"
                 + "loginTimeout=30;";
 
-        try {
+        try
+        {
             Connection connection = DriverManager.getConnection(connectionUrl);
             System.out.println("Connected to Azure SQL Database successfully.");
             return connection;
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             System.out.println("Could not connect, error: " + e.getMessage());
             e.printStackTrace();
             return null;
@@ -56,12 +62,14 @@ public class DatabaseManager {
     {
         String sql = "INSERT INTO Users (Email, password) VALUES (?, ?);";
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql))
+        {
             preparedStatement.setString(1, email);
             preparedStatement.setString(2, password);
             preparedStatement.executeUpdate();
-            System.out.println("User email inserted successfully.");
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             System.out.println("Could not insert user, error: " + e.getMessage());
             e.printStackTrace();
         }
@@ -71,13 +79,17 @@ public class DatabaseManager {
     {
         String sql = "SELECT * FROM Users WHERE " + columnName + " = ?";
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql))
+        {
             preparedStatement.setString(1, columnValue);
 
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+            try (ResultSet resultSet = preparedStatement.executeQuery())
+            {
                 return resultSet.next();
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             e.printStackTrace();
             return false;
         }
@@ -89,20 +101,26 @@ public class DatabaseManager {
 
         String sql = "SELECT Password FROM Users WHERE Email = ?";
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql))
+        {
             preparedStatement.setString(1, emailInput);
 
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
+            try (ResultSet resultSet = preparedStatement.executeQuery())
+            {
+                if (resultSet.next())
+                {
                     return resultSet.getString("Password");
-                } else {
+                }
+                else
+                {
                     return null;
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             e.printStackTrace();
             return null;
         }
     }
-
 }
