@@ -12,6 +12,7 @@
     </stylesheets>
 
     <children>
+        <Label fx:id="welcomeText" styleClass="labelStyle" />
         <TextField id="databaseNameField" fx:id="databaseNameField" layoutX="467.0" layoutY="142.0" prefHeight="45.0" prefWidth="251.0" promptText="Database name">
             <font>
                 <Font size="20.0" />
@@ -38,12 +39,12 @@
             </font>
         </TextField>
         <Button fx:id="databaseSetupNextButton" layoutX="285.0" layoutY="386.0" mnemonicParsing="false" onAction="#onDatabaseSetupNextButton" prefHeight="48.0" prefWidth="246.0" text="Next" />
-      <TextField id="dbUsernameField" fx:id="dbUsernameField" layoutX="105.0" layoutY="243.0" prefHeight="45.0" prefWidth="251.0" promptText="Admin userNam">
+      <TextField id="dbUsernameField" fx:id="dbUsernameField" layoutX="105.0" layoutY="243.0" prefHeight="45.0" prefWidth="251.0" promptText="Admin username">
          <font>
             <Font size="20.0" />
          </font>
       </TextField>
-      <Label layoutX="108.0" layoutY="213.0" styleClass="textField" text="Admin UserName">
+      <Label layoutX="108.0" layoutY="213.0" styleClass="textField" text="Admin Username">
          <font>
             <Font size="20.0" />
          </font>
@@ -58,9 +59,9 @@
             <Font size="20.0" />
          </font>
       </TextField>
-      <Label id="connectionError" textFill="red" visible="false" layoutX="104.0" layoutY="329.0" text="Database connection unsuccessful. Please click the FAQ for help getting started." >
+      <Label fx:id="connectionError" textFill="red" visible="false" layoutX="104.0" layoutY="329.0" text="Database connection unsuccessful. Please click the FAQ for help getting started." >
         <font>
-            <Font size="14.0" />
+            <Font size="18.0" />
         </font>
     </Label>
     </children>

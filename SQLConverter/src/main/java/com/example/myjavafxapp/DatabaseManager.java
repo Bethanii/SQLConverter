@@ -7,6 +7,11 @@ public class DatabaseManager {
 
     public Connection ConnectUserDatabase(String serverName, String databaseName, String username, String password) throws IOException
     {
+  //      serverName = "sqlservertest-db.database.windows.net";
+    //    databaseName = "SQLServer_TestDB";
+   //     username = "TestUser";
+    //    password = "SQLservertest1!";
+
         String connectionUrl = "jdbc:sqlserver://" + serverName + ":1433;"
                 + "database=" + databaseName + ";"
                 + "user=" + username + ";"
@@ -97,8 +102,6 @@ public class DatabaseManager {
 
     public String GetUserPassword(Connection connection, String emailInput)
     {
-        System.out.println("User Input: " + emailInput);
-
         String sql = "SELECT Password FROM Users WHERE Email = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql))

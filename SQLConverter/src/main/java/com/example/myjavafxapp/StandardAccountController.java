@@ -29,6 +29,8 @@ public class StandardAccountController {
     @FXML
     private AnchorPane securityQuestionPage;
     @FXML
+    private AnchorPane sqlConverterPage;
+    @FXML
     private AnchorPane userDatabaseSetupPage;
     @FXML
     private TextField standardEmailInputField;
@@ -48,6 +50,8 @@ public class StandardAccountController {
     private ChoiceBox<String> firstSecurityQuestion;
     @FXML
     private ChoiceBox<String> secondSecurityQuestion;
+    private String email;
+    private String password;
 
     @FXML
     protected void onStandardAccountNextButtonClick() throws IOException {
@@ -61,35 +65,34 @@ public class StandardAccountController {
         Boolean emailValidation = databaseManager.CheckIfColumnValueExists(connection, "Email", emailInput);
         Boolean passwordValidation = ValidatePasswordEntry(passwordInput, passwordInputConfirmation);
 
-        if (emailValidation == true)
-        {
+        if (emailValidation == true) {
             emailExistsError.setVisible(true);
             standardEmailInputField.getStyleClass().add("text-field-error");
-        }
-
-        else if (emailValidation != true)
-        {
-            if (passwordValidation == false)
-            {
+        } else if (emailValidation != true) {
+            if (passwordValidation == false) {
                 passwordError.setVisible(true);
                 confPasswordError.setVisible(true);
                 standardEmailInputField.getStyleClass().add("text-field-error");
                 standardConfirmPasswordField.getStyleClass().add("text-field-error");
-            }
-            else if (passwordValidation == true)
-            {
+            } else if (passwordValidation == true) {
                 databaseManager.SaveUserDetails(connection, emailInput, passwordInput);
+                this.email = emailInput;
 
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(SQLApplication.class.getResource("security-question-page.fxml"));
-
                 securityQuestionPage = fxmlLoader.load();
+
+                StandardAccountController controller = fxmlLoader.getController();
+                controller.setEmail(this.email);
+
+
                 Scene currentScene = welcomeText.getScene();
                 currentScene.setRoot(securityQuestionPage);
                 securityQuestionPage.requestFocus();
 
                 StandardAccountController standardAccountController = fxmlLoader.getController();
                 standardAccountController.setSecurityQuestionOptions();
+                //setSecurityQuestionOptions();
 
                 Stage stage = (Stage) currentScene.getWindow();
                 stage.sizeToScene();
@@ -98,14 +101,15 @@ public class StandardAccountController {
         }
     }
 
-    public boolean ValidatePasswordEntry(String password, String passwordConfirmation)
-    {
-        if (!Objects.equals(password, passwordConfirmation))
-        {
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+
+    public boolean ValidatePasswordEntry(String password, String passwordConfirmation) {
+        if (!Objects.equals(password, passwordConfirmation)) {
             return false;
-        }
-        else
-        {
+        } else {
             return true;
         }
     }
@@ -127,13 +131,16 @@ public class StandardAccountController {
     }
 
     @FXML
-    protected void onSecurityQuestionNextButtonClick() throws IOException
-    {
+    protected void onSecurityQuestionNextButtonClick() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(SQLApplication.class.getResource("user-database-setup-page.fxml"));
 
         userDatabaseSetupPage = fxmlLoader.load();
         Scene currentScene = welcomeText.getScene();
+
+        StandardAccountController controller = fxmlLoader.getController();
+        controller.setEmail(this.email);
+
         currentScene.setRoot(userDatabaseSetupPage);
         userDatabaseSetupPage.requestFocus();
 
@@ -142,52 +149,68 @@ public class StandardAccountController {
         stage.setTitle("Database Setup Information");
     }
 
+
     @FXML
     protected void onDatabaseSetupNextButton() throws IOException
     {
-        String serverName = serverNameField.getText();
+      /*  String serverName = serverNameField.getText();
         String databaseName = databaseNameField.getText();
         String dbUsername = dbUsernameField.getText();
-        String dbPassword = dbPasswordField.getText();
+        String dbPassword = dbPasswordField.getText();*/
 
+        Connection UserConnection = null;
         DatabaseManager databaseManager = new DatabaseManager();
-        Connection userConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword);
 
-        if (userConnection != null)
+        try
         {
-            Connection connection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword);
+            String serverName = "sqlservertest-db.database.windows.net";
+            String databaseName = "SQLServer_TestDB";
+            String dbUsername = "TestUser";
+            String dbPassword = "SQLservertest1!";
 
-            String insertSQL = "INSERT INTO users (serverName, databaseName, dbUsername, dbPassword) VALUES (?, ?, ?, ?)";
+            UserConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword);
+            Connection connection = databaseManager.DatabaseConnection();
 
-            try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
-                pstmt.setString(1, serverName);
-                pstmt.setString(2, databaseName);
-                pstmt.setString(3, dbUsername);
-                pstmt.setString(4, dbPassword);
-
-                pstmt.executeUpdate();
-            }
-            catch (SQLException e)
+            if (UserConnection != null)
             {
-                e.printStackTrace();
+                System.out.println("Connected to User Database successfully.");
+
+           //     String insertSQL = "INSERT INTO Users (serverName, databaseName, dbUsername, dbPassword) VALUES (?, ?, ?, ?)";
+                String insertSQL = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ? WHERE email = ?";
+
+                try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
+                    pstmt.setString(1, serverName);
+                    pstmt.setString(2, databaseName);
+                    pstmt.setString(3, dbUsername);
+                    pstmt.setString(4, dbPassword);
+                    pstmt.setString(5, this.email);
+
+                    pstmt.executeUpdate();
+                } catch (SQLException e) {
+                    System.out.println("Failed to insert data, error: " + e.getMessage());
+                    e.printStackTrace();
+                }
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(SQLApplication.class.getResource("security-question-page.fxml"));
+
+                StandardAccountController controller = fxmlLoader.getController();
+                controller.setEmail(this.email);
+
+                securityQuestionPage = fxmlLoader.load();
+                    Scene currentScene = welcomeText.getScene();
+                    currentScene.setRoot(securityQuestionPage);
+                    securityQuestionPage.requestFocus();
+
+                    StandardAccountController standardAccountController = fxmlLoader.getController();
+                    standardAccountController.setSecurityQuestionOptions();
+                    //setSecurityQuestionOptions();
+
+                    Stage stage = (Stage) currentScene.getWindow();
+                    stage.sizeToScene();
+                    stage.setTitle("Standard Account Security Questions");
             }
-
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(SQLApplication.class.getResource("sql-converter.fxml"));
-
-            userDatabaseSetupPage = fxmlLoader.load();
-            Scene currentScene = welcomeText.getScene();
-            currentScene.setRoot(userDatabaseSetupPage);
-            userDatabaseSetupPage.requestFocus();
-
-            Stage stage = (Stage) currentScene.getWindow();
-            stage.sizeToScene();
-            stage.setTitle("Database Setup Information");
-        }
-        else
-        {
+        } catch (IOException e) {
             connectionError.setVisible(true);
-            connectionError.getStyleClass().add("text-field-error");
         }
     }
-}
+ }
