@@ -198,6 +198,10 @@ public class StandardAccountController {
                 stage.sizeToScene();
                 stage.setTitle("Standard Account Security Questions");
             }
+            else
+            {
+                connectionError.setVisible(true);
+            }
         } catch (IOException e) {
             connectionError.setVisible(true);
         }

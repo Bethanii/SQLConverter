@@ -1,12 +1,15 @@
 package com.example.myjavafxapp;
 
+import javafx.fxml.FXML;
 import java.io.IOException;
 import java.sql.*;
+import javafx.scene.control.Label;
 
 public class DatabaseManager {
+    @FXML
+    private Label connectionError;
 
-    public Connection ConnectUserDatabase(String serverName, String databaseName, String username, String password) throws IOException
-    {
+    public Connection ConnectUserDatabase(String serverName, String databaseName, String username, String password) throws IOException {
         String connectionUrl = "jdbc:sqlserver://" + serverName + ":1433;"
                 + "database=" + databaseName + ";"
                 + "user=" + username + ";"
@@ -14,13 +17,10 @@ public class DatabaseManager {
                 + "encrypt=true;"
                 + "trustServerCertificate=false;"
                 + "loginTimeout=30;";
-        try
-        {
+        try {
             Connection connection = DriverManager.getConnection(connectionUrl);
             return connection;
-        }
-        catch (SQLException e)
-        {
+        } catch (Exception e) {
             System.out.println("Could not connect, error: " + e.getMessage());
             e.printStackTrace();
             return null;

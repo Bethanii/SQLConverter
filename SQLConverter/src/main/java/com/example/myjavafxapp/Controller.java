@@ -28,6 +28,8 @@ public class Controller
     @FXML
     private AnchorPane enterpriseAccountPage;
     @FXML
+    private AnchorPane resetPasswordPage;
+    @FXML
     private AnchorPane sqlConverterPage;
     private String email;
 
@@ -214,5 +216,27 @@ public class Controller
         Stage stage = (Stage) currentScene.getWindow();
         stage.sizeToScene();
         stage.setTitle("Create Account");
+    }
+
+    @FXML
+    protected void onResetPasswordButton() throws IOException
+    {
+
+    }
+
+    @FXML
+    protected void onForgotPasswordLinkClick() throws IOException
+    {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(SQLApplication.class.getResource("reset-password-page.fxml"));
+
+        resetPasswordPage = fxmlLoader.load();
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(resetPasswordPage);
+        resetPasswordPage.requestFocus();
+
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle("Reset Password");
     }
 }
