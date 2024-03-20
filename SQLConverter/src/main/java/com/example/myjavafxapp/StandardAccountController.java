@@ -85,14 +85,12 @@ public class StandardAccountController {
                 StandardAccountController controller = fxmlLoader.getController();
                 controller.setEmail(this.email);
 
-
                 Scene currentScene = welcomeText.getScene();
                 currentScene.setRoot(securityQuestionPage);
                 securityQuestionPage.requestFocus();
 
                 StandardAccountController standardAccountController = fxmlLoader.getController();
                 standardAccountController.setSecurityQuestionOptions();
-                //setSecurityQuestionOptions();
 
                 Stage stage = (Stage) currentScene.getWindow();
                 stage.sizeToScene();
@@ -149,15 +147,9 @@ public class StandardAccountController {
         stage.setTitle("Database Setup Information");
     }
 
-
     @FXML
     protected void onDatabaseSetupNextButton() throws IOException
     {
-      /*  String serverName = serverNameField.getText();
-        String databaseName = databaseNameField.getText();
-        String dbUsername = dbUsernameField.getText();
-        String dbPassword = dbPasswordField.getText();*/
-
         Connection UserConnection = null;
         DatabaseManager databaseManager = new DatabaseManager();
 
@@ -175,7 +167,6 @@ public class StandardAccountController {
             {
                 System.out.println("Connected to User Database successfully.");
 
-           //     String insertSQL = "INSERT INTO Users (serverName, databaseName, dbUsername, dbPassword) VALUES (?, ?, ?, ?)";
                 String insertSQL = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ? WHERE email = ?";
 
                 try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
@@ -191,23 +182,16 @@ public class StandardAccountController {
                     e.printStackTrace();
                 }
                 FXMLLoader fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(SQLApplication.class.getResource("security-question-page.fxml"));
+                fxmlLoader.setLocation(SQLApplication.class.getResource("sql-converter.fxml"));
 
-                StandardAccountController controller = fxmlLoader.getController();
-                controller.setEmail(this.email);
+                sqlConverterPage = fxmlLoader.load();
+                Scene currentScene = welcomeText.getScene();
+                currentScene.setRoot(sqlConverterPage);
+                sqlConverterPage.requestFocus();
 
-                securityQuestionPage = fxmlLoader.load();
-                    Scene currentScene = welcomeText.getScene();
-                    currentScene.setRoot(securityQuestionPage);
-                    securityQuestionPage.requestFocus();
-
-                    StandardAccountController standardAccountController = fxmlLoader.getController();
-                    standardAccountController.setSecurityQuestionOptions();
-                    //setSecurityQuestionOptions();
-
-                    Stage stage = (Stage) currentScene.getWindow();
-                    stage.sizeToScene();
-                    stage.setTitle("Standard Account Security Questions");
+                Stage stage = (Stage) currentScene.getWindow();
+                stage.sizeToScene();
+                stage.setTitle("Standard Account Security Questions");
             }
         } catch (IOException e) {
             connectionError.setVisible(true);

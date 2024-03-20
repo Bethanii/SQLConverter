@@ -126,4 +126,30 @@ public class DatabaseManager {
             return null;
         }
     }
+
+    public void GetUserDBInfo(String email)
+    {
+        String sql = "SELECT * FROM users WHERE email = ?";
+
+        try (Connection conn = DatabaseConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql))
+        {
+            pstmt.setString(1, email);
+
+            try (ResultSet rs = pstmt.executeQuery())
+            {
+                if (rs.next())
+                {
+                    String serverName = rs.getString("serverName");
+                    String databaseName = rs.getString("databaseName");
+                    String username = rs.getString("dbUsername");
+                    String password = rs.getString("dbPassword");
+
+                    System.out.println("Server Name: " + serverName + ", Database Name: " + databaseName + ", Username: " + username + ", Password: " + password);
+                }
+            }
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

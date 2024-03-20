@@ -29,6 +29,7 @@ public class Controller
     private AnchorPane enterpriseAccountPage;
     @FXML
     private AnchorPane sqlConverterPage;
+    private String email;
 
     @FXML
     protected void onSignInSelectionClick() throws IOException
@@ -54,13 +55,19 @@ public class Controller
         if (missingFields == false)
         {
             boolean validLogin = LoginValidation();
-
             if (validLogin == true)
             {
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(SQLApplication.class.getResource("sql-converter.fxml"));
 
                 sqlConverterPage = fxmlLoader.load();
+
+                SQLConverterController controller = fxmlLoader.getController();
+                controller.setEmail(this.email);
+
+                controller.SetConnection();
+                controller.populateStaticRow();
+
                 Scene currentScene = welcomeText.getScene();
                 currentScene.setRoot(sqlConverterPage);
                 sqlConverterPage.requestFocus();
@@ -79,25 +86,33 @@ public class Controller
 
         DatabaseManager databaseManager = new DatabaseManager();
 
-        try (Connection connection = databaseManager.DatabaseConnection()) {
+        try (Connection connection = databaseManager.DatabaseConnection())
+        {
             boolean emailExists = UserExists(emailInput);
-            if (emailExists) {
+            if (emailExists)
+            {
                 String storedPassword = databaseManager.GetUserPassword(connection, emailInput);
 
-                if (storedPassword != null && storedPassword.equals(passwordInput)) {
+                if (storedPassword != null && storedPassword.equals(passwordInput))
+                {
+                    this.email = emailInput;
+                 //   databaseManager.GetUserDBInfo(emailInput);
                     return true;
-                } else {
+                }
+                else
+                {
                     emailExistsError.setText("Invalid email or password, please try again");
                     return false;
                 }
-            } else
+            }
+            else
             {
                 emailExistsError.setText("Invalid email or password, please try again");
                 return false;
             }
         }
         catch (SQLException ex)
-    {
+        {
             ex.printStackTrace();
             emailExistsError.setText("Invalid email or password, please try again");
             return false;
