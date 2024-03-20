@@ -40,7 +40,14 @@ public class SQLConverterController {
     public void SetConnection() throws IOException
     {
         this.databaseManager = new DatabaseManager();
-        this.userConnection = databaseManager.ConnectUserDatabase("sqlservertest-db.database.windows.net", "SQLServer_TestDB", "TestUser", "SQLservertest1!");
+        //serverName, databaseName, username, password
+        String[] dbValues = databaseManager.GetUserDBInfo(this.email);
+
+        if (dbValues == null)
+        {
+            return;
+        }
+        this.userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3]);
     }
 
     public void populateStaticRow()

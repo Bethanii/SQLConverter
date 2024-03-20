@@ -150,23 +150,27 @@ public class StandardAccountController {
     @FXML
     protected void onDatabaseSetupNextButton() throws IOException
     {
+        String serverName = serverNameField.getText();
+        String databaseName = databaseNameField.getText();
+        String dbUsername = dbUsernameField.getText();
+        String dbPassword = dbPasswordField.getText();
+
         Connection UserConnection = null;
         DatabaseManager databaseManager = new DatabaseManager();
 
+        if (serverName.isEmpty() || databaseName.isEmpty() || dbUsername.isEmpty() || dbPassword.isEmpty())
+        {
+            connectionError.setText("Fields cannot be empty");
+            connectionError.setVisible(true);
+            return;
+        }
         try
         {
-            String serverName = "sqlservertest-db.database.windows.net";
-            String databaseName = "SQLServer_TestDB";
-            String dbUsername = "TestUser";
-            String dbPassword = "SQLservertest1!";
-
             UserConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword);
             Connection connection = databaseManager.DatabaseConnection();
 
             if (UserConnection != null)
             {
-                System.out.println("Connected to User Database successfully.");
-
                 String insertSQL = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ? WHERE email = ?";
 
                 try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
@@ -178,6 +182,7 @@ public class StandardAccountController {
 
                     pstmt.executeUpdate();
                 } catch (SQLException e) {
+                    connectionError.setVisible(true);
                     System.out.println("Failed to insert data, error: " + e.getMessage());
                     e.printStackTrace();
                 }

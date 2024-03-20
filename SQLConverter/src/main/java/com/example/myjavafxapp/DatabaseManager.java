@@ -7,11 +7,6 @@ public class DatabaseManager {
 
     public Connection ConnectUserDatabase(String serverName, String databaseName, String username, String password) throws IOException
     {
-  //      serverName = "sqlservertest-db.database.windows.net";
-    //    databaseName = "SQLServer_TestDB";
-   //     username = "TestUser";
-    //    password = "SQLservertest1!";
-
         String connectionUrl = "jdbc:sqlserver://" + serverName + ":1433;"
                 + "database=" + databaseName + ";"
                 + "user=" + username + ";"
@@ -22,7 +17,6 @@ public class DatabaseManager {
         try
         {
             Connection connection = DriverManager.getConnection(connectionUrl);
-            System.out.println("Connected to SQL Server User Database successfully.");
             return connection;
         }
         catch (SQLException e)
@@ -127,7 +121,7 @@ public class DatabaseManager {
         }
     }
 
-    public void GetUserDBInfo(String email)
+    public String[] GetUserDBInfo(String email)
     {
         String sql = "SELECT * FROM users WHERE email = ?";
 
@@ -145,11 +139,13 @@ public class DatabaseManager {
                     String username = rs.getString("dbUsername");
                     String password = rs.getString("dbPassword");
 
-                    System.out.println("Server Name: " + serverName + ", Database Name: " + databaseName + ", Username: " + username + ", Password: " + password);
+                    String[] dbInfo = {serverName, databaseName, username, password};
+                    return dbInfo;
                 }
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
+        return null;
     }
 }
