@@ -11,7 +11,7 @@
     <stylesheets>
         <URL value="@static/style.css" />
     </stylesheets>
-    
+
    <children>
        <Label fx:id="welcomeText" styleClass="labelStyle" />
       <Rectangle id="signInLabelField" arcHeight="5.0" arcWidth="5.0" height="298.0" layoutX="261.0" layoutY="115.0" stroke="BLACK" strokeType="INSIDE" width="298.0" />

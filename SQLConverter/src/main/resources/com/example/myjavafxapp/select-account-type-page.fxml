@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.image.*?>
 <?import java.net.*?>
 <?import javafx.scene.control.*?>
@@ -16,7 +17,7 @@
       <Label fx:id="welcomeText" styleClass="labelStyle" />
       <Box layoutX="51.0" layoutY="107.0" />
       <ImageView id="standardAccountImage" fitHeight="150.0" fitWidth="172.0" layoutX="191.0" layoutY="113.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fitHeight="180.0" fitWidth="239.0" layoutX="468.0" layoutY="98.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="161.0" fitWidth="172.0" layoutX="505.0" layoutY="111.0" pickOnBounds="true" preserveRatio="true">
          <image>
              <Image url="@images/multipleUsers.png" />
          </image>

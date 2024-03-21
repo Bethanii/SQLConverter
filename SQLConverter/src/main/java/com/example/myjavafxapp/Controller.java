@@ -7,8 +7,28 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.scene.layout.AnchorPane;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.util.store.FileDataStoreFactory;
+import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
+import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.*;
+import java.util.Properties;
+import java.util.Random;
 
 public class Controller
 {
@@ -219,9 +239,77 @@ public class Controller
     }
 
     @FXML
-    protected void onResetPasswordButton() throws IOException
-    {
+    protected void onResetPasswordButton() {
+        String userEmail = "bethanihampton@gmail.com";
+        String temporaryPassword = generateTemporaryPassword();
+        String emailSubject = "SQL Converter Password Reset";
+        String emailBody = "Your temporary password is: " + temporaryPassword;
 
+        String fromEmail = "SQLConverterApp@gmail.com";
+        String emailPassword = "SQLConverter1!";
+
+        Properties properties = new Properties();
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.host", "smtp.mail.yahoo.com");
+        properties.put("mail.smtp.port", "587");
+        properties.put("mail.smtp.ssl.trust", "smtp.mail.yahoo.com");
+        properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
+
+        Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
+            protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(fromEmail, emailPassword);
+            }
+        });
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(fromEmail));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(userEmail));
+            message.setSubject(emailSubject);
+            message.setText(emailBody);
+
+            Transport.send(message);
+
+            System.out.println("Email sent successfully.");
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            System.out.println("Failed to send email.");
+        }
+    }
+
+ /*   private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)
+            throws IOException {
+        // Load client secrets.
+        InputStream in = Gm.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+        if (in == null) {
+            throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
+        }
+        GoogleClientSecrets clientSecrets =
+                GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
+
+        // Build flow and trigger user authorization request.
+        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+                HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
+                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+                .setAccessType("offline")
+                .build();
+        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+        Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+        //returns an authorized Credential object.
+        return credential; */
+    }
+
+    private String generateTemporaryPassword()
+    {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder tempPassword = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < 10; i++)
+        {
+            tempPassword.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return tempPassword.toString();
     }
 
     @FXML
