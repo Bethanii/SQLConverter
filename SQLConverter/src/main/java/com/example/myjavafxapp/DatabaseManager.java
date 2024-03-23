@@ -8,6 +8,21 @@ import javafx.scene.control.Label;
 public class DatabaseManager {
     @FXML
     private Label connectionError;
+    private Connection userConnection;
+    private DatabaseManager databaseManager;
+    private String email;
+
+    public void SetConnection() throws IOException
+    {
+        this.databaseManager = new DatabaseManager();
+        String[] dbValues = databaseManager.GetUserDBInfo(this.email);
+
+        if (dbValues == null)
+        {
+            return;
+        }
+        this.userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3]);
+    }
 
     public Connection ConnectUserDatabase(String serverName, String databaseName, String username, String password) throws IOException {
         String connectionUrl = "jdbc:sqlserver://" + serverName + ":1433;"
@@ -147,5 +162,22 @@ public class DatabaseManager {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void updateTempPassword(int userId)
+    {
+        String sql = "UPDATE users SET tempPassword = ? WHERE Email = ?";
+
+        try (Connection conn = databaseManager.DatabaseConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql))
+        {
+            pstmt.setBoolean(1, true);
+            pstmt.setInt(2, userId);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

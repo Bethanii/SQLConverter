@@ -19,9 +19,13 @@ public class Controller
     @FXML
     private Label emailExistsError;
     @FXML
+    private Label tempPasswordMessage;
+    @FXML
     private TextField signInEmailInputField;
     @FXML
     private TextField signInPasswordInputField;
+    @FXML
+    private TextField resetEmailField;
     @FXML
     private AnchorPane standardAccountPage;
     private AnchorPane signInPage;
@@ -187,6 +191,7 @@ public class Controller
         stage.setTitle("Enterprise Account Information");
     }
 
+
     @FXML
     protected void onStandardAccountButtonClick() throws IOException
     {
@@ -220,9 +225,25 @@ public class Controller
     }
 
     @FXML
-    protected void onResetPasswordButton() throws Exception {
+    protected void onResetPasswordButton() throws Exception
+    {
+        String emailInput = resetEmailField.getText();
+
         EmailManager emailManager = new EmailManager();
-        emailManager.sendMail("test", "test");
+        emailManager.sendMail("Temporary password: ", generateTemporaryPassword());
+
+        DatabaseManager databaseManager = new DatabaseManager();
+        Connection connection = databaseManager.DatabaseConnection();
+
+        if (UserExists(emailInput) == true)
+        {
+            databaseManager.DatabaseConnection();
+
+        }
+        else
+        {
+            tempPasswordMessage.setVisible(true);
+        }
     }
 
     private String generateTemporaryPassword()
