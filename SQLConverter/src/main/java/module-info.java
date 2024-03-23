@@ -1,7 +1,7 @@
 module com.example.myjavafxapp {
     requires javafx.controls;
     requires javafx.fxml;
-
+    requires jdk.httpserver;
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;

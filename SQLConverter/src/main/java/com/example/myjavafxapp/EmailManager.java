@@ -38,6 +38,7 @@ public class EmailManager {
                 .build();
     }
 
+
     private static Credential getCredentials(final NetHttpTransport httpTransport, GsonFactory jsonFactory)
             throws IOException {
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(jsonFactory, new InputStreamReader(com.example.myjavafxapp.EmailManager.class.getResourceAsStream("/client_secret_1021029265646-26qp3u777andfvaeknmt7e7kcq0bvh7d.apps.googleusercontent.com.json")));
