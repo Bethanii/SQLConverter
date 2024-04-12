@@ -180,4 +180,29 @@ public class DatabaseManager {
             throw new RuntimeException(e);
         }
     }
+
+    public void SaveSecurityQuestions(String firstQuestion, String firstAnswer, String secondQuestion, String secondAnswer, String email)
+    {
+        try (Connection conn = DatabaseConnection()) {
+            String sql = "UPDATE Users SET securityQuestion1 = ?, securityAnswer1 = ?, securityQuestion2 = ?, securityAnswer2 = ? WHERE Email = ?";
+
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, firstQuestion);
+                pstmt.setString(2, firstAnswer);
+                pstmt.setString(3, secondQuestion);
+                pstmt.setString(4, secondAnswer);
+                pstmt.setString(5, email);
+
+                pstmt.executeUpdate();
+
+                System.out.println("Security questions saved successfully.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error saving security questions: " + e.getMessage());
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("Error establishing database connection: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }

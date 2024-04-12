@@ -47,6 +47,10 @@ public class StandardAccountController {
     @FXML
     private TextField databaseNameField;
     @FXML
+    private TextField firstSecurityQuestionInput;
+    @FXML
+    private TextField secondSecurityQuestionInput;
+    @FXML
     private ChoiceBox<String> firstSecurityQuestion;
     @FXML
     private ChoiceBox<String> secondSecurityQuestion;
@@ -126,10 +130,28 @@ public class StandardAccountController {
                 "What city were you born in?",
                 "What's your favorite color?"
         );
+
+        firstSecurityQuestion.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            String selectedQuestion = newValue.toString();
+        });
+
+        secondSecurityQuestion.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            String selectedQuestion = newValue.toString();
+        });
     }
 
     @FXML
     protected void onSecurityQuestionNextButtonClick() throws IOException {
+
+        String firstAnswer = firstSecurityQuestionInput.getText();
+        String secondAnswer = secondSecurityQuestionInput.getText();
+
+        String firstQuestion = firstSecurityQuestion.getSelectionModel().getSelectedItem().toString();
+        String secondQuestion = secondSecurityQuestion.getSelectionModel().getSelectedItem().toString();
+
+        DatabaseManager databaseManager = new DatabaseManager();
+        databaseManager.SaveSecurityQuestions(firstAnswer, secondAnswer, firstQuestion, secondQuestion, this.email);
+
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(SQLApplication.class.getResource("user-database-setup-page.fxml"));
 

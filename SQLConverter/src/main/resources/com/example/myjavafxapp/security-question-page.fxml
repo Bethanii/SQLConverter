@@ -35,7 +35,7 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <TextField id="secondSecurityQuestionInput" layoutX="109.0" layoutY="274.0" prefHeight="35.0" prefWidth="558.0" />
+      <TextField fx:id="secondSecurityQuestionInput" layoutX="109.0" layoutY="274.0" prefHeight="35.0" prefWidth="558.0" />
       <Label layoutX="109.0" layoutY="182.0" text="Security Question 2:">
          <font>
             <Font size="20.0" />
