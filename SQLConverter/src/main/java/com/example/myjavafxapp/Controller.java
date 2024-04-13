@@ -2,6 +2,7 @@ package com.example.myjavafxapp;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -178,50 +179,20 @@ public class Controller
     @FXML
     protected void onEnterpriseAccountButtonClick() throws IOException
     {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(SQLApplication.class.getResource("enterprise-account-page.fxml"));
-
-        enterpriseAccountPage = fxmlLoader.load();
-        Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(enterpriseAccountPage);
-        enterpriseAccountPage.requestFocus();
-
-        Stage stage = (Stage) currentScene.getWindow();
-        stage.sizeToScene();
-        stage.setTitle("Enterprise Account Information");
+        loadPage("enterprise-account-page.fxml", "Enterprise Account Information", enterpriseAccountPage, "");
     }
 
 
     @FXML
     protected void onStandardAccountButtonClick() throws IOException
     {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(SQLApplication.class.getResource("standard-account-page.fxml"));
-
-        standardAccountPage = fxmlLoader.load();
-        Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(standardAccountPage);
-        standardAccountPage.requestFocus();
-
-        Stage stage = (Stage) currentScene.getWindow();
-        stage.sizeToScene();
-        stage.setTitle("Standard Account Information");
+        loadPage("standard-account-page.fxml", "Standard Account Information", standardAccountPage, "");
     }
 
     @FXML
     protected void onCreateAccountButtonClick() throws IOException
     {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(SQLApplication.class.getResource("select-account-type-page.fxml"));
-
-        selectAccountPage = fxmlLoader.load();
-        Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(selectAccountPage);
-        selectAccountPage.requestFocus();
-
-        Stage stage = (Stage) currentScene.getWindow();
-        stage.sizeToScene();
-        stage.setTitle("Create Account");
+        loadPage("select-account-type-page.fxml", "Select Account Type", selectAccountPage,"");
     }
 
     @FXML
@@ -261,16 +232,26 @@ public class Controller
     @FXML
     protected void onForgotPasswordLinkClick() throws IOException
     {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(SQLApplication.class.getResource("reset-password-page.fxml"));
+        loadPage("reset-password-page.fxml", "Reset Password", resetPasswordPage, "");
+    }
 
-        resetPasswordPage = fxmlLoader.load();
+    public void loadPage(String pageFile, String pageTitle, Parent page, String email) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(SQLApplication.class.getResource(pageFile));
+
+        page = fxmlLoader.load();
+
+        if (email != null && !email.isEmpty()) {
+            AccountController controller = fxmlLoader.getController();
+            controller.setEmail(email);
+        }
+
         Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(resetPasswordPage);
-        resetPasswordPage.requestFocus();
+        currentScene.setRoot(page);
+        page.requestFocus();
 
         Stage stage = (Stage) currentScene.getWindow();
         stage.sizeToScene();
-        stage.setTitle("Reset Password");
+        stage.setTitle(pageTitle);
     }
 }
