@@ -29,6 +29,8 @@ public class Controller
     @FXML
     private Label tempPasswordMessage;
     @FXML
+    private Label passwordError;
+    @FXML
     private TextField signInEmailInputField;
     @FXML
     private TextField signInPasswordInputField;
@@ -38,6 +40,10 @@ public class Controller
     private TextField response1;
     @FXML
     private TextField response2;
+    @FXML
+    private TextField newPasswordInputField;
+    @FXML
+    private TextField newConfirmationPasswordField;
     @FXML
     private AnchorPane standardAccountPage;
     private AnchorPane signInPage;
@@ -89,6 +95,24 @@ public class Controller
                 stage.sizeToScene();
                 stage.setTitle("SQL Converter");
             }
+        }
+    }
+
+    @FXML
+    protected void onNewPasswordResetButtonClick() throws IOException
+    {
+        newPasswordValidation();
+    }
+
+    public void newPasswordValidation()
+    {
+        String newPasswordInput = newPasswordInputField.getText();
+        String newPasswordConfirmationInput = newConfirmationPasswordField.getText();
+
+        if (newPasswordInput.isEmpty() || newPasswordInput.isBlank() || newPasswordConfirmationInput.isEmpty() || newPasswordConfirmationInput.isBlank())
+        {
+            passwordError.setText("Fields cannot be empty");
+            passwordError.setVisible(true);
         }
     }
 
@@ -208,29 +232,39 @@ public class Controller
         DatabaseManager databaseManager = new DatabaseManager();
         Connection connection = databaseManager.DatabaseConnection();
 
-        if (UserExists(emailInput) == true) {
-            databaseManager.DatabaseConnection();
+        if (emailInput.isBlank() || emailInput.isEmpty())
+        {
+            errorMessage.setVisible(true);
+            errorMessage.setText("Field cannot be empty");
+            resetEmailField.getStyleClass().add("text-field-error");
+        }
 
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("validate-security-questions-page.fxml"));
-            AnchorPane validateSecurityQuestionsPage = fxmlLoader.load();
-            Controller controller = fxmlLoader.getController();
+        else
+        {
+            if (UserExists(emailInput) == true) {
+                databaseManager.DatabaseConnection();
 
-            Scene currentScene = welcomeText.getScene();
-            currentScene.setRoot(validateSecurityQuestionsPage);
-            validateSecurityQuestionsPage.requestFocus();
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("validate-security-questions-page.fxml"));
+                AnchorPane validateSecurityQuestionsPage = fxmlLoader.load();
+                Controller controller = fxmlLoader.getController();
 
-            String[] securityQuestions = databaseManager.getSecurityQuestions(this.email);
-            String firstQuestionString = securityQuestions[0];
-            String secondQuestionString = securityQuestions[1];
+                Scene currentScene = welcomeText.getScene();
+                currentScene.setRoot(validateSecurityQuestionsPage);
+                validateSecurityQuestionsPage.requestFocus();
 
-            controller.setEmail(this.email);
+                String[] securityQuestions = databaseManager.getSecurityQuestions(this.email);
+                String firstQuestionString = securityQuestions[0];
+                String secondQuestionString = securityQuestions[1];
 
-            controller.question1.setText(firstQuestionString);
-            controller.question2.setText(secondQuestionString);
+                controller.setEmail(this.email);
 
-            Stage stage = (Stage) currentScene.getWindow();
-            stage.sizeToScene();
-            stage.setTitle("Sign In");
+                controller.question1.setText(firstQuestionString);
+                controller.question2.setText(secondQuestionString);
+
+                Stage stage = (Stage) currentScene.getWindow();
+                stage.sizeToScene();
+                stage.setTitle("Sign In");
+            }
         }
     }
 
