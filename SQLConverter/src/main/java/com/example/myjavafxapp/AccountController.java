@@ -156,14 +156,14 @@ public class AccountController {
     public void setSecurityQuestionOptions() {
         firstSecurityQuestion.getItems().addAll(
                 "What was your first pet's name?",
-                "What's mother's maiden name?",
+                "What's your mother's maiden name?",
                 "What city were you born in?",
                 "What's your favorite color?"
         );
 
         secondSecurityQuestion.getItems().addAll(
                 "What was your first pet's name?",
-                "What's mother's maiden name?",
+                "What's your mother's maiden name?",
                 "What city were you born in?",
                 "What's your favorite color?"
         );

@@ -9,6 +9,7 @@ public class DatabaseManager {
     @FXML
     private Label connectionError;
     private Connection userConnection;
+    private Connection sqlAppConnection;
     private DatabaseManager databaseManager;
     private String email;
 
@@ -22,6 +23,12 @@ public class DatabaseManager {
             return;
         }
         this.userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3]);
+    }
+
+    public void SetSQLAppConnection() throws IOException
+    {
+        this.databaseManager = new DatabaseManager();
+        this.sqlAppConnection = databaseManager.DatabaseConnection();
     }
 
     public Connection ConnectUserDatabase(String serverName, String databaseName, String username, String password) throws IOException {
@@ -180,16 +187,16 @@ public class DatabaseManager {
         }
     }
 
-    public void SaveSecurityQuestions(String firstQuestion, String firstAnswer, String secondQuestion, String secondAnswer, String email)
+    public void SaveSecurityQuestions(String firstAnswer, String secondAnswer, String firstQuestion, String secondQuestion, String email)
     {
         try (Connection conn = DatabaseConnection()) {
-            String sql = "UPDATE Users SET securityQuestion1 = ?, securityAnswer1 = ?, securityQuestion2 = ?, securityAnswer2 = ? WHERE Email = ?";
+            String sql = "UPDATE Users SET securityAnswer1 = ?, securityAnswer2 = ?, securityQuestion1 = ?, securityQuestion2 = ? WHERE Email = ?";
 
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setString(1, firstQuestion);
-                pstmt.setString(2, firstAnswer);
-                pstmt.setString(3, secondQuestion);
-                pstmt.setString(4, secondAnswer);
+                pstmt.setString(1, firstAnswer);
+                pstmt.setString(2, secondAnswer);
+                pstmt.setString(3, firstQuestion);
+                pstmt.setString(4, secondQuestion);
                 pstmt.setString(5, email);
 
                 pstmt.executeUpdate();
@@ -203,5 +210,25 @@ public class DatabaseManager {
             System.out.println("Error establishing database connection: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    public String[] getSecurityQuestions(String email) {
+        String[] securityQuestions = new String[2];
+        String sql = "SELECT securityQuestion1, securityQuestion2 FROM users WHERE email = ?";
+
+        try (Connection conn = DatabaseConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, email);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    securityQuestions[0] = rs.getString("securityQuestion1");
+                    securityQuestions[1] = rs.getString("securityQuestion2");
+                }
+            }
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+        return securityQuestions;
     }
 }

@@ -1,10 +1,13 @@
 package com.example.myjavafxapp;
 
 import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.auth.oauth2.StoredCredential;
+import com.google.api.client.auth.oauth2.TokenResponse;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.googleapis.json.GoogleJsonError;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
@@ -18,13 +21,16 @@ import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.ByteArrayOutputStream;
+import java.io.Console;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Paths;
+import java.security.GeneralSecurityException;
 import java.util.Properties;
 import java.util.Set;
 import static com.google.api.services.gmail.GmailScopes.GMAIL_SEND;
 import static javax.mail.Message.RecipientType.TO;
+import com.google.api.client.http.HttpResponseException;
 
 public class EmailManager {
     private static final String TEST_EMAIL = "SQLConverterApp@gmail.com";
@@ -52,6 +58,7 @@ public class EmailManager {
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
+
 
     public void sendMail(String subject, String message) throws Exception {
         Properties props = new Properties();

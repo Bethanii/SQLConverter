@@ -20,6 +20,10 @@ public class Controller
     @FXML
     private Label emailExistsError;
     @FXML
+    private Label question1;
+    @FXML
+    private Label question2;
+    @FXML
     private Label tempPasswordMessage;
     @FXML
     private TextField signInEmailInputField;
@@ -27,6 +31,10 @@ public class Controller
     private TextField signInPasswordInputField;
     @FXML
     private TextField resetEmailField;
+    @FXML
+    private TextField response1;
+    @FXML
+    private TextField response2;
     @FXML
     private AnchorPane standardAccountPage;
     private AnchorPane signInPage;
@@ -36,23 +44,17 @@ public class Controller
     @FXML
     private AnchorPane resetPasswordPage;
     @FXML
+    private AnchorPane newPasswordPage;
+    @FXML
+    private AnchorPane validateSecurityQuestionsPage;
+    @FXML
     private AnchorPane sqlConverterPage;
     private String email;
 
     @FXML
     protected void onSignInSelectionClick() throws IOException
     {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(SQLApplication.class.getResource("sign-in-page.fxml"));
-
-        signInPage = fxmlLoader.load();
-        Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(signInPage);
-        signInPage.requestFocus();
-
-        Stage stage = (Stage) currentScene.getWindow();
-        stage.sizeToScene();
-        stage.setTitle("Sign In");
+        loadPage("sign-in-page.fxml", "Sign In", "");
     }
 
     @FXML
@@ -104,7 +106,6 @@ public class Controller
                 if (storedPassword != null && storedPassword.equals(passwordInput))
                 {
                     this.email = emailInput;
-                 //   databaseManager.GetUserDBInfo(emailInput);
                     return true;
                 }
                 else
@@ -179,42 +180,64 @@ public class Controller
     @FXML
     protected void onEnterpriseAccountButtonClick() throws IOException
     {
-        loadPage("enterprise-account-page.fxml", "Enterprise Account Information", enterpriseAccountPage, "");
+        loadPage("enterprise-account-page.fxml", "Enterprise Account Information", "");
     }
 
 
     @FXML
     protected void onStandardAccountButtonClick() throws IOException
     {
-        loadPage("standard-account-page.fxml", "Standard Account Information", standardAccountPage, "");
+        loadPage("standard-account-page.fxml", "Standard Account Information", "");
     }
 
     @FXML
     protected void onCreateAccountButtonClick() throws IOException
     {
-        loadPage("select-account-type-page.fxml", "Select Account Type", selectAccountPage,"");
+        loadPage("select-account-type-page.fxml", "Select Account Type", "");
     }
 
     @FXML
     protected void onResetPasswordButton() throws Exception
     {
         String emailInput = resetEmailField.getText();
-
-        EmailManager emailManager = new EmailManager();
-        emailManager.sendMail("Temporary password: ", generateTemporaryPassword());
+        this.email = emailInput;
 
         DatabaseManager databaseManager = new DatabaseManager();
         Connection connection = databaseManager.DatabaseConnection();
 
-        if (UserExists(emailInput) == true)
-        {
+        if (UserExists(emailInput) == true) {
             databaseManager.DatabaseConnection();
 
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("validate-security-questions-page.fxml"));
+            AnchorPane validateSecurityQuestionsPage = fxmlLoader.load();
+            Controller controller = fxmlLoader.getController();
+
+            Scene currentScene = welcomeText.getScene();
+            currentScene.setRoot(validateSecurityQuestionsPage);
+            validateSecurityQuestionsPage.requestFocus();
+
+            String[] securityQuestions = databaseManager.getSecurityQuestions(this.email);
+            String firstQuestionString = securityQuestions[0];
+            String secondQuestionString = securityQuestions[1];
+
+            controller.question1.setText(firstQuestionString);
+            controller.question2.setText(secondQuestionString);
+
+            Stage stage = (Stage) currentScene.getWindow();
+            stage.sizeToScene();
+            stage.setTitle("Sign In");
         }
-        else
-        {
-            tempPasswordMessage.setVisible(true);
-        }
+    }
+
+    @FXML
+    protected void onValidateSecurityQuestionsNextClick() throws Exception
+    {
+        DatabaseManager databaseManager = new DatabaseManager();
+
+        String response1Input = response1.getText();
+        String response2Input = response2.getText();
+
+        Connection connection = databaseManager.DatabaseConnection();
     }
 
     private String generateTemporaryPassword()
@@ -232,14 +255,14 @@ public class Controller
     @FXML
     protected void onForgotPasswordLinkClick() throws IOException
     {
-        loadPage("reset-password-page.fxml", "Reset Password", resetPasswordPage, "");
+        loadPage("reset-password-page.fxml", "Reset Password", "");
     }
 
-    public void loadPage(String pageFile, String pageTitle, Parent page, String email) throws IOException {
+    public void loadPage(String pageFile, String pageTitle, String email) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(SQLApplication.class.getResource(pageFile));
 
-        page = fxmlLoader.load();
+        Parent page = fxmlLoader.load();
 
         if (email != null && !email.isEmpty()) {
             AccountController controller = fxmlLoader.getController();

@@ -7,7 +7,7 @@
 }
 
 #signInPage, #selectAccountPage, #enterpriseAccountPage, #enterpriseAccountSubUserPage, #securityQuestionPage, #standardAccountPage,
-#userDatabaseSetupPage, #sqlConverterPage, #resetPasswordPage, #confirmationPage {
+#userDatabaseSetupPage, #sqlConverterPage, #resetPasswordPage, #confirmationPage, #newPasswordPage, #validateSecurityQuestionsPage {
     -fx-background-color: #DAF8F0;
     -fx-background-position: center center;
     -fx-background-repeat: no-repeat;
