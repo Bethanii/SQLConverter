@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="confirmationPage" prefHeight="482.0" prefWidth="852.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.Controller">
+
+    <stylesheets>
+        <URL value="@static/style.css" />
+    </stylesheets>
+
+    <children>
+        <Label fx:id="welcomeText" styleClass="labelStyle" />
+        <Label layoutX="350.0" layoutY="105.0" styleClass="signInLabel" text="Congrats!  " />
+        <Button id="signInPageButton" layoutX="284.0" layoutY="294.0" mnemonicParsing="false" onAction="#onSignInSelectionClick" prefHeight="43.0" prefWidth="258.0" text="Sign In" />
+      <Label layoutX="172.0" layoutY="153.0" styleClass="signInLabel" text="Your account has been successfully created. " />
+      <Label layoutX="284.0" layoutY="203.0" styleClass="signInLabel" text="Click below to sign in. " />
+    </children>
+</AnchorPane>

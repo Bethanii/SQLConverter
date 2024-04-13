@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="securityQuestionPage" fx:id="securityQuestionPage" prefHeight="847.0" prefWidth="1244.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.StandardAccountController">
+<AnchorPane id="securityQuestionPage" fx:id="securityQuestionPage" prefHeight="847.0" prefWidth="1244.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.AccountController">
 
     <stylesheets>
         <URL value="@static/style.css" />

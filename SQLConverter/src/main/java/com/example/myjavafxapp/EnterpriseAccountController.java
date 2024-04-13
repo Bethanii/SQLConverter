@@ -45,90 +45,9 @@ public class EnterpriseAccountController {
     private ChoiceBox<String> firstSecurityQuestion;
     @FXML
     private ChoiceBox<String> secondSecurityQuestion;
-    @FXML
-    protected void onEnterpriseAccountNextButtonClick() throws IOException {
-        String emailInput = enterpriseEmailInputField.getText();
-        String passwordInput = enterprisePasswordInputField.getText();
-        String passwordInputConfirmation = enterpriseConfirmPasswordField.getText();
 
-        DatabaseManager databaseManager = new DatabaseManager();
-        Connection connection = databaseManager.DatabaseConnection();
 
-        Boolean emailValidation = databaseManager.CheckIfColumnValueExists(connection, "Email", emailInput);
-        Boolean passwordValidation = ValidatePasswordEntry(passwordInput, passwordInputConfirmation);
 
-        if (emailValidation == true)
-        {
-            emailExistsError.setVisible(true);
-            enterpriseEmailInputField.getStyleClass().add("text-field-error");
-        }
-
-        else if (emailValidation != true) {
-            if (passwordValidation == false) {
-                passwordError.setVisible(true);
-                confPasswordError.setVisible(true);
-                enterprisePasswordInputField.getStyleClass().add("text-field-error");
-                enterpriseConfirmPasswordField.getStyleClass().add("text-field-error");
-            } else if (passwordValidation == true) {
-                databaseManager.SaveUserDetails(connection, emailInput, passwordInput);
-
-                FXMLLoader fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(SQLApplication.class.getResource("enterprise-account-sub-users.fxml"));
-
-                enterpriseAccountSubUserPage = fxmlLoader.load();
-                Scene currentScene = welcomeText.getScene();
-                currentScene.setRoot(enterpriseAccountSubUserPage);
-                enterpriseAccountSubUserPage.requestFocus();
-
-                Stage stage = (Stage) currentScene.getWindow();
-                stage.sizeToScene();
-                stage.setTitle("Enterprise Account Sub User Information");
-            }
-        }
-    }
-
-    public boolean ValidatePasswordEntry(String password, String passwordConfirmation)
-    {
-        if (!Objects.equals(password, passwordConfirmation))
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-
-    @FXML
-    protected void onEnterpriseSubUsersNextButtonClick() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(SQLApplication.class.getResource("security-question-page.fxml"));
-
-        securityQuestionPage = fxmlLoader.load();
-        Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(securityQuestionPage);
-        securityQuestionPage.requestFocus();
-
-        EnterpriseAccountController enterpriseAccountController = fxmlLoader.getController();
-        enterpriseAccountController.setSecurityQuestionOptions();
-
-        Stage stage = (Stage) currentScene.getWindow();
-        stage.sizeToScene();
-        stage.setTitle("Enterprise Account Security Questions");
-    }
-
-    @FXML
-    protected void addEmailField() throws IOException {
-        String emailText = subUserEmailInputField.getText().trim();
-        emails.add(emailText);
-        displayEmails(emails);
-        subUserEmailInputField.clear();
-    }
-
-    public void displayEmails(List<String> emails) {
-        String content = String.join("\n", emails);
-        emailsDisplayArea.setText(content);
-    }
 
     public void setSecurityQuestionOptions() {
         firstSecurityQuestion.getItems().addAll(

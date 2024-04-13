@@ -57,7 +57,6 @@ public class DatabaseManager {
                 + "trustServerCertificate=false;"
                 + "hostNameInCertificate=*.database.windows.net;"
                 + "loginTimeout=30;";
-
         try
         {
             Connection connection = DriverManager.getConnection(connectionUrl);
