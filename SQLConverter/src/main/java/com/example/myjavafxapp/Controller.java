@@ -27,6 +27,8 @@ public class Controller
     @FXML
     private Label errorMessage;
     @FXML
+    private Label securityQuestionErrorMessage;
+    @FXML
     private Label tempPasswordMessage;
     @FXML
     private Label passwordError;
@@ -104,6 +106,7 @@ public class Controller
         newPasswordValidation();
     }
 
+    @FXML
     public void newPasswordValidation()
     {
         String newPasswordInput = newPasswordInputField.getText();
@@ -111,8 +114,14 @@ public class Controller
 
         if (newPasswordInput.isEmpty() || newPasswordInput.isBlank() || newPasswordConfirmationInput.isEmpty() || newPasswordConfirmationInput.isBlank())
         {
-            passwordError.setText("Fields cannot be empty");
-            passwordError.setVisible(true);
+            if (newPasswordInput.isEmpty() || newPasswordInput.isBlank())
+            {
+                newPasswordInputField.getStyleClass().add("text-field-error");
+            }
+            if (newPasswordConfirmationInput.isEmpty() || newPasswordConfirmationInput.isBlank())
+            {
+                newConfirmationPasswordField.getStyleClass().add("text-field-error");
+            }
         }
     }
 
