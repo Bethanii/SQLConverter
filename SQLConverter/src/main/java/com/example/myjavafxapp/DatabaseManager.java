@@ -231,4 +231,27 @@ public class DatabaseManager {
         }
         return securityQuestions;
     }
+
+    public boolean validateSecurityAnswers(String email, String response1, String response2) {
+        String sql = "SELECT securityAnswer1, securityAnswer2 FROM Users WHERE Email = ?";
+
+        try (Connection conn = DatabaseConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, email);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    String storedResponse1 = rs.getString("securityAnswer1");
+                    String storedResponse2 = rs.getString("securityAnswer2");
+
+                    if (response1.equals(storedResponse1) && response2.equals(storedResponse2)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

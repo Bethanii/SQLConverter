@@ -34,6 +34,11 @@
                 <Font size="20.0" />
             </font>
         </TextField>
+        <Label fx:id="errorMessage" layoutX="192.0" layoutY="280.0" text="Incorrect security question response. Please try again" textFill="red" visible="false">
+            <font>
+                <Font size="22.0" />
+            </font>
+        </Label>
         <Button fx:id="standardNextButton" layoutX="295.0" layoutY="352.0" mnemonicParsing="false" onAction="#onValidateSecurityQuestionsNextClick" prefHeight="48.0" prefWidth="246.0" text="Next" />
     </children>
 </AnchorPane>

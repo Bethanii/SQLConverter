@@ -15,6 +15,7 @@ module com.example.myjavafxapp {
     requires com.google.api.services.gmail;
     requires org.apache.commons.codec;
     requires com.google.api.client.json.gson;
+    requires twilio;
 
 
     opens com.example.myjavafxapp to javafx.fxml;

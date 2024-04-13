@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -23,6 +24,8 @@ public class Controller
     private Label question1;
     @FXML
     private Label question2;
+    @FXML
+    private Label errorMessage;
     @FXML
     private Label tempPasswordMessage;
     @FXML
@@ -220,6 +223,8 @@ public class Controller
             String firstQuestionString = securityQuestions[0];
             String secondQuestionString = securityQuestions[1];
 
+            controller.setEmail(this.email);
+
             controller.question1.setText(firstQuestionString);
             controller.question2.setText(secondQuestionString);
 
@@ -227,6 +232,10 @@ public class Controller
             stage.sizeToScene();
             stage.setTitle("Sign In");
         }
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @FXML
@@ -237,7 +246,13 @@ public class Controller
         String response1Input = response1.getText();
         String response2Input = response2.getText();
 
-        Connection connection = databaseManager.DatabaseConnection();
+        boolean validateResponse = databaseManager.validateSecurityAnswers(email, response1Input, response2Input);
+
+        if (validateResponse) {
+            loadPage("enter-new-password-page.fxml", "Enter New Password", "");
+        } else {
+            errorMessage.setVisible(true);
+        }
     }
 
     private String generateTemporaryPassword()
