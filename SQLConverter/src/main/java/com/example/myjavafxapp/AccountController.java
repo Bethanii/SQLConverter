@@ -123,6 +123,53 @@ public class AccountController {
         }
     }
 
+    @FXML
+    protected void onEnterpriseAccountNextButtonClick() throws IOException {
+        String emailInput = enterpriseEmailInputField.getText();
+        String passwordInput = enterprisePasswordInputField.getText();
+        String passwordInputConfirmation = enterpriseConfirmPasswordField.getText();
+
+        DatabaseManager databaseManager = new DatabaseManager();
+        Connection connection = databaseManager.DatabaseConnection();
+
+        Boolean emailValidation = databaseManager.CheckIfColumnValueExists(connection, "Email", emailInput);
+        Boolean passwordValidation = ValidatePasswordEntry(passwordInput, passwordInputConfirmation);
+
+        if (emailValidation == true)
+        {
+            emailExistsError.setVisible(true);
+            enterpriseEmailInputField.getStyleClass().add("text-field-error");
+        }
+
+        else if (emailValidation != true) {
+            if (passwordValidation == false) {
+                passwordError.setVisible(true);
+                confPasswordError.setVisible(true);
+                enterprisePasswordInputField.getStyleClass().add("text-field-error");
+                enterpriseConfirmPasswordField.getStyleClass().add("text-field-error");
+            } else if (passwordValidation == true) {
+                databaseManager.SaveUserDetails(connection, emailInput, passwordInput);
+                this.email = emailInput;
+
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(SQLApplication.class.getResource("enterprise-account-sub-users.fxml"));
+                enterpriseAccountSubUserPage = fxmlLoader.load();
+
+                AccountController controller = fxmlLoader.getController();
+                controller.setEmail(this.email);
+
+                Scene currentScene = welcomeText.getScene();
+                currentScene.setRoot(enterpriseAccountSubUserPage);
+                enterpriseAccountSubUserPage.requestFocus();
+
+                Stage stage = (Stage) currentScene.getWindow();
+                stage.sizeToScene();
+                stage.setTitle("Enterprise Account Sub User Information");
+            }
+        }
+    }
+
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -249,55 +296,15 @@ public class AccountController {
         }
     }
 
-    //this method is okay
-    @FXML
-    protected void onEnterpriseAccountNextButtonClick() throws IOException {
-        String emailInput = enterpriseEmailInputField.getText();
-        String passwordInput = enterprisePasswordInputField.getText();
-        String passwordInputConfirmation = enterpriseConfirmPasswordField.getText();
-
-        DatabaseManager databaseManager = new DatabaseManager();
-        Connection connection = databaseManager.DatabaseConnection();
-
-        Boolean emailValidation = databaseManager.CheckIfColumnValueExists(connection, "Email", emailInput);
-        Boolean passwordValidation = ValidatePasswordEntry(passwordInput, passwordInputConfirmation);
-
-        if (emailValidation == true)
-        {
-            emailExistsError.setVisible(true);
-            enterpriseEmailInputField.getStyleClass().add("text-field-error");
-        }
-
-        else if (emailValidation != true) {
-            if (passwordValidation == false) {
-                passwordError.setVisible(true);
-                confPasswordError.setVisible(true);
-                enterprisePasswordInputField.getStyleClass().add("text-field-error");
-                enterpriseConfirmPasswordField.getStyleClass().add("text-field-error");
-            } else if (passwordValidation == true) {
-                databaseManager.SaveUserDetails(connection, emailInput, passwordInput);
-
-                FXMLLoader fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(SQLApplication.class.getResource("enterprise-account-sub-users.fxml"));
-
-                enterpriseAccountSubUserPage = fxmlLoader.load();
-                Scene currentScene = welcomeText.getScene();
-                currentScene.setRoot(enterpriseAccountSubUserPage);
-                enterpriseAccountSubUserPage.requestFocus();
-
-                Stage stage = (Stage) currentScene.getWindow();
-                stage.sizeToScene();
-                stage.setTitle("Enterprise Account Sub User Information");
-            }
-        }
-    }
-
     @FXML
     protected void onEnterpriseSubUsersNextButtonClick() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(SQLApplication.class.getResource("security-question-page.fxml"));
-
         securityQuestionPage = fxmlLoader.load();
+
+        AccountController controller = fxmlLoader.getController();
+        controller.setEmail(this.email);
+
         Scene currentScene = welcomeText.getScene();
         currentScene.setRoot(securityQuestionPage);
         securityQuestionPage.requestFocus();
