@@ -252,6 +252,7 @@ public class AccountController {
         AnchorPane subUserTempEmailPage = fxmlLoader.load();
         AccountController controller = fxmlLoader.getController();
 
+        controller.setEmail(this.email);
         controller.setEmails(emails);
 
         Scene currentScene = welcomeText.getScene();

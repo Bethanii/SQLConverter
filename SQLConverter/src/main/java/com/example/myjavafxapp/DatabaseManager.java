@@ -116,6 +116,61 @@ public class DatabaseManager {
         }
     }
 
+    public boolean checkForTempPassword(String emailInput)
+    {
+        String sql = "SELECT tempPassword FROM Users WHERE Email = ?";
+        boolean tempPW = false;
+
+        try (Connection connection = DatabaseConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql))
+        {
+            preparedStatement.setString(1, emailInput);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery())
+            {
+                if (resultSet.next())
+                {
+                    String tempPassword = resultSet.getString("tempPassword");
+                    tempPW = "1".equals(tempPassword);
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return tempPW;
+    }
+
+    public void setTempPassword(String email, String tempPassword) {
+        String sql = "UPDATE users SET Password = ? WHERE Email = ?";
+
+        try (Connection conn = DatabaseConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, tempPassword);
+            pstmt.setString(2, email);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void resetTempPassword(String emailInput) {
+        String sql = "UPDATE Users SET tempPassword = '0' WHERE Email = ?";
+
+        try (Connection connection = DatabaseConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql))
+        {
+            preparedStatement.setString(1, emailInput);
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public String GetUserPassword(Connection connection, String emailInput)
     {
         String sql = "SELECT Password FROM Users WHERE Email = ?";
@@ -169,21 +224,6 @@ public class DatabaseManager {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public void setTempPassword(String email, String tempPassword) {
-        String sql = "UPDATE users SET Password = ? WHERE Email = ?";
-
-        try (Connection conn = DatabaseConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, tempPassword);
-            pstmt.setString(2, email);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public void SaveSecurityQuestions(String firstAnswer, String secondAnswer, String firstQuestion, String secondQuestion, String email)

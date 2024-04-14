@@ -111,32 +111,53 @@ public class Controller
             boolean validLogin = LoginValidation();
             if (validLogin == true)
             {
-                FXMLLoader fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(SQLApplication.class.getResource("sql-converter.fxml"));
-
-                sqlConverterPage = fxmlLoader.load();
-
-                SQLConverterController controller = fxmlLoader.getController();
-                controller.setEmail(this.email);
-
-                Connection connection = controller.SetConnection();
-
-                if (connection == null)
+                DatabaseManager databaseManager = new DatabaseManager();
+                if(databaseManager.checkForTempPassword(this.email))
                 {
-                    showConnectionErrorPopup();
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("enter-new-password-page.fxml"));
+                    AnchorPane resetPasswordPage = fxmlLoader.load();
+                    Controller controller = fxmlLoader.getController();
+
+                    Scene currentScene = welcomeText.getScene();
+                    currentScene.setRoot(resetPasswordPage);
+                    resetPasswordPage.requestFocus();
+
+                    controller.setEmail(this.email);
+
+                    Stage stage = (Stage) currentScene.getWindow();
+                    stage.sizeToScene();
+                    stage.setTitle("Update Temporary Password");
+
+                    databaseManager.resetTempPassword(this.email);
                 }
 
                 else
                 {
-                    controller.populateStaticRow();
+                    FXMLLoader fxmlLoader = new FXMLLoader();
+                    fxmlLoader.setLocation(SQLApplication.class.getResource("sql-converter.fxml"));
+                    sqlConverterPage = fxmlLoader.load();
 
-                    Scene currentScene = welcomeText.getScene();
-                    currentScene.setRoot(sqlConverterPage);
-                    sqlConverterPage.requestFocus();
+                    SQLConverterController controller = fxmlLoader.getController();
+                    controller.setEmail(this.email);
 
-                    Stage stage = (Stage) currentScene.getWindow();
-                    stage.sizeToScene();
-                    stage.setTitle("SQL Converter");
+                    Connection connection = controller.SetConnection();
+
+                    if (connection == null)
+                    {
+                        showConnectionErrorPopup();
+                    }
+                    else
+                    {
+                        controller.populateStaticRow();
+
+                        Scene currentScene = welcomeText.getScene();
+                        currentScene.setRoot(sqlConverterPage);
+                        sqlConverterPage.requestFocus();
+
+                        Stage stage = (Stage) currentScene.getWindow();
+                        stage.sizeToScene();
+                        stage.setTitle("SQL Converter");
+                    }
                 }
             }
         }
@@ -213,11 +234,17 @@ public class Controller
     @FXML
     protected void onNewPasswordResetButtonClick() throws IOException, SQLException
     {
+        DatabaseManager databaseManager = new DatabaseManager();
+
         if (!newPasswordFieldsValidation())
         {
-            DatabaseManager databaseManager = new DatabaseManager();
             databaseManager.updateNewPassword(this.email, newPasswordInputField.getText());
             loadPage("password-update-confirmation-page.fxml", "Password Successfully Updated", "");
+
+            if(databaseManager.checkForTempPassword(this.email))
+            {
+                databaseManager.resetTempPassword(this.email);
+            }
         }
     }
 
@@ -436,5 +463,5 @@ public class Controller
     {
         loadPage("select-account-type-page.fxml", "Select Account Type", "");
     }
-
+    
 }
