@@ -3,6 +3,7 @@ package com.example.myjavafxapp;
 import javafx.fxml.FXML;
 import java.io.IOException;
 import java.sql.*;
+import java.util.List;
 
 import javafx.scene.control.*;
 
@@ -279,5 +280,26 @@ public class DatabaseManager {
         alert.getButtonTypes().setAll(cancelButton);
 
         alert.showAndWait();
+    }
+
+    public void saveEnterpriseSubUserEmails(List<String> emails) {
+        String sql = "INSERT INTO Users (email, Password, tempPassword) VALUES (?, ?, ?)";
+
+        try (Connection connection = DatabaseConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            String defaultPassword = " ";
+            int tempPasswordValue = 1;
+
+            for (String email : emails) {
+                statement.setString(1, email);
+                statement.setString(2, defaultPassword);
+                statement.setInt(3, tempPasswordValue);
+                statement.addBatch();
+            }
+            statement.executeBatch();
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
     }
 }

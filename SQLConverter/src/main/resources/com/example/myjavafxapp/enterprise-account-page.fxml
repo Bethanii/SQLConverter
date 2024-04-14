@@ -63,5 +63,6 @@
             </font>
         </Label>
       <Button fx:id ="enterpriseNextButton" onAction="#onEnterpriseAccountNextButtonClick" layoutX="277.0" layoutY="384.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="246.0" text="Next" />
+        <Button id="backButton" layoutX="38.0" layoutY="28.0" mnemonicParsing="false" onAction="#onEnterpriseAccountBackButtonClick" prefHeight="2.0" prefWidth="49.0" text="Back" />
     </children>
 </AnchorPane>

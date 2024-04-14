@@ -4,8 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
@@ -15,8 +14,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
 
 public class AccountController {
 
@@ -244,6 +241,8 @@ public class AccountController {
 
     @FXML
     protected void onEnterpriseSubUsersNextButtonClick() throws IOException {
+        DatabaseManager databaseManager = new DatabaseManager();
+        databaseManager.saveEnterpriseSubUserEmails(emails);
         loadPage("security-question-page.fxml", "Enterprise Account Security Questions", "AccountController", this.email, true);
     }
 
@@ -284,10 +283,22 @@ public class AccountController {
                 }
                 break;
             case "Controller":
-
+                Controller controller = fxmlLoader.getController();
         }
         Stage stage = (Stage) currentScene.getWindow();
         stage.sizeToScene();
         stage.setTitle(pageTitle);
+    }
+
+    @FXML
+    public void onEnterpriseAccountBackButtonClick() throws IOException
+    {
+        loadPage("select-account-type-page.fxml", "Select Account Type", "Controller", "", false);
+    }
+
+    @FXML
+    public void onStandardAccountBackButtonClick() throws IOException
+    {
+        loadPage("select-account-type-page.fxml", "Select Account Type", "Controller", "", false);
     }
 }

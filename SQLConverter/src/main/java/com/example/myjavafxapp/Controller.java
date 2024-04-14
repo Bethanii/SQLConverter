@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Stack;
 
 public class Controller
 {
@@ -429,4 +430,11 @@ public class Controller
         stage.sizeToScene();
         stage.setTitle("Frequently Asked Questions");
     }
+
+    @FXML
+    public void onSignInBackButtonClick() throws IOException
+    {
+        loadPage("select-account-type-page.fxml", "Select Account Type", "");
+    }
+
 }
