@@ -20,7 +20,7 @@
         </Label>
         <TextField fx:id="enterpriseEmailInputField" layoutX="236.0" layoutY="258.0" prefHeight="45.0" prefWidth="251.0" promptText="Email">
          <font>
-            <Font size="20.0" />
+            <Font size="18.0" />
          </font>
         </TextField>
         <Label fx:id="emailExistsError" layoutX="105.0" layoutY="190.0" text="Email already registered, please log in" textFill="red" visible="false">
@@ -30,7 +30,7 @@
         </Label>
       <TextField fx:id="enterprisePasswordInputField" layoutX="598.0" layoutY="255.0" prefHeight="45.0" prefWidth="251.0" promptText="Password">
          <font>
-            <Font size="20.0" />
+            <Font size="18.0" />
          </font>
       </TextField>
         <Label fx:id="passwordError" layoutX="467.0" layoutY="189.0" text="Password and Confirmation Password don't match" textFill="red" visible="false">
@@ -55,7 +55,7 @@
       </Label>
       <TextField fx:id="enterpriseConfirmPasswordField" layoutX="598.0" layoutY="354.0" prefHeight="45.0" prefWidth="251.0" promptText="Confirm password">
          <font>
-            <Font size="20.0" />
+            <Font size="18.0" />
          </font>
       </TextField>
         <Label fx:id="confPasswordError" layoutX="469.0" layoutY="290.0" text="Password and Confirmation Password don't match" textFill="red" visible="false">

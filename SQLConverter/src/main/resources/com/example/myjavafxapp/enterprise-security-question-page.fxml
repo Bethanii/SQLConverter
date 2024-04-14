@@ -18,7 +18,7 @@
     </padding>
 
     <children>
-        <Label fx:id="welcomeText" layoutX="338.0" layoutY="66.0" prefHeight="35.0" prefWidth="424.0" styleClass="labelStyle" text="Please select security questions below">
+        <Label fx:id="welcomeText" layoutX="349.0" layoutY="67.0" prefHeight="35.0" prefWidth="424.0" styleClass="labelStyle" text="Please set security questions below">
          <font>
             <Font size="24.0" />
          </font></Label>

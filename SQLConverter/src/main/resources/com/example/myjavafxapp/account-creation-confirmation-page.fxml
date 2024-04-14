@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
 <?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="confirmationPage" prefHeight="482.0" prefWidth="852.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.Controller">
+<AnchorPane id="confirmationPage" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.Controller">
 
     <stylesheets>
         <URL value="@static/style.css" />
@@ -12,9 +14,18 @@
 
     <children>
         <Label fx:id="welcomeText" styleClass="labelStyle" />
-        <Label layoutX="350.0" layoutY="105.0" styleClass="signInLabel" text="Congrats!  " />
-        <Button id="signInPageButton" layoutX="284.0" layoutY="294.0" mnemonicParsing="false" onAction="#onSignInSelectionClick" prefHeight="43.0" prefWidth="258.0" text="Sign In" />
-      <Label layoutX="172.0" layoutY="153.0" styleClass="signInLabel" text="Your account has been successfully created. " />
-      <Label layoutX="284.0" layoutY="203.0" styleClass="signInLabel" text="Click below to sign in. " />
+        <Label layoutX="483.0" layoutY="153.0" text="Congrats!  ">
+         <font>
+            <Font size="24.0" />
+         </font></Label>
+        <Button id="signInPageButton" layoutX="410.0" layoutY="365.0" mnemonicParsing="false" onAction="#onSignInSelectionClick" prefHeight="43.0" prefWidth="258.0" text="Sign In" />
+      <Label layoutX="305.0" layoutY="201.0" text="Your account has been successfully created ">
+         <font>
+            <Font size="24.0" />
+         </font></Label>
+      <Label layoutX="417.0" layoutY="251.0" text="Click below to sign in ">
+         <font>
+            <Font size="24.0" />
+         </font></Label>
     </children>
 </AnchorPane>

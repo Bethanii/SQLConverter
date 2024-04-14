@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="sqlConverterPage" prefHeight="482.0" prefWidth="852.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.SQLConverterController">
+<AnchorPane fx:id="sqlConverterPage" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.SQLConverterController">
 
     <stylesheets>
         <URL value="@static/style.css" />
@@ -13,21 +14,25 @@
     <children>
         <Label fx:id="welcomeText" styleClass="labelStyle" />
 
-        <ScrollPane layoutX="471.0" layoutY="97.0" prefHeight="315.0" prefWidth="333.0" fx:id="resultsWindow" hbarPolicy="AS_NEEDED">
+        <ScrollPane fx:id="resultsWindow" hbarPolicy="AS_NEEDED" layoutX="534.0" layoutY="97.0" prefHeight="465.0" prefWidth="467.0">
             <content>
                 <VBox fx:id="resultsContainer" spacing="5" />
             </content>
         </ScrollPane>
 
 
-        <ScrollPane fx:id="addRowScrollPane" hbarPolicy="NEVER" layoutX="35.0" layoutY="97.0" prefHeight="243.0" prefWidth="430">
+        <ScrollPane fx:id="addRowScrollPane" hbarPolicy="NEVER" layoutX="59.0" layoutY="97.0" prefHeight="445.0" prefWidth="448.0">
             <content>
                 <VBox fx:id="dynamicRowsContainer" layoutX="35.0" layoutY="102.0" spacing="10">
                    <children>
                        <HBox layoutX="35.0" layoutY="97.0" spacing="10">
                            <children>
-                               <ChoiceBox fx:id="searchRow1" prefHeight="33.0" prefWidth="167.0" />
-                               <TextField fx:id="searchField1" prefHeight="33.0" prefWidth="250.0" promptText="Enter value" />
+                               <ChoiceBox fx:id="searchRow1" prefHeight="37.0" prefWidth="167.0" />
+                               <TextField fx:id="searchField1" prefHeight="38.0" prefWidth="262.0" promptText="Enter value">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </TextField>
                            </children>
                        </HBox>
                    </children>
@@ -35,24 +40,24 @@
             </content>
         </ScrollPane>
 
-      <Button id="exportButton" onAction="#onExportButtonClick" layoutX="582.0" layoutY="427.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="110.0" text="Export Data">
+      <Button id="exportButton" layoutX="715.0" layoutY="574.0" mnemonicParsing="false" onAction="#onExportButtonClick" prefHeight="37.0" prefWidth="119.0" text="Export Data">
          <font>
-            <Font size="14.0" />
+            <Font size="16.0" />
          </font>
       </Button>
-      <Label layoutX="571.0" layoutY="53.0" prefHeight="17.0" prefWidth="134.0" text="Search Results">
+      <Label layoutX="708.0" layoutY="60.0" prefHeight="17.0" prefWidth="134.0" text="Search Results">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <Button id="addRow" layoutX="105.0" layoutY="428.0" mnemonicParsing="false" onAction="#onAddRowButtonClick" prefHeight="25.0" prefWidth="110.0" text="Add Row">
+      <Button id="addRow" layoutX="108.0" layoutY="574.0" mnemonicParsing="false" onAction="#onAddRowButtonClick" prefHeight="37.0" prefWidth="119.0" text="Add Row">
          <font>
-            <Font size="14.0" />
+            <Font size="16.0" />
          </font>
       </Button>
-      <Button fx:id="searchButton" layoutX="249.0" layoutY="427.0" mnemonicParsing="false" onAction="#onSearchButtonClick" prefHeight="25.0" prefWidth="110.0" text="Search">
+      <Button fx:id="searchButton" layoutX="283.0" layoutY="574.0" mnemonicParsing="false" onAction="#onSearchButtonClick" prefHeight="37.0" prefWidth="119.0" text="Search">
          <font>
-            <Font size="14.0" />
+            <Font size="16.0" />
          </font>
       </Button>
     </children>
