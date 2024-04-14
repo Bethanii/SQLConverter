@@ -4,13 +4,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Control;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
 import java.sql.*;
+import java.util.Optional;
 import java.util.Random;
 
 public class Controller
@@ -55,6 +54,8 @@ public class Controller
     @FXML
     private AnchorPane enterpriseAccountPage;
     @FXML
+    private AnchorPane faqPage;
+    @FXML
     private AnchorPane resetPasswordPage;
     @FXML
     private AnchorPane newPasswordPage;
@@ -95,8 +96,13 @@ public class Controller
     }
 
     @FXML
-    protected void onSignInButtonClick() throws IOException
+    protected void onPasswordUpdateSignInButtonClick() throws IOException, SQLException
     {
+        loadPage("sign-in-page.fxml", "Sign In", "");
+    }
+
+    @FXML
+    protected void onSignInButtonClick() throws IOException, SQLException {
         boolean missingFields = RequiredFieldsMissing();
 
         if (missingFields == false)
@@ -112,18 +118,51 @@ public class Controller
                 SQLConverterController controller = fxmlLoader.getController();
                 controller.setEmail(this.email);
 
-                controller.SetConnection();
-                controller.populateStaticRow();
+                Connection connection = controller.SetConnection();
 
-                Scene currentScene = welcomeText.getScene();
-                currentScene.setRoot(sqlConverterPage);
-                sqlConverterPage.requestFocus();
+                if (connection == null)
+                {
+                    showConnectionErrorPopup();
+                }
 
-                Stage stage = (Stage) currentScene.getWindow();
-                stage.sizeToScene();
-                stage.setTitle("SQL Converter");
+                else
+                {
+                    controller.populateStaticRow();
+
+                    Scene currentScene = welcomeText.getScene();
+                    currentScene.setRoot(sqlConverterPage);
+                    sqlConverterPage.requestFocus();
+
+                    Stage stage = (Stage) currentScene.getWindow();
+                    stage.sizeToScene();
+                    stage.setTitle("SQL Converter");
+                }
             }
         }
+    }
+
+    @FXML
+    private void showConnectionErrorPopup() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Connection Error");
+        alert.setHeaderText("Unable to connect to database");
+        alert.setContentText("Please try again or refer to the FAQ page for assistance.");
+
+        ButtonType faqButton = new ButtonType("FAQ", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(faqButton, cancelButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        result.ifPresent(buttonType -> {
+            if (buttonType == faqButton) {
+                try {
+                    goToFAQPage();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @FXML
@@ -171,16 +210,18 @@ public class Controller
     }
 
     @FXML
-    protected void onNewPasswordResetButtonClick() throws IOException, SQLException {
-        if (newPasswordFieldsMissing() == false)
+    protected void onNewPasswordResetButtonClick() throws IOException, SQLException
+    {
+        if (!newPasswordFieldsValidation())
         {
             DatabaseManager databaseManager = new DatabaseManager();
             databaseManager.updateNewPassword(this.email, newPasswordInputField.getText());
+            loadPage("password-update-confirmation-page.fxml", "Password Successfully Updated", "");
         }
     }
 
     @FXML
-    public boolean newPasswordFieldsMissing()
+    public boolean newPasswordFieldsValidation()
     {
         String newPasswordInput = newPasswordInputField.getText();
         String newPasswordConfirmationInput = newConfirmationPasswordField.getText();
@@ -202,11 +243,18 @@ public class Controller
                 return true;
             }
         }
+        if(!newPasswordInput.equals(newPasswordConfirmationInput))
+        {
+            newPasswordErrorMessage.setText("Password and Confirmation Password don't match");
+            newPasswordErrorMessage.setVisible(true);
+            newPasswordInputField.getStyleClass().add("text-field-error");
+            newConfirmationPasswordField.getStyleClass().add("text-field-error");
+            return true;
+        }
         else
         {
             return false;
         }
-        return false;
     }
 
     public boolean LoginValidation()
@@ -231,12 +279,14 @@ public class Controller
                 else
                 {
                     emailExistsError.setText("Invalid email or password, please try again");
+                    emailExistsError.setVisible(true);
                     return false;
                 }
             }
             else
             {
                 emailExistsError.setText("Invalid email or password, please try again");
+                emailExistsError.setVisible(true);
                 return false;
             }
         }
@@ -244,6 +294,7 @@ public class Controller
         {
             ex.printStackTrace();
             emailExistsError.setText("Invalid email or password, please try again");
+            emailExistsError.setVisible(true);
             return false;
         }
         catch (IOException e)
@@ -312,8 +363,6 @@ public class Controller
         boolean validateResponse = databaseManager.validateSecurityAnswers(email, response1Input, response2Input);
 
         if (validateResponse) {
-         //   loadPage("enter-new-password-page.fxml", "Enter New Password", this.email);
-
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("enter-new-password-page.fxml"));
             AnchorPane newPasswordPage = fxmlLoader.load();
             Controller controller = fxmlLoader.getController();
@@ -362,5 +411,22 @@ public class Controller
         Stage stage = (Stage) currentScene.getWindow();
         stage.sizeToScene();
         stage.setTitle(pageTitle);
+    }
+
+    @FXML
+    public void goToFAQPage() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("faq-page.fxml"));
+        AnchorPane faqPage = fxmlLoader.load();
+        Controller controller = fxmlLoader.getController();
+
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(faqPage);
+        faqPage.requestFocus();
+
+        controller.setEmail(this.email);
+
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle("Frequently Asked Questions");
     }
 }

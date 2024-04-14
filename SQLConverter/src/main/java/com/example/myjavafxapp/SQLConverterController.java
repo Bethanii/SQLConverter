@@ -37,17 +37,16 @@ public class SQLConverterController {
        // populateStaticRow();
     }
 
-    public void SetConnection() throws IOException
+    public Connection SetConnection() throws IOException
     {
         this.databaseManager = new DatabaseManager();
-        //serverName, databaseName, username, password
         String[] dbValues = databaseManager.GetUserDBInfo(this.email);
 
-        if (dbValues == null)
-        {
-            return;
+        if (dbValues == null) {
+            return null;
         }
         this.userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3]);
+        return this.userConnection;
     }
 
     public void populateStaticRow()

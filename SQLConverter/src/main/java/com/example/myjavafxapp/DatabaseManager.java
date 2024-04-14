@@ -3,11 +3,14 @@ package com.example.myjavafxapp;
 import javafx.fxml.FXML;
 import java.io.IOException;
 import java.sql.*;
-import javafx.scene.control.Label;
+
+import javafx.scene.control.*;
 
 public class DatabaseManager {
     @FXML
     private Label connectionError;
+    @FXML
+    private Label welcomeText;
     private Connection userConnection;
     private Connection sqlAppConnection;
     private DatabaseManager databaseManager;
@@ -43,8 +46,6 @@ public class DatabaseManager {
             Connection connection = DriverManager.getConnection(connectionUrl);
             return connection;
         } catch (Exception e) {
-            System.out.println("Could not connect, error: " + e.getMessage());
-            e.printStackTrace();
             return null;
         }
     }
@@ -72,8 +73,7 @@ public class DatabaseManager {
         }
         catch (SQLException e)
         {
-            System.out.println("Could not connect, error: " + e.getMessage());
-            e.printStackTrace();
+            showConnectionErrorPopup();
             return null;
         }
     }
@@ -267,5 +267,17 @@ public class DatabaseManager {
             e.printStackTrace();
             throw e;
         }
+    }
+
+    public void showConnectionErrorPopup() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Connection Error");
+        alert.setHeaderText("Unable to connect to database");
+        alert.setContentText("Please try again or refer to the FAQs for assistance.");
+
+        ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(cancelButton);
+
+        alert.showAndWait();
     }
 }

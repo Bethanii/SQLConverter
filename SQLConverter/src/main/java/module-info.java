@@ -16,6 +16,7 @@ module com.example.myjavafxapp {
     requires org.apache.commons.codec;
     requires com.google.api.client.json.gson;
     requires twilio;
+    requires mssql.jdbc;
 
 
     opens com.example.myjavafxapp to javafx.fxml;
