@@ -1,5 +1,6 @@
 package com.example.myjavafxapp;
 
+import com.twilio.rest.api.v2010.Account;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -66,6 +67,8 @@ public class AccountController {
     @FXML
     public TextField enterpriseConfirmPasswordField;
     @FXML
+    public TextField tempPasswordInputField;
+    @FXML
     private AnchorPane enterpriseAccountSubUserPage;
 
     @FXML
@@ -76,6 +79,7 @@ public class AccountController {
     private TextArea emailsDisplayArea;
 
     Controller controller = new Controller();
+    DatabaseManager databaseManager = new DatabaseManager();
 
     @FXML
     protected void onStandardAccountNextButtonClick() throws IOException {
@@ -243,7 +247,39 @@ public class AccountController {
     protected void onEnterpriseSubUsersNextButtonClick() throws IOException {
         DatabaseManager databaseManager = new DatabaseManager();
         databaseManager.saveEnterpriseSubUserEmails(emails);
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("sub-users-temporary-password.fxml"));
+        AnchorPane subUserTempEmailPage = fxmlLoader.load();
+        AccountController controller = fxmlLoader.getController();
+
+        controller.setEmails(emails);
+
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(subUserTempEmailPage);
+        subUserTempEmailPage.requestFocus();
+
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle("Enterprise Account Sub-User Temporary Password");
+    }
+
+    @FXML
+    protected void onTempPasswordNextButtonClick() throws IOException {
+        String tempPassword = tempPasswordInputField.getText().trim();
+
+        for (String email : emails) {
+            DatabaseManager databaseManager = new DatabaseManager();
+            databaseManager.setTempPassword(email, tempPassword);
+        }
+
+   //     controller.setEmails(emails);
+
         loadPage("security-question-page.fxml", "Enterprise Account Security Questions", "AccountController", this.email, true);
+    }
+
+
+    public void setEmails(List<String> emails) {
+        this.emails = emails;
     }
 
     @FXML
@@ -262,7 +298,6 @@ public class AccountController {
     public void loadPage(String pageFile, String pageTitle, String controllerSelection, String email, boolean setSecurityQuestions) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(SQLApplication.class.getResource(pageFile));
-
         Parent page = fxmlLoader.load();
 
         Scene currentScene = welcomeText.getScene();

@@ -171,16 +171,14 @@ public class DatabaseManager {
         return null;
     }
 
-    public void updateTempPassword(int userId)
-    {
-        String sql = "UPDATE users SET tempPassword = ? WHERE Email = ?";
+    public void setTempPassword(String email, String tempPassword) {
+        String sql = "UPDATE users SET Password = ? WHERE Email = ?";
 
-        try (Connection conn = databaseManager.DatabaseConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql))
-        {
-            pstmt.setBoolean(1, true);
-            pstmt.setInt(2, userId);
-
+        try (Connection conn = DatabaseConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, tempPassword);
+            pstmt.setString(2, email);
+            pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (IOException e) {
