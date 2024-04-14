@@ -254,4 +254,18 @@ public class DatabaseManager {
         }
         return false;
     }
+
+    public boolean updateNewPassword(String email, String newPassword) throws SQLException, IOException {
+        String sql = "UPDATE users SET password = ? WHERE email = ?";
+        try (Connection conn = DatabaseConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, newPassword);
+            pstmt.setString(2, email);
+            int rowsUpdated = pstmt.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
 }

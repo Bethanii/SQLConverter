@@ -31,7 +31,8 @@
     -fx-font-size: 14px;
 }
 
-#enterpriseAccountButton, #standardAccountButton, #enterpriseNextButton, #securityQuestionNextButton, #enterpriseSubUsersNextButton, #standardNextButton, #databaseSetupNextButton {
+#enterpriseAccountButton, #standardAccountButton, #enterpriseNextButton, #securityQuestionNextButton, #enterpriseSubUsersNextButton,
+#standardNextButton, #databaseSetupNextButton, #resetPasswordButton, #newPasswordResetButton {
     -fx-focus-color: transparent;
     -fx-background-radius: 20;
     -fx-font-family: 'Open Sans', sans-serif;
