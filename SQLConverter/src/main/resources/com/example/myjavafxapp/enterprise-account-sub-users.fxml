@@ -31,7 +31,6 @@
                 <TextArea fx:id="emailsDisplayArea" editable="false" wrapText="true" />
             </content>
         </ScrollPane>
-
         <Button fx:id="enterpriseSubUsersNextButton" layoutX="277.0" layoutY="384.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="246.0" text="Next" onAction="#onEnterpriseSubUsersNextButtonClick" />
     </children>
 </AnchorPane>

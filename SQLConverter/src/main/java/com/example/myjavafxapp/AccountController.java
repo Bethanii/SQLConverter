@@ -1,6 +1,5 @@
 package com.example.myjavafxapp;
 
-import com.twilio.rest.api.v2010.Account;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,68 +17,15 @@ import java.util.Objects;
 
 public class AccountController {
 
-    @FXML
-    private Label welcomeText;
-    @FXML
-    private Label passwordError;
-    @FXML
-    private Label confPasswordError;
-    @FXML
-    private Label emailExistsError;
-    @FXML
-    private Label connectionError;
-    @FXML
-    private AnchorPane securityQuestionPage;
-    @FXML
-    private AnchorPane sqlConverterPage;
-    @FXML
-    private AnchorPane userDatabaseSetupPage;
-    @FXML
-    private TextField standardEmailInputField;
-    @FXML
-    private TextField standardPasswordInputField;
-    @FXML
-    private TextField standardConfirmPasswordField;
-    @FXML
-    private TextField serverNameField;
-    @FXML
-    private TextField dbUsernameField;
-    @FXML
-    private TextField dbPasswordField;
-    @FXML
-    private TextField databaseNameField;
-    @FXML
-    private TextField firstSecurityQuestionInput;
-    @FXML
-    private TextField secondSecurityQuestionInput;
-    @FXML
-    private ChoiceBox<String> firstSecurityQuestion;
-    @FXML
-    private ChoiceBox<String> secondSecurityQuestion;
+    @FXML private Label welcomeText, passwordError, confPasswordError, emailExistsError, connectionError;
+    @FXML private AnchorPane securityQuestionPage, sqlConverterPage, userDatabaseSetupPage, enterpriseAccountSubUserPage, confirmationPage;
+    @FXML private TextField standardEmailInputField, standardPasswordInputField, standardConfirmPasswordField, serverNameField, dbUsernameField, dbPasswordField, databaseNameField, firstSecurityQuestionInput, secondSecurityQuestionInput, subUserEmailInputField, enterpriseEmailInputField, enterprisePasswordInputField, enterpriseConfirmPasswordField, tempPasswordInputField;
+    @FXML private ChoiceBox<String> firstSecurityQuestion, secondSecurityQuestion;
+    @FXML private TextArea emailsDisplayArea;
+
     private String email;
-    private String password;
-    @FXML
-    public TextField subUserEmailInputField;
-    @FXML
-    public TextField enterpriseEmailInputField;
-    @FXML
-    public TextField enterprisePasswordInputField;
-    @FXML
-    public TextField enterpriseConfirmPasswordField;
-    @FXML
-    public TextField tempPasswordInputField;
-    @FXML
-    private AnchorPane enterpriseAccountSubUserPage;
-
-    @FXML
-    private AnchorPane confirmationPage;
-    @FXML
     private List<String> emails = new ArrayList<>();
-    @FXML
-    private TextArea emailsDisplayArea;
-
-    Controller controller = new Controller();
-    DatabaseManager databaseManager = new DatabaseManager();
+    private DatabaseManager databaseManager = new DatabaseManager();
 
     @FXML
     protected void onStandardAccountNextButtonClick() throws IOException {
@@ -272,12 +218,8 @@ public class AccountController {
             DatabaseManager databaseManager = new DatabaseManager();
             databaseManager.setTempPassword(email, tempPassword);
         }
-
-   //     controller.setEmails(emails);
-
-        loadPage("security-question-page.fxml", "Enterprise Account Security Questions", "AccountController", this.email, true);
+        loadPage("enterprise-security-question-page.fxml", "Enterprise Account Security Questions", "AccountController", this.email, true);
     }
-
 
     public void setEmails(List<String> emails) {
         this.emails = emails;

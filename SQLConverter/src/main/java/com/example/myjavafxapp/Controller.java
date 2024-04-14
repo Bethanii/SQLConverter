@@ -11,59 +11,18 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.Optional;
 import java.util.Random;
-import java.util.Stack;
 
 public class Controller
 {
 
     @FXML
-    private Label welcomeText;
+    private Label welcomeText, errorMessage, emailExistsError, passwordError, newPasswordErrorMessage;
     @FXML
-    private Label emailExistsError;
+    private TextField signInEmailInputField, signInPasswordInputField, resetEmailField, response1, response2, newPasswordInputField, newConfirmationPasswordField, question1, question2;
     @FXML
-    private Label question1;
-    @FXML
-    private Label question2;
-    @FXML
-    private Label errorMessage;
-    @FXML
-    private Label securityQuestionErrorMessage;
-    @FXML
-    private Label tempPasswordMessage;
-    @FXML
-    private Label newPasswordErrorMessage;
-    @FXML
-    private Label passwordError;
-    @FXML
-    private TextField signInEmailInputField;
-    @FXML
-    private TextField signInPasswordInputField;
-    @FXML
-    private TextField resetEmailField;
-    @FXML
-    private TextField response1;
-    @FXML
-    private TextField response2;
-    @FXML
-    private TextField newPasswordInputField;
-    @FXML
-    private TextField newConfirmationPasswordField;
-    @FXML
-    private AnchorPane standardAccountPage;
-    private AnchorPane signInPage;
-    private AnchorPane selectAccountPage;
-    @FXML
-    private AnchorPane enterpriseAccountPage;
-    @FXML
-    private AnchorPane faqPage;
-    @FXML
-    private AnchorPane resetPasswordPage;
-    @FXML
-    private AnchorPane newPasswordPage;
-    @FXML
-    private AnchorPane validateSecurityQuestionsPage;
-    @FXML
-    private AnchorPane sqlConverterPage;
+    private AnchorPane signInPage, resetPasswordPage, newPasswordPage, faqPage, sqlConverterPage;
+
+    private DatabaseManager databaseManager = new DatabaseManager();
     private String email;
 
     @FXML
@@ -80,6 +39,8 @@ public class Controller
 
     @FXML
     protected void onEnterpriseAccountButtonClick() throws IOException
+
+
     {
         loadPage("enterprise-account-page.fxml", "Enterprise Account Information", "");
     }
@@ -463,5 +424,4 @@ public class Controller
     {
         loadPage("select-account-type-page.fxml", "Select Account Type", "");
     }
-    
 }
