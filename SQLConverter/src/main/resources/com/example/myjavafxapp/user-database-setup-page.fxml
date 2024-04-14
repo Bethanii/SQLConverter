@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="confirmationPage" prefHeight="482.0" prefWidth="852.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.AccountController">
+<AnchorPane id="confirmationPage" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.AccountController">
 
     <stylesheets>
         <URL value="@static/style.css" />
@@ -13,53 +14,53 @@
 
     <children>
         <Label fx:id="welcomeText" styleClass="labelStyle" />
-        <TextField id="databaseNameField" fx:id="databaseNameField" layoutX="467.0" layoutY="142.0" prefHeight="45.0" prefWidth="251.0" promptText="Database name">
+        <TextField id="databaseNameField" fx:id="databaseNameField" layoutX="588.0" layoutY="233.0" prefHeight="45.0" prefWidth="251.0" promptText="Database name">
             <font>
-                <Font size="20.0" />
+                <Font size="18.0" />
             </font>
         </TextField>
-        <Label layoutX="468.0" layoutY="113.0" text="Database Name" wrapText="true">
+        <Label layoutX="589.0" layoutY="204.0" text="Database Name" wrapText="true">
             <font>
                 <Font size="20.0" />
             </font>
         </Label>
-        <Label layoutX="222.0" layoutY="35.0" text="Please enter database information below">
+        <Label layoutX="334.0" layoutY="67.0" text="Please enter database information below">
             <font>
-                <Font size="22.0" />
+                <Font size="24.0" />
             </font>
         </Label>
-        <Label layoutX="470.0" layoutY="213.0" styleClass="textField" text="Password">
+        <Label layoutX="591.0" layoutY="304.0" styleClass="textField" text="Password">
             <font>
                 <Font size="20.0" />
             </font>
         </Label>
-        <TextField id="dbPasswordField" fx:id="dbPasswordField" layoutX="469.0" layoutY="241.0" prefHeight="45.0" prefWidth="251.0" promptText="Password">
+        <TextField id="dbPasswordField" fx:id="dbPasswordField" layoutX="590.0" layoutY="332.0" prefHeight="45.0" prefWidth="251.0" promptText="Password">
             <font>
-                <Font size="20.0" />
+                <Font size="18.0" />
             </font>
         </TextField>
-        <Button fx:id="databaseSetupNextButton" layoutX="285.0" layoutY="386.0" mnemonicParsing="false" onAction="#onDatabaseSetupNextButton" prefHeight="48.0" prefWidth="246.0" text="Next" />
-      <TextField id="dbUsernameField" fx:id="dbUsernameField" layoutX="105.0" layoutY="243.0" prefHeight="45.0" prefWidth="251.0" promptText="Admin username">
+        <Button fx:id="databaseSetupNextButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onDatabaseSetupNextButton" prefHeight="48.0" prefWidth="246.0" text="Next" />
+      <TextField id="dbUsernameField" fx:id="dbUsernameField" layoutX="226.0" layoutY="334.0" prefHeight="45.0" prefWidth="251.0" promptText="Admin username">
          <font>
-            <Font size="20.0" />
+            <Font size="18.0" />
          </font>
       </TextField>
-      <Label layoutX="108.0" layoutY="213.0" styleClass="textField" text="Admin Username">
+      <Label layoutX="229.0" layoutY="304.0" styleClass="textField" text="Admin Username">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <Label layoutX="106.0" layoutY="113.0" prefHeight="30.0" prefWidth="131.0" text="Server Name" wrapText="true">
+      <Label layoutX="227.0" layoutY="204.0" prefHeight="30.0" prefWidth="131.0" text="Server Name" wrapText="true">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <TextField id="serverNameField" fx:id="serverNameField" layoutX="105.0" layoutY="142.0" prefHeight="45.0" prefWidth="251.0" promptText="Server Name">
+      <TextField id="serverNameField" fx:id="serverNameField" layoutX="226.0" layoutY="233.0" prefHeight="45.0" prefWidth="251.0" promptText="Server Name">
          <font>
-            <Font size="20.0" />
+            <Font size="18.0" />
          </font>
       </TextField>
-      <Label fx:id="connectionError" textFill="red" visible="false" layoutX="104.0" layoutY="329.0" text="Database connection unsuccessful. Please click the FAQ for help getting started." >
+      <Label fx:id="connectionError" layoutX="104.0" layoutY="329.0" text="Database connection unsuccessful. Please click the FAQ for help getting started." textFill="red" visible="false">
         <font>
             <Font size="18.0" />
         </font>

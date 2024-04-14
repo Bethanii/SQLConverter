@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import java.net.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="enterpriseSecurityQuestionPage" fx:id="enterpriseSecurityQuestionPage" prefHeight="847.0" prefWidth="1244.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.AccountController">
+<AnchorPane id="enterpriseSecurityQuestionPage" fx:id="enterpriseSecurityQuestionPage" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.AccountController">
 
     <stylesheets>
         <URL value="@static/style.css" />
@@ -17,31 +18,34 @@
     </padding>
 
     <children>
-        <Label fx:id="welcomeText" styleClass="labelStyle" />
-        <ChoiceBox fx:id="firstSecurityQuestion" layoutX="109.0" layoutY="57.0" prefHeight="35.0" prefWidth="558.0" />
-        <Label layoutX="109.0" layoutY="27.0" text="Security Question 1:">
+        <Label fx:id="welcomeText" layoutX="338.0" layoutY="66.0" prefHeight="35.0" prefWidth="424.0" styleClass="labelStyle" text="Please select security questions below">
+         <font>
+            <Font size="24.0" />
+         </font></Label>
+        <ChoiceBox fx:id="firstSecurityQuestion" layoutX="271.0" layoutY="185.0" prefHeight="35.0" prefWidth="558.0" />
+        <Label layoutX="271.0" layoutY="155.0" text="Security Question 1:">
             <font>
                 <Font size="20.0" />
             </font>
         </Label>
-        <TextField fx:id="firstSecurityQuestionInput" layoutX="109.0" layoutY="120.0" prefHeight="35.0" prefWidth="558.0" />
-        <Label layoutX="109.0" layoutY="90.0" text="Answer:">
+        <TextField fx:id="firstSecurityQuestionInput" layoutX="271.0" layoutY="248.0" prefHeight="35.0" prefWidth="558.0" />
+        <Label layoutX="271.0" layoutY="218.0" text="Answer:">
             <font>
                 <Font size="20.0" />
             </font>
         </Label>
-        <Label layoutX="109.0" layoutY="244.0" text="Answer:">
+        <Label layoutX="271.0" layoutY="396.0" text="Answer:">
             <font>
                 <Font size="20.0" />
             </font>
         </Label>
-        <TextField fx:id="secondSecurityQuestionInput" layoutX="109.0" layoutY="274.0" prefHeight="35.0" prefWidth="558.0" />
-        <Label layoutX="109.0" layoutY="182.0" text="Security Question 2:">
+        <TextField fx:id="secondSecurityQuestionInput" layoutX="271.0" layoutY="426.0" prefHeight="35.0" prefWidth="558.0" />
+        <Label layoutX="271.0" layoutY="334.0" text="Security Question 2:">
             <font>
                 <Font size="20.0" />
             </font>
         </Label>
-        <ChoiceBox fx:id="secondSecurityQuestion" layoutX="109.0" layoutY="212.0" prefHeight="35.0" prefWidth="558.0" />
-        <Button fx:id="securityQuestionNextButton"  onAction="#onSecurityQuestionNextButtonClick" layoutX="289.0" layoutY="367.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="246.0" text="Next" />
+        <ChoiceBox fx:id="secondSecurityQuestion" layoutX="271.0" layoutY="364.0" prefHeight="35.0" prefWidth="558.0" />
+        <Button fx:id="securityQuestionNextButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onSecurityQuestionNextButtonClick" prefHeight="48.0" prefWidth="246.0" text="Next" />
     </children>
 </AnchorPane>

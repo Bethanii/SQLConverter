@@ -6,30 +6,33 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="validateSecurityQuestionsPage" prefHeight="482.0" prefWidth="852.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.Controller">
+<AnchorPane id="validateSecurityQuestionsPage" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.Controller">
 
     <stylesheets>
         <URL value="@static/style.css" />
     </stylesheets>
 
     <children>
-        <Label fx:id="welcomeText" styleClass="labelStyle" />
-        <TextField fx:id="response1" layoutX="191.0" layoutY="117.0" prefHeight="45.0" prefWidth="251.0" promptText="Enter response">
+        <Label fx:id="welcomeText" layoutX="280.0" layoutY="66.0" prefHeight="35.0" prefWidth="554.0" styleClass="labelStyle" text="Please enter the answers to your security questions">
+         <font>
+            <Font size="24.0" />
+         </font></Label>
+        <TextField fx:id="response1" layoutX="408.0" layoutY="244.0" prefHeight="45.0" prefWidth="251.0" promptText="Enter response">
             <font>
                 <Font size="20.0" />
             </font>
         </TextField>
-        <Label fx:id="question1" layoutX="191.0" layoutY="76.0" text="Security Question 1">
+        <Label fx:id="question1" layoutX="409.0" layoutY="212.0" text="Security Question 1">
             <font>
                 <Font size="22.0" />
             </font>
         </Label>
-        <Label fx:id="question2" layoutX="192.0" layoutY="190.0" text="Security Question 2">
+        <Label fx:id="question2" layoutX="409.0" layoutY="340.0" text="Security Question 2">
             <font>
                 <Font size="22.0" />
             </font>
         </Label>
-        <TextField fx:id="response2" layoutX="191.0" layoutY="228.0" prefHeight="45.0" prefWidth="251.0" promptText="Enter response">
+        <TextField fx:id="response2" layoutX="408.0" layoutY="373.0" prefHeight="45.0" prefWidth="251.0" promptText="Enter response">
             <font>
                 <Font size="20.0" />
             </font>
@@ -39,6 +42,6 @@
                 <Font size="22.0" />
             </font>
         </Label>
-        <Button fx:id="standardNextButton" layoutX="295.0" layoutY="352.0" mnemonicParsing="false" onAction="#onValidateSecurityQuestionsNextClick" prefHeight="48.0" prefWidth="246.0" text="Next" />
+        <Button fx:id="standardNextButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onValidateSecurityQuestionsNextClick" prefHeight="48.0" prefWidth="246.0" text="Next" />
     </children>
 </AnchorPane>

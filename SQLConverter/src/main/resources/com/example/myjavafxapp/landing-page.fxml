@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import java.net.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="landingPage" fx:id="landingPage" prefHeight="847.0" prefWidth="1244.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.Controller">
+<AnchorPane id="landingPage" fx:id="landingPage" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.Controller">
 
     <stylesheets>
         <URL value="@static/style.css" />
@@ -18,9 +19,9 @@
 
     <children>
         <Label fx:id="welcomeText" styleClass="labelStyle" />
-        <Button id="createAccountButton" layoutX="479.0" layoutY="273.0" mnemonicParsing="false" onAction="#onCreateAccountButtonClick" prefHeight="48.0" prefWidth="218.0" text="Create an Account" />
-        <Button id="signInButton" layoutX="116.0" layoutY="273.0" mnemonicParsing="false" onAction="#onSignInSelectionClick" prefHeight="48.0" prefWidth="218.0" text="Sign In" />
-        <Text id="signInText" layoutX="132.0" layoutY="231.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Have an account?" textAlignment="CENTER" />
-        <Text id="createAccountText" layoutX="486.0" layoutY="231.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Not registered yet?" textAlignment="CENTER" />
+        <Button id="createAccountButton" layoutX="615.0" layoutY="338.0" mnemonicParsing="false" onAction="#onCreateAccountButtonClick" prefHeight="48.0" prefWidth="218.0" text="Create an Account" />
+        <Button id="signInButton" layoutX="252.0" layoutY="338.0" mnemonicParsing="false" onAction="#onSignInSelectionClick" prefHeight="48.0" prefWidth="218.0" text="Sign In" />
+        <Text id="signInText" layoutX="268.0" layoutY="296.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Have an account?" textAlignment="CENTER" />
+        <Text id="createAccountText" layoutX="622.0" layoutY="296.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Not registered yet?" textAlignment="CENTER" />
     </children>
 </AnchorPane>

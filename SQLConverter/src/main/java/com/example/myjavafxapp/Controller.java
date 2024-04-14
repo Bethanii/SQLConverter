@@ -16,7 +16,7 @@ public class Controller
 {
 
     @FXML
-    private Label welcomeText, errorMessage, emailExistsError, passwordError, newPasswordErrorMessage;
+    private Label welcomeText, errorMessage, emailExistsError, passwordError, newPasswordErrorMessage, question1, question2;
     @FXML
     private TextField signInEmailInputField, signInPasswordInputField, resetEmailField, response1, response2, newPasswordInputField, newConfirmationPasswordField, question1, question2;
     @FXML

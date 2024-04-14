@@ -1,14 +1,7 @@
 
-#landingPage {
-     -fx-background-color: linear-gradient(to right, #E3C5BD 0%, #E3C5BD 50%, #DAF8F0 50%, #DAF8F0 100%);
-    -fx-background-position: center center;
-    -fx-background-repeat: no-repeat;
-    -fx-background-size: cover;
-}
-
 #signInPage, #selectAccountPage, #enterpriseAccountPage, #enterpriseAccountSubUserPage, #securityQuestionPage, #standardAccountPage,
 #userDatabaseSetupPage, #sqlConverterPage, #resetPasswordPage, #confirmationPage, #newPasswordPage, #validateSecurityQuestionsPage,
-#passwordUpdateConfirmationPage, #faqPage, #subUserTempEmailPage, #enterpriseSecurityQuestionPage {
+#passwordUpdateConfirmationPage, #faqPage, #subUserTempEmailPage, #enterpriseSecurityQuestionPage, #landingPage {
     -fx-background-color: #DAF8F0;
     -fx-background-position: center center;
     -fx-background-repeat: no-repeat;

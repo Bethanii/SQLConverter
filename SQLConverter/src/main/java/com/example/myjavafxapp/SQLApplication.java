@@ -15,7 +15,7 @@ public class SQLApplication extends Application
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(SQLApplication.class.getResource("landing-page.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 820, 500);
+        Scene scene = new Scene(fxmlLoader.load(), 1100, 700);
         stage.setTitle("SQL Converter");
         stage.setScene(scene);
         stage.show();

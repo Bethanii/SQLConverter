@@ -1,36 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="enterpriseAccountSubUserPage" prefHeight="482.0" prefWidth="852.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.AccountController">
+<AnchorPane id="enterpriseAccountSubUserPage" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.AccountController">
     <stylesheets>
         <URL value="@static/style.css" />
     </stylesheets>
     <children>
-        <Label fx:id="welcomeText" styleClass="labelStyle" layoutX="106.0" layoutY="34.0" text="Add the users you want to have access to the database" />
+        <Label fx:id="welcomeText" layoutX="205.0" layoutY="38.0" prefHeight="35.0" prefWidth="676.0" styleClass="labelStyle" text="Add users below that you want to have access to the database">
+         <font>
+            <Font size="24.0" />
+         </font></Label>
 
-        <Label layoutX="106.0" layoutY="105.0" text="Sub User Email">
+        <Label layoutX="246.0" layoutY="126.0" text="Enter Sub-User Email:">
             <font>
                 <Font size="20.0" />
             </font>
         </Label>
 
-        <VBox fx:id="emailFieldsVBox" layoutX="105.0" layoutY="141.0" prefWidth="559.0" spacing="10">
-            <children>
-                <TextField fx:id="subUserEmailInputField" prefHeight="45.0" promptText="Email" />
-            </children>
-        </VBox>
+        <VBox fx:id="emailFieldsVBox" layoutX="105.0" layoutY="141.0" prefWidth="559.0" spacing="10" />
 
-        <Button layoutX="667.0" layoutY="141.0" mnemonicParsing="false" text="Add Email" onAction="#addEmailField" />
+        <Button layoutX="763.0" layoutY="169.0" mnemonicParsing="false" onAction="#addEmailField" prefHeight="35.0" prefWidth="90.0" text="Add Email">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
 
-        <ScrollPane layoutX="105.0" layoutY="200.0" prefWidth="559.0" prefHeight="150.0">
+        <ScrollPane layoutX="245.0" layoutY="235.0" prefHeight="260.0" prefWidth="598.0">
             <content>
-                <TextArea fx:id="emailsDisplayArea" editable="false" wrapText="true" />
+                <TextArea fx:id="emailsDisplayArea" editable="false" prefHeight="271.0" prefWidth="569.0" wrapText="true" />
             </content>
         </ScrollPane>
-        <Button fx:id="enterpriseSubUsersNextButton" layoutX="277.0" layoutY="384.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="246.0" text="Next" onAction="#onEnterpriseSubUsersNextButtonClick" />
+        <Button fx:id="enterpriseSubUsersNextButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onEnterpriseSubUsersNextButtonClick" prefHeight="48.0" prefWidth="246.0" text="Next" />
+          <TextField fx:id="subUserEmailInputField" layoutX="245.0" layoutY="164.0" prefHeight="45.0" prefWidth="507.0" promptText="Email" />
     </children>
 </AnchorPane>
