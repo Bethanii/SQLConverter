@@ -17,7 +17,7 @@ import java.util.Objects;
 
 public class AccountController {
 
-    @FXML private Label welcomeText, passwordError, confPasswordError, emailExistsError, connectionError;
+    @FXML private Label welcomeText, passwordError, confPasswordError, emailExistsError, connectionError, securityQuestionErrorMessage;
     @FXML private AnchorPane securityQuestionPage, sqlConverterPage, userDatabaseSetupPage, enterpriseAccountSubUserPage, confirmationPage;
     @FXML private TextField standardEmailInputField, standardPasswordInputField, standardConfirmPasswordField, serverNameField, dbUsernameField, dbPasswordField, databaseNameField, firstSecurityQuestionInput, secondSecurityQuestionInput, subUserEmailInputField, enterpriseEmailInputField, enterprisePasswordInputField, enterpriseConfirmPasswordField, tempPasswordInputField;
     @FXML private ChoiceBox<String> firstSecurityQuestion, secondSecurityQuestion;
@@ -28,7 +28,8 @@ public class AccountController {
     private DatabaseManager databaseManager = new DatabaseManager();
 
     @FXML
-    protected void onStandardAccountNextButtonClick() throws IOException {
+    protected void onStandardAccountNextButtonClick() throws IOException
+    {
         String emailInput = standardEmailInputField.getText();
         String passwordInput = standardPasswordInputField.getText();
         String passwordInputConfirmation = standardConfirmPasswordField.getText();
@@ -125,19 +126,57 @@ public class AccountController {
     }
 
     @FXML
-    protected void onSecurityQuestionNextButtonClick() throws IOException {
+    protected void onSecurityQuestionNextButtonClick() throws IOException
+    {
+        if (securityQuestionMissingFields(firstSecurityQuestionInput, secondSecurityQuestionInput))
+        {
+            securityQuestionErrorMessage.setVisible(true);
+        }
+        else
+        {
+            String firstAnswer = firstSecurityQuestionInput.getText();
+            String secondAnswer = secondSecurityQuestionInput.getText();
 
-        String firstAnswer = firstSecurityQuestionInput.getText();
-        String secondAnswer = secondSecurityQuestionInput.getText();
+            String firstQuestion = firstSecurityQuestion.getSelectionModel().getSelectedItem().toString();
+            String secondQuestion = secondSecurityQuestion.getSelectionModel().getSelectedItem().toString();
 
-        String firstQuestion = firstSecurityQuestion.getSelectionModel().getSelectedItem().toString();
-        String secondQuestion = secondSecurityQuestion.getSelectionModel().getSelectedItem().toString();
+            DatabaseManager databaseManager = new DatabaseManager();
+            databaseManager.SaveSecurityQuestions(firstAnswer, secondAnswer, firstQuestion, secondQuestion, this.email);
 
-        DatabaseManager databaseManager = new DatabaseManager();
-        databaseManager.SaveSecurityQuestions(firstAnswer, secondAnswer, firstQuestion, secondQuestion, this.email);
-
-        loadPage("user-database-setup-page.fxml", "Database Setup Information", "AccountController", this.email, false);
+            loadPage("user-database-setup-page.fxml", "Database Setup Information", "AccountController", this.email, false);
+        }
     }
+
+    @FXML
+    protected boolean securityQuestionMissingFields(TextField... fields) throws IOException
+    {
+        boolean blankFields = false;
+
+        for (TextField field : fields)
+        {
+            boolean fieldBlank = field.getText().isBlank() || field.getText().isEmpty();
+            if (fieldBlank)
+            {
+                field.getStyleClass().add("text-field-error");
+                blankFields = true;
+            }
+            else
+            {
+                field.getStyleClass().remove("text-field-error");
+            }
+        }
+
+        if (blankFields)
+        {
+            securityQuestionErrorMessage.setVisible(true);
+        }
+        else
+        {
+            securityQuestionErrorMessage.setVisible(false);
+        }
+        return blankFields;
+    }
+
 
     @FXML
     protected void onDatabaseSetupNextButton() throws IOException
