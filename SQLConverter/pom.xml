@@ -59,50 +59,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.google.api-client</groupId>
-            <artifactId>google-api-client</artifactId>
-            <version>1.32.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.oauth-client</groupId>
-            <artifactId>google-oauth-client</artifactId>
-            <version>1.35.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>javax.mail-api</artifactId>
-            <version>1.6.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
-            <version>1.6.2</version>
-        </dependency>
-        <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
-            <version>9.4.0.jre8</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.oauth-client</groupId>
-            <artifactId>google-oauth-client-jetty</artifactId>
-            <version>1.35.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.apis</groupId>
-            <artifactId>google-api-services-gmail</artifactId>
-            <version>v1-rev20220404-2.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.twilio.sdk</groupId>
-            <artifactId>twilio</artifactId>
-            <version>8.20.0</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version>
+            <version>12.4.1.jre11</version>
         </dependency>
     </dependencies>
     <build>
@@ -122,16 +81,21 @@
                 <version>0.0.8</version>
                 <executions>
                     <execution>
-                        <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.example.myjavafxapp/com.example.myjavafxapp.SQLApplication</mainClass>
+                            <stripDebug>true</stripDebug>
+                            <noHeaderFiles>true</noHeaderFiles>
+                            <noManpages>true</noManpages>
+                            <!--mainClass>com.example.myjavafxapp/com.example.myjavafxapp.SQLApplication</mainClass-->
+                            <!--this is like the bat file you run -->
                             <launcher>app</launcher>
-                            <jlinkZipName>app</jlinkZipName>
-                            <jlinkImageName>app</jlinkImageName>
+                            <jlinkZipName>appZip</jlinkZipName>
+                            <jlinkImageName>appImage</jlinkImageName>
                             <noManPages>true</noManPages>
                             <stripDebug>true</stripDebug>
                             <noHeaderFiles>true</noHeaderFiles>
+                            <mainClass>com.example.myjavafxapp.SQLApplication</mainClass>
+                            <executable>C:\openjfx-21.0.1_windows-x64_bin-sdk\javafx-sdk-21.0.1\bin</executable>
                         </configuration>
                     </execution>
                 </executions>

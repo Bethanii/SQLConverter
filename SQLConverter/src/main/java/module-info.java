@@ -6,18 +6,8 @@ module com.example.myjavafxapp {
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
     requires java.sql;
-    requires javax.mail.api;
-    requires com.google.api.client;
-    requires com.google.api.client.extensions.jetty.auth;
-    requires google.api.client;
-    requires com.google.api.client.auth;
-    requires com.google.api.client.extensions.java6.auth;
-    requires com.google.api.services.gmail;
-    requires org.apache.commons.codec;
-    requires com.google.api.client.json.gson;
-    requires twilio;
-    requires mssql.jdbc;
-
+ //   requires mssql.jdbc;
+    //requires com.microsoft.sqlserver.jdbc;
 
     opens com.example.myjavafxapp to javafx.fxml;
     exports com.example.myjavafxapp;
