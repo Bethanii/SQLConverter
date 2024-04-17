@@ -49,5 +49,10 @@
             <Font size="24.0" />
          </font>
       </Label>
+      <Label fx:id="securityQuestionErrorMessage" layoutX="308.0" layoutY="484.0" style="-fx-text-fill: red;" text="For your security, please ensure both questions are answered" visible="false">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
     </children>
 </AnchorPane>
