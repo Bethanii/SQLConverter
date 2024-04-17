@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.text.*?>
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="signInPage" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.Controller">
+
+    <stylesheets>
+        <URL value="@static/style.css" />
+    </stylesheets>
+
+   <children>
+       <Label fx:id="welcomeText" styleClass="labelStyle" />
+      <Rectangle id="signInLabelField" arcHeight="5.0" arcWidth="5.0" height="298.0" layoutX="392.0" layoutY="178.0" stroke="BLACK" strokeType="INSIDE" width="298.0" />
+      <Label layoutX="510.0" layoutY="199.0" styleClass="signInLabel" text="Login" />
+      <TextField fx:id="signInEmailInputField" layoutX="416.0" layoutY="248.0" prefHeight="45.0" prefWidth="251.0" promptText="Email" />
+      <Hyperlink id="forgotPasswordLink" fx:id="forgotPasswordLink" layoutX="493.0" layoutY="440.0" onAction="#onForgotPasswordLinkClick" text="Forgot password?" />
+      <Button id="signInPageButton" layoutX="411.0" layoutY="390.0" mnemonicParsing="false" onAction="#onSignInButtonClick" prefHeight="43.0" prefWidth="258.0" text="Sign In" />
+      <TextField fx:id="signInPasswordInputField" layoutX="415.0" layoutY="311.0" prefHeight="45.0" prefWidth="251.0" promptText="Password" />
+       <Button id="backButton" layoutX="38.0" layoutY="28.0" mnemonicParsing="false" onAction="#onSignInBackButtonClick" prefHeight="30.0" prefWidth="62.0" text="Back">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+       <Label fx:id="emailExistsError" layoutX="284.0" layoutY="298.0" text="Sorry, this account doesn't exist, please try again" textFill="red" visible="false">
+           <font>
+               <Font size="12.0" />
+           </font>
+       </Label>
+   </children>
+</AnchorPane>

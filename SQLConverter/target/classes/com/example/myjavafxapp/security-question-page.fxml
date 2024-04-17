@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="securityQuestionPage" fx:id="securityQuestionPage" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.AccountController">
+
+    <stylesheets>
+        <URL value="@static/style.css" />
+    </stylesheets>
+
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+
+    <children>
+        <Label fx:id="welcomeText" styleClass="labelStyle" />
+      <ChoiceBox fx:id="firstSecurityQuestion" layoutX="271.0" layoutY="185.0" prefHeight="35.0" prefWidth="558.0" />
+      <Label layoutX="271.0" layoutY="155.0" text="Security Question 1:">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <TextField fx:id="firstSecurityQuestionInput" layoutX="271.0" layoutY="248.0" prefHeight="35.0" prefWidth="558.0" />
+      <Label layoutX="271.0" layoutY="218.0" text="Answer:">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label layoutX="271.0" layoutY="396.0" text="Answer:">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <TextField fx:id="secondSecurityQuestionInput" layoutX="271.0" layoutY="426.0" prefHeight="35.0" prefWidth="558.0" />
+      <Label layoutX="271.0" layoutY="334.0" text="Security Question 2:">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <ChoiceBox fx:id="secondSecurityQuestion" layoutX="271.0" layoutY="364.0" prefHeight="35.0" prefWidth="558.0" />
+      <Button fx:id="securityQuestionNextButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onSecurityQuestionNextButtonClick" prefHeight="48.0" prefWidth="246.0" text="Next" />
+      <Label layoutX="349.0" layoutY="67.0" text="Please set security questions below">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+    </children>
+</AnchorPane>
