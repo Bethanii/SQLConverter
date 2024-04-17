@@ -118,6 +118,7 @@ public class AccountController {
 
         firstSecurityQuestion.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             String selectedQuestion = newValue.toString();
+
         });
 
         secondSecurityQuestion.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -126,57 +127,63 @@ public class AccountController {
     }
 
     @FXML
-    protected void onSecurityQuestionNextButtonClick() throws IOException
+    protected boolean securityQuestionMissingQuestions()
     {
-        if (securityQuestionMissingFields(firstSecurityQuestionInput, secondSecurityQuestionInput))
-        {
+        if (firstSecurityQuestion.getSelectionModel().getSelectedItem() == null || secondSecurityQuestion.getSelectionModel().getSelectedItem() == null) {
+            securityQuestionErrorMessage.setText("You must select a question from the above dropdowns");
             securityQuestionErrorMessage.setVisible(true);
+            return true;
         }
         else
         {
-            String firstAnswer = firstSecurityQuestionInput.getText();
-            String secondAnswer = secondSecurityQuestionInput.getText();
-
-            String firstQuestion = firstSecurityQuestion.getSelectionModel().getSelectedItem().toString();
-            String secondQuestion = secondSecurityQuestion.getSelectionModel().getSelectedItem().toString();
-
-            DatabaseManager databaseManager = new DatabaseManager();
-            databaseManager.SaveSecurityQuestions(firstAnswer, secondAnswer, firstQuestion, secondQuestion, this.email);
-
-            loadPage("user-database-setup-page.fxml", "Database Setup Information", "AccountController", this.email, false);
+            return false;
         }
     }
 
     @FXML
+    protected void onSecurityQuestionNextButtonClick() throws IOException
+    {
+        if (!securityQuestionMissingFields(firstSecurityQuestionInput, secondSecurityQuestionInput))
+        {
+            String firstAnswer = firstSecurityQuestionInput.getText();
+            String secondAnswer = secondSecurityQuestionInput.getText();
+
+            if (!securityQuestionMissingQuestions())
+            {
+                String firstQuestion = firstSecurityQuestion.getSelectionModel().getSelectedItem().toString();
+                String secondQuestion = secondSecurityQuestion.getSelectionModel().getSelectedItem().toString();
+
+                DatabaseManager databaseManager = new DatabaseManager();
+                databaseManager.SaveSecurityQuestions(firstAnswer, secondAnswer, firstQuestion, secondQuestion, this.email);
+
+                loadPage("user-database-setup-page.fxml", "Database Setup Information", "AccountController", this.email, false);
+            }
+        }
+    }
+
+   @FXML
     protected boolean securityQuestionMissingFields(TextField... fields) throws IOException
     {
         boolean blankFields = false;
 
-        for (TextField field : fields)
-        {
+        for (TextField field : fields) {
             boolean fieldBlank = field.getText().isBlank() || field.getText().isEmpty();
-            if (fieldBlank)
-            {
+            if (fieldBlank) {
                 field.getStyleClass().add("text-field-error");
                 blankFields = true;
-            }
-            else
-            {
+            } else {
                 field.getStyleClass().remove("text-field-error");
             }
         }
 
-        if (blankFields)
-        {
-            securityQuestionErrorMessage.setVisible(true);
+        if (blankFields) {
+            for (TextField field : fields) {
+                field.getStyleClass().add("text-field-error");
+            }
         }
-        else
-        {
-            securityQuestionErrorMessage.setVisible(false);
-        }
+        securityQuestionErrorMessage.setVisible(blankFields);
         return blankFields;
     }
-
 
     @FXML
     protected void onDatabaseSetupNextButton() throws IOException
