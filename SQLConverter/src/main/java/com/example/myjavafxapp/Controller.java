@@ -8,9 +8,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
@@ -23,13 +20,13 @@ public class Controller
 
     @FXML
     private Label welcomeText, errorMessage, emailExistsError, newPasswordErrorMessage, question1, question2, serverNameLocationAnswer, dbConnectFailureAnswer, passwordChangeAnswer,
-            accountDifferencesAnswer, updateDatebaseInfoAnswer;
+            accountDifferencesAnswer, updateDatebaseInfoAnswer, emptyDropdownAnswer;
     @FXML
     private TextField signInEmailInputField, signInPasswordInputField, resetEmailField, response1, response2, newPasswordInputField, newConfirmationPasswordField;
     @FXML
     private AnchorPane signInPage, resetPasswordPage, newPasswordPage, faqPage, sqlConverterPage;
     @FXML
-    private ComboBox<String> serverNameLocation, dbConnectFailure, passwordChange, accountDifferences, updateDatebaseInfo;
+    private ComboBox<String> serverNameLocation, dbConnectFailure, passwordChange, accountDifferences, updateDatebaseInfo, emptyDropdown;
     private DatabaseManager databaseManager = new DatabaseManager();
     private String email;
     private boolean isAnswerVisible = false;
@@ -430,6 +427,7 @@ public class Controller
         stage.setTitle("Frequently Asked Questions");
     }
 
+
     @FXML
     public void onSignInBackButtonClick() throws IOException {
         loadPage("landing-page.fxml", "Welcome", "");
@@ -462,8 +460,32 @@ public class Controller
 
     @FXML
     protected void displayDBFailureAnswer(MouseEvent event) {
+        String message = "Please see the following for a list of possible reason your database connection is failing." +
+                "\n \n Incorrect Login Information: " +
+                "\n One common reason is due to incorrect login credentials. If the your database username or password are incorrect you can update" +
+                "\n both in your profile." +
+                "\n \n Network Restrictions: " +
+                "\n Though this application is equip to handle database connections, your database may have settings in place that prevent a successful" +
+                "\n connection from happening. Be sure that you do not have any firewall restrictions in place would cause the database to be inaccessible." +
+                "\n information stored somewhere such as in preferences or settings." +
+                "\n \n Incorrect Database Selection: " +
+                "\n In the process of creating your account, did you select the checkbox indicating that you were using a local database? If this checkbox" +
+                "\n was checked and you are not using a local database or vice versa, then the connection will fail. If you beleive this is the case, try " +
+                "\n updating this accordingly in your profile section.";
+
         if (event.getButton() == MouseButton.PRIMARY) {
-            displayAnswer(event, "db failure");
+            displayAnswer(event, message);
+        }
+    }
+
+    @FXML
+    protected void displayEmptyDropdownAnswer(MouseEvent event) {
+        String message = "\nIncorrect Permissions: " +
+                "\n The main reason for this is because user you have set for your account likely does not have select permissions enabled. In order to interact " +
+                "\n with the main SQL Converter you must have select permissions enabled. ";
+
+        if (event.getButton() == MouseButton.PRIMARY) {
+            displayAnswer(event, message);
         }
     }
 
@@ -503,6 +525,8 @@ public class Controller
             answerLabel = accountDifferencesAnswer;
         } else if (comboBox == updateDatebaseInfo) {
             answerLabel = updateDatebaseInfoAnswer;
+        } else if (comboBox == emptyDropdown) {
+            answerLabel = emptyDropdownAnswer;
         }
 
         if (event.getButton() == MouseButton.PRIMARY && answerLabel != null) {
