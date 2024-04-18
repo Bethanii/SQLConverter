@@ -66,12 +66,6 @@ public class Controller
     @FXML
     protected void onSignInButtonClick() throws IOException, SQLException
     {
-   /*     try {
-            DatabaseManager dbManager = new DatabaseManager();
-            dbManager.DatabaseConnection();
-        } catch (Exception ex) {
-            showConnectionErrorPopup(ex.getMessage());
-        } */
         boolean missingFields = RequiredFieldsMissing();
 
         if (missingFields == false)
@@ -131,30 +125,6 @@ public class Controller
         }
     }
 
- /*   @FXML
-    private void showConnectionErrorPopup(String errorMessage) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Connection Error");
-        alert.setHeaderText("Unable to connect to database");
-        alert.setContentText(errorMessage);  // Use the passed error message
-
-        ButtonType faqButton = new ButtonType("FAQ", ButtonBar.ButtonData.OK_DONE);
-        ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-        alert.getButtonTypes().setAll(faqButton, cancelButton);
-
-        Optional<ButtonType> result = alert.showAndWait();
-        result.ifPresent(buttonType -> {
-            if (buttonType == faqButton) {
-                try {
-                    goToFAQPage();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    } */
-
 
     @FXML
     private void showConnectionErrorPopup() {
@@ -172,7 +142,7 @@ public class Controller
         result.ifPresent(buttonType -> {
             if (buttonType == faqButton) {
                 try {
-                    goToFAQPage();
+                   goToFAQPage();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

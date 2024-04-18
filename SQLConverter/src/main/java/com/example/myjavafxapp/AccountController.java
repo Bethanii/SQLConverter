@@ -17,51 +17,40 @@ import java.util.Objects;
 
 public class AccountController {
 
-    @FXML private Label welcomeText, passwordError, confPasswordError, emailError, connectionError, securityQuestionErrorMessage, enterpriseAccountInputError;
+    @FXML private Label welcomeText, connectionError, securityQuestionErrorMessage, enterpriseAccountInputError, standardAccountInputError;
     @FXML private AnchorPane securityQuestionPage, sqlConverterPage, userDatabaseSetupPage, enterpriseAccountSubUserPage, confirmationPage;
     @FXML private TextField standardEmailInputField, standardPasswordInputField, standardConfirmPasswordField, serverNameField, dbUsernameField, dbPasswordField, databaseNameField, firstSecurityQuestionInput, secondSecurityQuestionInput, subUserEmailInputField, enterpriseEmailInputField, enterprisePasswordInputField, enterpriseConfirmPasswordField, tempPasswordInputField;
     @FXML private ChoiceBox<String> firstSecurityQuestion, secondSecurityQuestion;
     @FXML private TextArea emailsDisplayArea;
+    @FXML private CheckBox localDBCheckbox;
 
     private String email;
     private List<String> emails = new ArrayList<>();
     private DatabaseManager databaseManager = new DatabaseManager();
 
     @FXML
-    protected void onStandardAccountNextButtonClick() throws IOException
-    {
-        String emailInput = standardEmailInputField.getText();
-        String passwordInput = standardPasswordInputField.getText();
-        String passwordInputConfirmation = standardConfirmPasswordField.getText();
-
-        DatabaseManager databaseManager = new DatabaseManager();
-        Connection connection = databaseManager.DatabaseConnection();
-
-        Boolean emailValidation = databaseManager.CheckIfColumnValueExists(connection, "Email", emailInput);
-        Boolean passwordValidation = validatePasswordsMatch(passwordInput, passwordInputConfirmation);
-
-        if (emailValidation == true) {
-            emailError.setVisible(true);
-            standardEmailInputField.getStyleClass().add("text-field-error");
-        } else if (emailValidation != true) {
-            if (passwordValidation == false) {
-                passwordError.setVisible(true);
-                confPasswordError.setVisible(true);
-                standardEmailInputField.getStyleClass().add("text-field-error");
-                standardConfirmPasswordField.getStyleClass().add("text-field-error");
-            } else if (passwordValidation == true) {
-                databaseManager.SaveUserDetails(connection, emailInput, passwordInput);
-                this.email = emailInput;
-                loadPage("security-question-page.fxml", "Standard Account Security Questions", "AccountController", this.email, true);
-            }
-        }
+    protected void onStandardAccountNextButtonClick() throws IOException {
+        accountNextButtonClick("standard");
+    }
+    @FXML
+    protected void onEnterpriseAccountNextButtonClick() throws IOException {
+        accountNextButtonClick("enterprise");
     }
 
     @FXML
-    protected void onEnterpriseAccountNextButtonClick() throws IOException {
-        String emailInput = enterpriseEmailInputField.getText();
-        String passwordInput = enterprisePasswordInputField.getText();
-        String passwordInputConfirmation = enterpriseConfirmPasswordField.getText();
+    protected void accountNextButtonClick(String accountType) throws IOException {
+        TextField emailInputField = accountType.equals("standard") ? standardEmailInputField : enterpriseEmailInputField;
+        TextField passwordInputField = accountType.equals("standard") ? standardPasswordInputField : enterprisePasswordInputField;
+        TextField confirmPasswordField = accountType.equals("standard") ? standardConfirmPasswordField : enterpriseConfirmPasswordField;
+        Label accountInputError = accountType.equals("standard") ? standardAccountInputError : enterpriseAccountInputError;
+        CheckBox localDbCheckbox = accountType.equals("standard") ? localDBCheckbox : localDBCheckbox;
+        String nextPageFxml = accountType.equals("standard") ? "security-question-page.fxml" : "enterprise-account-sub-users.fxml";
+        String nextPageTitle = accountType.equals("standard") ? "Standard Account Security Questions" : "Enterprise Account Sub User Information";
+        boolean isStandard = accountType.equals("standard");
+
+        String emailInput = emailInputField.getText();
+        String passwordInput = passwordInputField.getText();
+        String passwordInputConfirmation = confirmPasswordField.getText();
 
         DatabaseManager databaseManager = new DatabaseManager();
         Connection connection = databaseManager.DatabaseConnection();
@@ -69,45 +58,36 @@ public class AccountController {
         Boolean emailExists = databaseManager.CheckIfColumnValueExists(connection, "Email", emailInput);
         Boolean passwordMatches = validatePasswordsMatch(passwordInput, passwordInputConfirmation);
 
-        if(emailInput.isEmpty() || emailInput.isBlank() || passwordInput.isEmpty() || passwordInput.isBlank() || passwordInputConfirmation.isEmpty() || passwordInputConfirmation.isBlank())
-        {
-            enterpriseAccountInputError.setText("Fields cannot be blank");
-            enterpriseAccountInputError.setLayoutX(450);
-            enterpriseAccountInputError.setVisible(true);
+        if(emailInput.isEmpty() || emailInput.isBlank() || passwordInput.isEmpty() || passwordInput.isBlank() || passwordInputConfirmation.isEmpty() || passwordInputConfirmation.isBlank()) {
+            accountInputError.setText("Fields cannot be blank");
+            accountInputError.setLayoutX(450);
+            accountInputError.setVisible(true);
 
-            enterpriseEmailInputField.getStyleClass().add("text-field-error");
-            enterprisePasswordInputField.getStyleClass().add("text-field-error");
-            enterpriseConfirmPasswordField.getStyleClass().add("text-field-error");
-        }
-        if (!emailInput.isBlank() && !passwordInput.isBlank() && !passwordInputConfirmation.isBlank())
-        {
-            enterpriseAccountInputError.getStyleClass().remove("text-field-error");
-            enterprisePasswordInputField.getStyleClass().remove("text-field-error");
-            enterpriseConfirmPasswordField.getStyleClass().remove("text-field-error");
+            emailInputField.getStyleClass().add("text-field-error");
+            passwordInputField.getStyleClass().add("text-field-error");
+            confirmPasswordField.getStyleClass().add("text-field-error");
+        } else {
+            emailInputField.getStyleClass().remove("text-field-error");
+            passwordInputField.getStyleClass().remove("text-field-error");
+            confirmPasswordField.getStyleClass().remove("text-field-error");
 
-            if (!emailExists)
-            {
-                if (passwordMatches == false)
-                {
-                    enterpriseAccountInputError.setVisible(true);
-                    enterpriseAccountInputError.setLayoutX(350);
-                    enterpriseAccountInputError.setText("Password and Confirmation Password do not match");
-                    enterprisePasswordInputField.getStyleClass().add("text-field-error");
-                    enterpriseConfirmPasswordField.getStyleClass().add("text-field-error");
+            if (!emailExists) {
+                if (!passwordMatches) {
+                    accountInputError.setVisible(true);
+                    accountInputError.setLayoutX(350);
+                    accountInputError.setText("Password and Confirmation Password do not match");
+                    passwordInputField.getStyleClass().add("text-field-error");
+                    confirmPasswordField.getStyleClass().add("text-field-error");
+                } else {
+                        databaseManager.SaveUserDetails(connection, emailInput, passwordInput);
+                        this.email = emailInput;
+                        loadPage(nextPageFxml, nextPageTitle, "AccountController", this.email, isStandard);
                 }
-                else if (passwordMatches)
-                {
-                    databaseManager.SaveUserDetails(connection, emailInput, passwordInput);
-                    this.email = emailInput;
-                    loadPage("enterprise-account-sub-users.fxml", "Enterprise Account Sub User Information", "AccountController", this.email, false);
-                }
-            }
-            else
-            {
-                enterpriseAccountInputError.setVisible(true);
-                enterpriseAccountInputError.setLayoutX(380);
-                enterpriseAccountInputError.setText("Email already exists, please log in");
-                enterpriseEmailInputField.getStyleClass().add("text-field-error");
+            } else {
+                accountInputError.setVisible(true);
+                accountInputError.setLayoutX(400);
+                accountInputError.setText("Email already exists, please log in");
+                emailInputField.getStyleClass().add("text-field-error");
             }
         }
     }
@@ -208,7 +188,6 @@ public class AccountController {
         }
     }
 
-
     @FXML
     protected void onDatabaseSetupNextButton() throws IOException
     {
@@ -218,6 +197,7 @@ public class AccountController {
         String dbPassword = dbPasswordField.getText();
 
         Connection UserConnection = null;
+        Connection connection = null;
         DatabaseManager databaseManager = new DatabaseManager();
 
         if (serverName.isEmpty() || databaseName.isEmpty() || dbUsername.isEmpty() || dbPassword.isEmpty())
@@ -228,8 +208,18 @@ public class AccountController {
         }
         try
         {
-            UserConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword);
-            Connection connection = databaseManager.DatabaseConnection();
+            if (localDBCheckbox.isSelected())
+            {
+                UserConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword, true);
+                connection = databaseManager.DatabaseConnection();
+                databaseManager.saveIsLocalValue(connection, this.email, 1);
+            }
+            else
+            {
+                UserConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword, false);
+                connection = databaseManager.DatabaseConnection();
+                databaseManager.saveIsLocalValue(connection, this.email, 1);
+            }
 
             if (UserConnection != null)
             {
