@@ -45,8 +45,19 @@ public class SQLConverterController {
         if (dbValues == null) {
             return null;
         }
-        this.userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3]);
-        return this.userConnection;
+
+        boolean localDb = databaseManager.checkForLocalDB(databaseManager.DatabaseConnection(), this.email);
+
+        if (localDb)
+        {
+            this.userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], true);
+            return this.userConnection;
+        }
+        else
+        {
+            this.userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], false);
+            return this.userConnection;
+        }
     }
 
     public void populateStaticRow()

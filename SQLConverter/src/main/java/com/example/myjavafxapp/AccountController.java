@@ -22,6 +22,7 @@ public class AccountController {
     @FXML private TextField standardEmailInputField, standardPasswordInputField, standardConfirmPasswordField, serverNameField, dbUsernameField, dbPasswordField, databaseNameField, firstSecurityQuestionInput, secondSecurityQuestionInput, subUserEmailInputField, enterpriseEmailInputField, enterprisePasswordInputField, enterpriseConfirmPasswordField, tempPasswordInputField;
     @FXML private ChoiceBox<String> firstSecurityQuestion, secondSecurityQuestion;
     @FXML private TextArea emailsDisplayArea;
+    @FXML private CheckBox localDBCheckbox;
 
     private String email;
     private List<String> emails = new ArrayList<>();
@@ -42,6 +43,7 @@ public class AccountController {
         TextField passwordInputField = accountType.equals("standard") ? standardPasswordInputField : enterprisePasswordInputField;
         TextField confirmPasswordField = accountType.equals("standard") ? standardConfirmPasswordField : enterpriseConfirmPasswordField;
         Label accountInputError = accountType.equals("standard") ? standardAccountInputError : enterpriseAccountInputError;
+        CheckBox localDbCheckbox = accountType.equals("standard") ? localDBCheckbox : localDBCheckbox;
         String nextPageFxml = accountType.equals("standard") ? "security-question-page.fxml" : "enterprise-account-sub-users.fxml";
         String nextPageTitle = accountType.equals("standard") ? "Standard Account Security Questions" : "Enterprise Account Sub User Information";
         boolean isStandard = accountType.equals("standard");
@@ -77,9 +79,9 @@ public class AccountController {
                     passwordInputField.getStyleClass().add("text-field-error");
                     confirmPasswordField.getStyleClass().add("text-field-error");
                 } else {
-                    databaseManager.SaveUserDetails(connection, emailInput, passwordInput);
-                    this.email = emailInput;
-                    loadPage(nextPageFxml, nextPageTitle, "AccountController", this.email, isStandard);
+                        databaseManager.SaveUserDetails(connection, emailInput, passwordInput);
+                        this.email = emailInput;
+                        loadPage(nextPageFxml, nextPageTitle, "AccountController", this.email, isStandard);
                 }
             } else {
                 accountInputError.setVisible(true);
@@ -186,7 +188,6 @@ public class AccountController {
         }
     }
 
-
     @FXML
     protected void onDatabaseSetupNextButton() throws IOException
     {
@@ -196,6 +197,7 @@ public class AccountController {
         String dbPassword = dbPasswordField.getText();
 
         Connection UserConnection = null;
+        Connection connection = null;
         DatabaseManager databaseManager = new DatabaseManager();
 
         if (serverName.isEmpty() || databaseName.isEmpty() || dbUsername.isEmpty() || dbPassword.isEmpty())
@@ -206,8 +208,18 @@ public class AccountController {
         }
         try
         {
-            UserConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword);
-            Connection connection = databaseManager.DatabaseConnection();
+            if (localDBCheckbox.isSelected())
+            {
+                UserConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword, true);
+                connection = databaseManager.DatabaseConnection();
+                databaseManager.saveIsLocalValue(connection, this.email, 1);
+            }
+            else
+            {
+                UserConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword, false);
+                connection = databaseManager.DatabaseConnection();
+                databaseManager.saveIsLocalValue(connection, this.email, 1);
+            }
 
             if (UserConnection != null)
             {

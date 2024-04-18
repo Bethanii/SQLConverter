@@ -26,7 +26,7 @@ public class DatabaseManager {
         {
             return;
         }
-        this.userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3]);
+        this.userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], false);
     }
 
     public void SetSQLAppConnection() throws IOException
@@ -35,7 +35,7 @@ public class DatabaseManager {
         this.sqlAppConnection = databaseManager.DatabaseConnection();
     }
 
-    public Connection ConnectUserDatabase(String serverName, String databaseName, String username, String password) throws IOException {
+   /* public Connection ConnectUserDatabase(String serverName, String databaseName, String username, String password) throws IOException {
         String connectionUrl = "jdbc:sqlserver://" + serverName + ":1433;"
                 + "database=" + databaseName + ";"
                 + "user=" + username + ";"
@@ -47,6 +47,38 @@ public class DatabaseManager {
             Connection connection = DriverManager.getConnection(connectionUrl);
             return connection;
         } catch (Exception e) {
+            return null;
+        }
+    } */
+
+    public Connection ConnectUserDatabase(String serverName, String databaseName, String username, String password, boolean isLocal) throws IOException {
+        String connectionUrl;
+        if (isLocal) {
+            connectionUrl = "jdbc:sqlserver://" + serverName + ":1433;" +
+                    "database=" + databaseName + ";" +
+                    "user=" + username + ";" +
+                    "password=" + password + ";" +
+                     "encrypt=true;" +
+                    "trustServerCertificate=true;" +
+                    "loginTimeout=30;";
+            System.out.println("Database is local.");
+        } else {
+            connectionUrl = "jdbc:sqlserver://" + serverName + ":1433;" +
+                    "database=" + databaseName + ";" +
+                    "user=" + username + ";" +
+                    "password=" + password + ";" +
+                    "encrypt=true;" +
+                    "trustServerCertificate=false;" +
+                    "hostNameInCertificate=*.database.windows.net;" +
+                    "loginTimeout=30;";
+        }
+
+        try {
+            Connection connection = DriverManager.getConnection(connectionUrl);
+            System.out.println("Connected to the database successfully.");
+            return connection;
+        } catch (Exception e) {
+            System.out.println("Connection failed: " + e.getMessage());
             return null;
         }
     }
@@ -79,19 +111,26 @@ public class DatabaseManager {
         }
     }
 
-    public void SaveUserDetails(Connection connection, String email, String password)
-    {
-        String sql = "INSERT INTO Users (Email, password) VALUES (?, ?);";
+    public void SaveUserDetails(Connection connection, String email, String password) {
+        String sql = "INSERT INTO Users (Email, Password) VALUES (?, ?);";
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql))
-        {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, email);
             preparedStatement.setString(2, password);
             preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        catch (SQLException e)
-        {
-            System.out.println("Could not insert user, error: " + e.getMessage());
+    }
+
+    public void saveIsLocalValue(Connection connection, String email, int isLocal) {
+        String sql = "UPDATE Users SET isLocal = ? WHERE Email = ?;";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, isLocal);
+            preparedStatement.setString(2, email);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -111,6 +150,27 @@ public class DatabaseManager {
         }
         catch (SQLException e)
         {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean checkForLocalDB(Connection connection, String email)
+    {
+        String sql = "SELECT isLocal FROM Users WHERE Email = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, email);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int isLocal = resultSet.getInt("isLocal");
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }

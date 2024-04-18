@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="faqPage" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.Controller">
+<AnchorPane id="passwordUpdateConfirmationPage" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.Controller">
 
     <stylesheets>
         <URL value="@static/style.css" />
@@ -14,15 +14,14 @@
 
     <children>
         <Label fx:id="welcomeText" styleClass="labelStyle" />
-        <Button id="signInPageButton" layoutX="411.0" layoutY="599.0" mnemonicParsing="false" onAction="#onPasswordUpdateSignInButtonClick" prefHeight="43.0" prefWidth="258.0" text="Sign In" />
-        <Label layoutX="488.0" layoutY="58.0" text="FAQ Page">
-         <font>
-            <Font size="24.0" />
-         </font></Label>
-      <ScrollPane hbarPolicy="NEVER" layoutX="97.0" layoutY="117.0" prefHeight="425.0" prefWidth="934.0" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="158.0" AnchorPane.leftAnchor="97.0" AnchorPane.rightAnchor="69.0" AnchorPane.topAnchor="117.0">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
-        </content>
-      </ScrollPane>
+        <Button id="signInPageButton" layoutX="410.0" layoutY="365.0" mnemonicParsing="false" onAction="#onPasswordUpdateSignInButtonClick" prefHeight="43.0" prefWidth="258.0" text="Sign In" />
+        <Label layoutX="308.0" layoutY="182.0" text="Your password has been successfully updated">
+            <font>
+                <Font size="24.0" />
+            </font></Label>
+        <Label layoutX="443.0" layoutY="256.0" text="Click below to sign in ">
+            <font>
+                <Font size="20.0" />
+            </font></Label>
     </children>
 </AnchorPane>
