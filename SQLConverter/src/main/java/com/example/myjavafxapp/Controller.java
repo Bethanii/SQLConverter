@@ -1,8 +1,10 @@
 package com.example.myjavafxapp;
 
+import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -14,13 +16,15 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.Optional;
 import java.util.Random;
-import javafx.collections.FXCollections;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+
 
 public class Controller
 {
 
     @FXML
-    private Label welcomeText, errorMessage, emailExistsError, passwordError, newPasswordErrorMessage, question1, question2, serverNameLocationAnswer;
+    private Label welcomeText, errorMessage, emailExistsError, newPasswordErrorMessage, question1, question2, serverNameLocationAnswer;
     @FXML
     private TextField signInEmailInputField, signInPasswordInputField, resetEmailField, response1, response2, newPasswordInputField, newConfirmationPasswordField;
     @FXML
@@ -435,19 +439,22 @@ public class Controller
     public void onSignInFAQLink() throws IOException {
         goToFAQPage();
     }
+    private boolean isTextVisible = false;
 
     @FXML
     protected void displayServerNameAnswer(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
             String message = "The server name can usually be found in your database connection settings.";
             serverNameLocationAnswer.setText(message);
-
-            serverNameLocationAnswer.setVisible(true);
-            serverNameLocationAnswer.setManaged(true);
+            serverNameLocationAnswer.setVisible(!isTextVisible);
+            serverNameLocationAnswer.setManaged(!isTextVisible);
 
             serverNameLocation.hide();
+
+            isTextVisible = !isTextVisible;
+            
+            int rotation = isTextVisible ? 90 : 0;
+            serverNameLocation.lookup(".arrow-button").setStyle("-fx-rotate: " + rotation + ";");
         }
     }
-
-
 }
