@@ -9,6 +9,8 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
@@ -440,8 +442,21 @@ public class Controller
 
     @FXML
     protected void displayServerNameAnswer(MouseEvent event) {
+        String message = "There are a few different ways to find your server name. Here are a few suggestions:" +
+                "\n \n Database Management Settings: " +
+                "\nIf you are using a database management system then the server name will specified in your connection settings. This will differ " +
+                "\n based on the exact management system you have. For example, if you are using SQL Server Management Studio, you can find this " +
+                "\n by referencing the ‘Connect to Server' window that populates when you first start the application." +
+                "\n \n Application Settings: " +
+                "\n If you are using a specific application that is not a database management system, then the application should have this" +
+                "\n information stored somewhere such as in preferences or settings." +
+                "\n \n IT Department: " +
+                "\n If you are connecting to a company database then it is recommended that you reach out to the IT " +
+                "\n department of your company as they will be able to assist you.";
+
+
         if (event.getButton() == MouseButton.PRIMARY) {
-            displayAnswer(event, "server name");
+            displayAnswer(event, message);
         }
     }
 
@@ -472,6 +487,7 @@ public class Controller
             displayAnswer(event, "db info update");
         }
     }
+
     @FXML
     protected void displayAnswer(MouseEvent event, String message) {
         ComboBox<String> comboBox = (ComboBox<String>) event.getSource();

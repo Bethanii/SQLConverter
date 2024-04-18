@@ -20,45 +20,41 @@
             </font>
         </Label>
 
-      <ScrollPane hbarPolicy="NEVER" layoutX="68.0" layoutY="103.0" prefHeight="535.0" prefWidth="977.0" vbarPolicy="ALWAYS">
-        <content>
-
-            <VBox id="serverNameLocationContainer" minHeight="0.0" minWidth="0.0" prefHeight="541.0" prefWidth="966.0" spacing="0.0">
+        <ScrollPane hbarPolicy="NEVER" layoutX="68.0" layoutY="103.0" prefHeight="535.0" prefWidth="977.0" vbarPolicy="ALWAYS" pickOnBounds="false">
+            <VBox id="serverNameLocationContainer" minHeight="0.0" minWidth="0.0" prefWidth="1000.0" spacing="10.0">
                 <children>
-                    <ComboBox fx:id="serverNameLocation" onMouseClicked="#displayServerNameAnswer" prefHeight="39.0" prefWidth="950.0" promptText="Where can I find my Server Name?" style="-fx-font-size: 18px;" />
-                    <Label fx:id="serverNameLocationAnswer" prefHeight="-1" prefWidth="-1" >
+                    <ComboBox fx:id="serverNameLocation" onMouseClicked="#displayServerNameAnswer" prefWidth="950.0" promptText="Where can I find my Server Name?" style="-fx-font-size: 18px;" />
+                    <Label fx:id="serverNameLocationAnswer" minHeight="0.0" minWidth="0.0" wrapText="true">
                         <font>
                             <Font size="16.0" />
                         </font>
                     </Label>
-                    <ComboBox fx:id="dbConnectFailure" onMouseClicked="#displayDBFailureAnswer" prefHeight="42.0" prefWidth="951.0" promptText="Why is my Database Connection unsuccessful?" style="-fx-font-size: 18px;" />
-                    <Label fx:id="dbConnectFailureAnswer" prefHeight="-1" prefWidth="-1" >
+                    <ComboBox fx:id="dbConnectFailure" onMouseClicked="#displayDBFailureAnswer" prefWidth="950.0" promptText="Why is my Database Connection unsuccessful?" style="-fx-font-size: 18px;" />
+                    <Label fx:id="dbConnectFailureAnswer" minHeight="0.0" minWidth="0.0" wrapText="true">
                         <font>
                             <Font size="16.0" />
                         </font>
                     </Label>
-                  <ComboBox fx:id="passwordChange" onMouseClicked="#displayPasswordChangeAnswer" prefHeight="42.0" prefWidth="951.0" promptText="How can I change my Password?" style="-fx-font-size: 18px;" />
-                  <Label fx:id="passwordChangeAnswer" prefHeight="-1" prefWidth="-1">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                  </Label>
-                  <ComboBox fx:id="accountDifferences" onMouseClicked="#displayAccountDifferencesAnswer" prefHeight="42.0" prefWidth="951.0" promptText="What is the difference between an Enterprise and Standard Account?" style="-fx-font-size: 18px;" />
-                    <Label fx:id="accountDifferencesAnswer" prefHeight="-1" prefWidth="-1">
+                    <ComboBox fx:id="passwordChange" onMouseClicked="#displayPasswordChangeAnswer" prefWidth="950.0" promptText="How can I change my Password?" style="-fx-font-size: 18px;" />
+                    <Label fx:id="passwordChangeAnswer" minHeight="0.0" minWidth="0.0" wrapText="true">
                         <font>
                             <Font size="16.0" />
                         </font>
                     </Label>
-                  <ComboBox fx:id="updateDatebaseInfo" onMouseClicked="#updateDatebaseInfoAnswer" prefHeight="42.0" prefWidth="951.0" promptText="How do I update my Database information?" style="-fx-font-size: 18px;" />
-                    <Label fx:id="updateDatebaseInfoAnswer" prefHeight="-1" prefWidth="-1">
+                    <ComboBox fx:id="accountDifferences" onMouseClicked="#displayAccountDifferencesAnswer" prefWidth="950.0" promptText="What is the difference between an Enterprise and Standard Account?" style="-fx-font-size: 18px;" />
+                    <Label fx:id="accountDifferencesAnswer" minHeight="0.0" minWidth="0.0" wrapText="true">
+                        <font>
+                            <Font size="16.0" />
+                        </font>
+                    </Label>
+                    <ComboBox fx:id="updateDatebaseInfo" onMouseClicked="#updateDatebaseInfoAnswer" prefWidth="950.0" promptText="How do I update my Database information?" style="-fx-font-size: 18px;" />
+                    <Label fx:id="updateDatebaseInfoAnswer" minHeight="0.0" minWidth="0.0" wrapText="true">
                         <font>
                             <Font size="16.0" />
                         </font>
                     </Label>
                 </children>
             </VBox>
-
-        </content>
         </ScrollPane>
-      </children>
-  </AnchorPane>
+    </children>
+</AnchorPane>
