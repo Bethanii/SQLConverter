@@ -23,19 +23,14 @@
             <Font size="18.0" />
          </font>
         </TextField>
-        <Label fx:id="emailExistsError" layoutX="105.0" layoutY="190.0" text="Email already registered, please log in" textFill="red" visible="false">
-            <font>
-                <Font size="14.0" />
-            </font>
-        </Label>
       <TextField fx:id="enterprisePasswordInputField" layoutX="598.0" layoutY="255.0" prefHeight="45.0" prefWidth="251.0" promptText="Password">
          <font>
             <Font size="18.0" />
          </font>
       </TextField>
-        <Label fx:id="passwordError" layoutX="467.0" layoutY="189.0" text="Password and Confirmation Password don't match" textFill="red" visible="false">
+        <Label fx:id="enterpriseAccountInputError" layoutX="345.0" layoutY="470.0" text="Password and Confirmation Password don't match" textFill="red" visible="false">
             <font>
-                <Font size="14.0" />
+                <Font size="18.0" />
             </font>
         </Label>
       <Label layoutX="599.0" layoutY="226.0" text="Password" wrapText="true">
@@ -58,15 +53,11 @@
             <Font size="18.0" />
          </font>
       </TextField>
-        <Label fx:id="confPasswordError" layoutX="469.0" layoutY="290.0" text="Password and Confirmation Password don't match" textFill="red" visible="false">
-            <font>
-                <Font size="14.0" />
-            </font>
-        </Label>
       <Button fx:id="enterpriseNextButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onEnterpriseAccountNextButtonClick" prefHeight="48.0" prefWidth="246.0" text="Next" />
         <Button id="backButton" layoutX="38.0" layoutY="28.0" mnemonicParsing="false" onAction="#onEnterpriseAccountBackButtonClick" prefHeight="30.0" prefWidth="62.0" text="Back">
          <font>
             <Font size="14.0" />
-         </font></Button>
+         </font>
+        </Button>
     </children>
 </AnchorPane>
