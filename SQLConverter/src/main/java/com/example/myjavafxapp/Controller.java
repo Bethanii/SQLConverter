@@ -1,38 +1,36 @@
 package com.example.myjavafxapp;
 
-import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
 import java.sql.*;
 import java.util.Optional;
 import java.util.Random;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-
 
 public class Controller
 {
 
     @FXML
-    private Label welcomeText, errorMessage, emailExistsError, newPasswordErrorMessage, question1, question2, serverNameLocationAnswer;
+    private Label welcomeText, errorMessage, emailExistsError, newPasswordErrorMessage, question1, question2, serverNameLocationAnswer, dbConnectFailureAnswer, passwordChangeAnswer,
+            accountDifferencesAnswer, updateDatebaseInfoAnswer;
     @FXML
     private TextField signInEmailInputField, signInPasswordInputField, resetEmailField, response1, response2, newPasswordInputField, newConfirmationPasswordField;
     @FXML
     private AnchorPane signInPage, resetPasswordPage, newPasswordPage, faqPage, sqlConverterPage;
     @FXML
-    private ComboBox<String> serverNameLocation;
+    private ComboBox<String> serverNameLocation, dbConnectFailure, passwordChange, accountDifferences, updateDatebaseInfo;
     private DatabaseManager databaseManager = new DatabaseManager();
     private String email;
+    private boolean isAnswerVisible = false;
 
     @FXML
     protected void onSignInSelectionClick() throws IOException
@@ -439,22 +437,67 @@ public class Controller
     public void onSignInFAQLink() throws IOException {
         goToFAQPage();
     }
-    private boolean isTextVisible = false;
 
     @FXML
     protected void displayServerNameAnswer(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
-            String message = "The server name can usually be found in your database connection settings.";
-            serverNameLocationAnswer.setText(message);
-            serverNameLocationAnswer.setVisible(!isTextVisible);
-            serverNameLocationAnswer.setManaged(!isTextVisible);
+            displayAnswer(event, "server name");
+        }
+    }
 
-            serverNameLocation.hide();
+    @FXML
+    protected void displayDBFailureAnswer(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY) {
+            displayAnswer(event, "db failure");
+        }
+    }
 
-            isTextVisible = !isTextVisible;
-            
-            int rotation = isTextVisible ? 90 : 0;
-            serverNameLocation.lookup(".arrow-button").setStyle("-fx-rotate: " + rotation + ";");
+    @FXML
+    protected void displayPasswordChangeAnswer(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY) {
+            displayAnswer(event, "password update");
+        }
+    }
+
+    @FXML
+    protected void displayAccountDifferencesAnswer(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY) {
+            displayAnswer(event, "account difference");
+        }
+    }
+
+    @FXML
+    protected void updateDatebaseInfoAnswer(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY) {
+            displayAnswer(event, "db info update");
+        }
+    }
+    @FXML
+    protected void displayAnswer(MouseEvent event, String message) {
+        ComboBox<String> comboBox = (ComboBox<String>) event.getSource();
+        Label answerLabel = null;
+
+        if (comboBox == serverNameLocation) {
+            answerLabel = serverNameLocationAnswer;
+        } else if (comboBox == dbConnectFailure) {
+            answerLabel = dbConnectFailureAnswer;
+        } else if (comboBox == passwordChange) {
+            answerLabel = passwordChangeAnswer;
+        } else if (comboBox == accountDifferences) {
+            answerLabel = accountDifferencesAnswer;
+        } else if (comboBox == updateDatebaseInfo) {
+            answerLabel = updateDatebaseInfoAnswer;
+        }
+
+        if (event.getButton() == MouseButton.PRIMARY && answerLabel != null) {
+            comboBox.hide();
+            isAnswerVisible = !isAnswerVisible;
+            answerLabel.setText(message);
+            answerLabel.setVisible(isAnswerVisible);
+            answerLabel.setManaged(isAnswerVisible);
+
+            int rotation = isAnswerVisible ? 0 : 90;
+            comboBox.lookup(".arrow-button").setStyle("-fx-rotate: " + rotation + ";");
         }
     }
 }

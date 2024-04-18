@@ -97,3 +97,11 @@
 #addRowScrollPane .scroll-bar:horizontal {
     -fx-background-color: transparent;
 }
+
+.combo-box .arrow-button {
+    -fx-rotate: 90;
+}
+
+#serverNameLocationContainer > ComboBox {
+    -fx-pref-height: 39.0;
+}
