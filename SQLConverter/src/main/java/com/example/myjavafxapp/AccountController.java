@@ -17,7 +17,7 @@ import java.util.Objects;
 
 public class AccountController {
 
-    @FXML private Label welcomeText, passwordError, confPasswordError, emailError, connectionError, securityQuestionErrorMessage, enterpriseAccountInputError;
+    @FXML private Label welcomeText, passwordError, confPasswordError, emailError, connectionError, securityQuestionErrorMessage, enterpriseAccountInputError, standardAccountInputError;
     @FXML private AnchorPane securityQuestionPage, sqlConverterPage, userDatabaseSetupPage, enterpriseAccountSubUserPage, confirmationPage;
     @FXML private TextField standardEmailInputField, standardPasswordInputField, standardConfirmPasswordField, serverNameField, dbUsernameField, dbPasswordField, databaseNameField, firstSecurityQuestionInput, secondSecurityQuestionInput, subUserEmailInputField, enterpriseEmailInputField, enterprisePasswordInputField, enterpriseConfirmPasswordField, tempPasswordInputField;
     @FXML private ChoiceBox<String> firstSecurityQuestion, secondSecurityQuestion;
@@ -28,8 +28,7 @@ public class AccountController {
     private DatabaseManager databaseManager = new DatabaseManager();
 
     @FXML
-    protected void onStandardAccountNextButtonClick() throws IOException
-    {
+    protected void onStandardAccountNextButtonClick() throws IOException {
         String emailInput = standardEmailInputField.getText();
         String passwordInput = standardPasswordInputField.getText();
         String passwordInputConfirmation = standardConfirmPasswordField.getText();
@@ -37,22 +36,48 @@ public class AccountController {
         DatabaseManager databaseManager = new DatabaseManager();
         Connection connection = databaseManager.DatabaseConnection();
 
-        Boolean emailValidation = databaseManager.CheckIfColumnValueExists(connection, "Email", emailInput);
-        Boolean passwordValidation = validatePasswordsMatch(passwordInput, passwordInputConfirmation);
+        Boolean emailExists = databaseManager.CheckIfColumnValueExists(connection, "Email", emailInput);
+        Boolean passwordMatches = validatePasswordsMatch(passwordInput, passwordInputConfirmation);
 
-        if (emailValidation == true) {
-            emailError.setVisible(true);
+        if(emailInput.isEmpty() || emailInput.isBlank() || passwordInput.isEmpty() || passwordInput.isBlank() || passwordInputConfirmation.isEmpty() || passwordInputConfirmation.isBlank())
+        {
+            standardAccountInputError.setText("Fields cannot be blank");
+            standardAccountInputError.setLayoutX(450);
+            standardAccountInputError.setVisible(true);
+
             standardEmailInputField.getStyleClass().add("text-field-error");
-        } else if (emailValidation != true) {
-            if (passwordValidation == false) {
-                passwordError.setVisible(true);
-                confPasswordError.setVisible(true);
+            standardPasswordInputField.getStyleClass().add("text-field-error");
+            standardConfirmPasswordField.getStyleClass().add("text-field-error");
+        }
+        if (!emailInput.isBlank() && !passwordInput.isBlank() && !passwordInputConfirmation.isBlank())
+        {
+            standardEmailInputField.getStyleClass().remove("text-field-error");
+            standardPasswordInputField.getStyleClass().remove("text-field-error");
+            standardConfirmPasswordField.getStyleClass().remove("text-field-error");
+
+            if (!emailExists)
+            {
+                if (passwordMatches == false)
+                {
+                    standardAccountInputError.setVisible(true);
+                    standardAccountInputError.setLayoutX(350);
+                    standardAccountInputError.setText("Password and Confirmation Password do not match");
+                    standardPasswordInputField.getStyleClass().add("text-field-error");
+                    standardConfirmPasswordField.getStyleClass().add("text-field-error");
+                }
+                else if (passwordMatches)
+                {
+                    databaseManager.SaveUserDetails(connection, emailInput, passwordInput);
+                    this.email = emailInput;
+                    loadPage("security-question-page.fxml", "Standard Account Security Questions", "AccountController", this.email, true);
+                }
+            }
+            else
+            {
+                standardAccountInputError.setVisible(true);
+                standardAccountInputError.setLayoutX(400);
+                standardAccountInputError.setText("Email already exists, please log in");
                 standardEmailInputField.getStyleClass().add("text-field-error");
-                standardConfirmPasswordField.getStyleClass().add("text-field-error");
-            } else if (passwordValidation == true) {
-                databaseManager.SaveUserDetails(connection, emailInput, passwordInput);
-                this.email = emailInput;
-                loadPage("security-question-page.fxml", "Standard Account Security Questions", "AccountController", this.email, true);
             }
         }
     }
@@ -105,7 +130,7 @@ public class AccountController {
             else
             {
                 enterpriseAccountInputError.setVisible(true);
-                enterpriseAccountInputError.setLayoutX(380);
+                enterpriseAccountInputError.setLayoutX(400);
                 enterpriseAccountInputError.setText("Email already exists, please log in");
                 enterpriseEmailInputField.getStyleClass().add("text-field-error");
             }
