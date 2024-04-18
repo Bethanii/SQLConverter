@@ -2,26 +2,31 @@ package com.example.myjavafxapp;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
 import java.sql.*;
 import java.util.Optional;
 import java.util.Random;
+import javafx.collections.FXCollections;
 
 public class Controller
 {
 
     @FXML
-    private Label welcomeText, errorMessage, emailExistsError, passwordError, newPasswordErrorMessage, question1, question2;
+    private Label welcomeText, errorMessage, emailExistsError, passwordError, newPasswordErrorMessage, question1, question2, serverNameLocationAnswer;
     @FXML
     private TextField signInEmailInputField, signInPasswordInputField, resetEmailField, response1, response2, newPasswordInputField, newConfirmationPasswordField;
     @FXML
     private AnchorPane signInPage, resetPasswordPage, newPasswordPage, faqPage, sqlConverterPage;
-
+    @FXML
+    private ComboBox<String> serverNameLocation;
     private DatabaseManager databaseManager = new DatabaseManager();
     private String email;
 
@@ -425,4 +430,24 @@ public class Controller
     public void onSignInBackButtonClick() throws IOException {
         loadPage("landing-page.fxml", "Welcome", "");
     }
+
+    @FXML
+    public void onSignInFAQLink() throws IOException {
+        goToFAQPage();
+    }
+
+    @FXML
+    protected void displayServerNameAnswer(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY) {
+            String message = "The server name can usually be found in your database connection settings.";
+            serverNameLocationAnswer.setText(message);
+
+            serverNameLocationAnswer.setVisible(true);
+            serverNameLocationAnswer.setManaged(true);
+
+            serverNameLocation.hide();
+        }
+    }
+
+
 }

@@ -31,5 +31,10 @@
                <Font size="12.0" />
            </font>
        </Label>
+      <Hyperlink fx:id="signInFAQLink" layoutX="954.0"  onAction="#onSignInFAQLink" layoutY="35.0" text="Need help?">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Hyperlink>
    </children>
 </AnchorPane>

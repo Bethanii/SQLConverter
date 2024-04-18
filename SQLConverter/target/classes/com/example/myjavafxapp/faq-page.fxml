@@ -14,14 +14,22 @@
 
     <children>
         <Label fx:id="welcomeText" styleClass="labelStyle" />
-        <Button id="signInPageButton" layoutX="410.0" layoutY="365.0" mnemonicParsing="false" onAction="#onPasswordUpdateSignInButtonClick" prefHeight="43.0" prefWidth="258.0" text="Sign In" />
-        <Label layoutX="308.0" layoutY="182.0" text="Your password has been successfully updated">
+        <Label layoutX="402.0" layoutY="47.0" text="Frequently Asked Questions">
             <font>
                 <Font size="24.0" />
-            </font></Label>
-        <Label layoutX="443.0" layoutY="256.0" text="Click below to sign in ">
-            <font>
-                <Font size="20.0" />
-            </font></Label>
-    </children>
-</AnchorPane>
+            </font>
+        </Label>
+      <ScrollPane hbarPolicy="NEVER" layoutX="69.0" layoutY="103.0" prefHeight="535.0" prefWidth="976.0" vbarPolicy="ALWAYS">
+        <content>
+         <!-- <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="541.0" prefWidth="980.0"> -->
+              <VBox id="serverNameLocationContainer" minHeight="0.0" minWidth="0.0" prefHeight="541.0" prefWidth="980.0">
+                  <children>
+                      <ComboBox fx:id="serverNameLocation" prefHeight="39.0" prefWidth="909.0" onMouseClicked="#displayServerNameAnswer" promptText="Where can I find my Server Name?" style="-fx-font-size: 18px;" />
+                      <Label fx:id="serverNameLocationAnswer" layoutX="402.0" layoutY="462.0"/>
+                  </children>
+              </VBox>
+            <!--   </AnchorPane> -->
+          </content>
+        </ScrollPane>
+      </children>
+  </AnchorPane>
