@@ -60,5 +60,18 @@
             <Font size="16.0" />
          </font>
       </Button>
+      <MenuBar fx:id="menuBar" prefHeight="23.0" prefWidth="1100.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="Main">
+          </Menu>
+          <Menu mnemonicParsing="false" text="My Profile">
+          </Menu>
+          <Menu mnemonicParsing="false" text="My Database">
+              <items>
+                  <MenuItem mnemonicParsing="false" text="Update Database Info" onAction="#goToUserDatabaseSetupPage"/>
+              </items>
+          </Menu>
+        </menus>
+      </MenuBar>
     </children>
 </AnchorPane>

@@ -7,29 +7,37 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
 import java.util.ArrayList;
+
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import java.util.List;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 public class SQLConverterController {
+    @FXML private ChoiceBox<String> searchRow1;
+    @FXML private TextField searchField1;
+    @FXML private VBox dynamicRowsContainer;
+    @FXML private VBox resultsContainer;
+    @FXML private Label welcomeText, connectionError;
+    @FXML private TextField activeTextField, serverNameField, databaseNameField, dbUsernameField, dbPasswordField;
+    @FXML private CheckBox localDBCheckbox;
     @FXML
-    private ChoiceBox<String> searchRow1;
-    @FXML
-    private TextField searchField1;
-    @FXML
-    private VBox dynamicRowsContainer;
-    @FXML
-    private VBox resultsContainer;
+    private AnchorPane updateUserDBPage, sqlConverterPage;
     private ChoiceBox<String> activeChoiceBox;
-    private TextField activeTextField;
     private Connection userConnection;
     private DatabaseManager databaseManager;
     private String email;
+
     @FXML
     public void initialize() throws IOException
     {
@@ -233,5 +241,121 @@ public class SQLConverterController {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void goToUserDatabaseSetupPage() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("update-database-info.fxml"));
+        AnchorPane updateUserDBPage = fxmlLoader.load();
+        SQLConverterController controller = fxmlLoader.getController();
+
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(updateUserDBPage);
+        updateUserDBPage.requestFocus();
+
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle("Update User Database Information");
+    }
+
+    public void onUpdateDatabaseInfoButton() throws IOException {
+        String serverName = serverNameField.getText();
+        String databaseName = databaseNameField.getText();
+        String dbUsername = dbUsernameField.getText();
+        String dbPassword = dbPasswordField.getText();
+
+        Connection UserConnection = null;
+        Connection connection = null;
+        DatabaseManager databaseManager = new DatabaseManager();
+
+        if (serverName.isEmpty() || databaseName.isEmpty() || dbUsername.isEmpty() || dbPassword.isEmpty())
+        {
+            connectionError.setText("Fields cannot be blank");
+            connectionError.setLayoutX(450);
+            connectionError.setVisible(true);
+            return;
+        }
+        try
+        {
+            if (localDBCheckbox.isSelected())
+            {
+                UserConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword, true);
+                connection = databaseManager.DatabaseConnection();
+                databaseManager.saveIsLocalValue(connection, this.email, 1);
+            }
+            else
+            {
+                UserConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword, false);
+                connection = databaseManager.DatabaseConnection();
+                databaseManager.saveIsLocalValue(connection, this.email, 1);
+            }
+
+            if (UserConnection != null)
+            {
+                String insertSQL = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ? WHERE email = ?";
+
+                try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
+                    pstmt.setString(1, serverName);
+                    pstmt.setString(2, databaseName);
+                    pstmt.setString(3, dbUsername);
+                    pstmt.setString(4, dbPassword);
+                    pstmt.setString(5, this.email);
+
+                    pstmt.executeUpdate();
+                } catch (SQLException e) {
+                    connectionError.setVisible(true);
+                    System.out.println("Failed to insert data, error: " + e.getMessage());
+                    e.printStackTrace();
+                }
+
+            }
+            else
+            {
+                connectionError.setVisible(true);
+            }
+        } catch (IOException e) {
+            connectionError.setVisible(true);
+        }
+    }
+
+    public void loadPage(String pageFile, String pageTitle, String controllerSelection, String email, boolean setSecurityQuestions) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(SQLApplication.class.getResource(pageFile));
+        Parent page = fxmlLoader.load();
+
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(page);
+        page.requestFocus();
+
+        switch(controllerSelection)
+        {
+            case "AccountController":
+                if (email != null) {
+                    AccountController controller = fxmlLoader.getController();
+                    controller.setEmail(email);
+                }
+                if (setSecurityQuestions)
+                {
+                    AccountController accountController = fxmlLoader.getController();
+                    accountController.setSecurityQuestionOptions();
+                }
+                break;
+        }
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle(pageTitle);
+    }
+
+    public void onUpdateDBButtonClick() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("sql-converter.fxml"));
+        AnchorPane sqlConverterPage = fxmlLoader.load();
+        SQLConverterController controller = fxmlLoader.getController();
+
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(sqlConverterPage);
+        sqlConverterPage.requestFocus();
+
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle("SQL Converter");
     }
 }
