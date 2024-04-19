@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.text.*?>
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="updateUserDBPage" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.SQLConverterController">
+
+    <stylesheets>
+        <URL value="@static/style.css" />
+    </stylesheets>
+
+    <children>
+        <Label fx:id="welcomeText" styleClass="labelStyle" />
+        <TextField id="databaseNameField" fx:id="databaseNameField" layoutX="588.0" layoutY="233.0" prefHeight="45.0" prefWidth="251.0" promptText="Database name">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </TextField>
+        <Label layoutX="589.0" layoutY="204.0" text="Database Name" wrapText="true">
+            <font>
+                <Font size="20.0" />
+            </font>
+        </Label>
+        <Label layoutX="276.0" layoutY="71.0" text="Update database information using the fields below">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Label>
+        <Label layoutX="591.0" layoutY="304.0" styleClass="textField" text="Password">
+            <font>
+                <Font size="20.0" />
+            </font>
+        </Label>
+        <TextField id="dbPasswordField" fx:id="dbPasswordField" layoutX="590.0" layoutY="332.0" prefHeight="45.0" prefWidth="251.0" promptText="Password">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </TextField>
+        <Button fx:id="updateDatabaseInfoButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onUpdateDatabaseInfoButton" prefHeight="48.0" prefWidth="246.0" text="Update" />
+        <TextField id="dbUsernameField" fx:id="dbUsernameField" layoutX="226.0" layoutY="334.0" prefHeight="45.0" prefWidth="251.0" promptText="Admin username">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </TextField>
+        <Label layoutX="229.0" layoutY="304.0" styleClass="textField" text="Admin Username">
+            <font>
+                <Font size="20.0" />
+            </font>
+        </Label>
+        <Label layoutX="227.0" layoutY="204.0" prefHeight="30.0" prefWidth="131.0" text="Server Name" wrapText="true">
+            <font>
+                <Font size="20.0" />
+            </font>
+        </Label>
+        <TextField id="serverNameField" fx:id="serverNameField" layoutX="226.0" layoutY="233.0" prefHeight="45.0" prefWidth="251.0" promptText="Server Name">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </TextField>
+        <Label fx:id="connectionError" layoutX="200.0" layoutY="481.0" text="Database connection unsuccessful. Please click the FAQ link for help getting started." textFill="red" visible="false">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </Label>
+        <CheckBox fx:id="localDBCheckbox" layoutX="591.0" layoutY="423.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="217.0" text="This is a Local Database">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </CheckBox>
+        <Button id="backButton" layoutX="38.0" layoutY="28.0" mnemonicParsing="false" onAction="#onUpdateDBButtonClick" prefHeight="30.0" prefWidth="62.0" text="Back">
+        </Button>
+    </children>
+</AnchorPane>

@@ -1,7 +1,7 @@
 
 #signInPage, #selectAccountPage, #enterpriseAccountPage, #enterpriseAccountSubUserPage, #securityQuestionPage, #standardAccountPage,
 #userDatabaseSetupPage, #sqlConverterPage, #resetPasswordPage, #confirmationPage, #newPasswordPage, #validateSecurityQuestionsPage,
-#passwordUpdateConfirmationPage, #faqPage, #subUserTempEmailPage, #enterpriseSecurityQuestionPage, #landingPage {
+#passwordUpdateConfirmationPage, #faqPage, #subUserTempEmailPage, #enterpriseSecurityQuestionPage, #landingPage, #updateUserDBPage {
     -fx-background-color: #DAF8F0;
     -fx-background-position: center center;
     -fx-background-repeat: no-repeat;
@@ -26,7 +26,7 @@
 }
 
 #enterpriseAccountButton, #standardAccountButton, #enterpriseNextButton, #securityQuestionNextButton, #enterpriseSubUsersNextButton,
-#standardNextButton, #databaseSetupNextButton, #resetPasswordButton, #newPasswordResetButton, #tempPasswordNextButton {
+#standardNextButton, #databaseSetupNextButton, #resetPasswordButton, #newPasswordResetButton, #tempPasswordNextButton, #updateDatabaseInfoButton {
     -fx-focus-color: transparent;
     -fx-background-radius: 20;
     -fx-font-family: 'Open Sans', sans-serif;
@@ -96,4 +96,12 @@
 
 #addRowScrollPane .scroll-bar:horizontal {
     -fx-background-color: transparent;
+}
+
+.combo-box .arrow-button {
+    -fx-rotate: 90;
+}
+
+#serverNameLocationContainer > ComboBox {
+    -fx-pref-height: 39.0;
 }

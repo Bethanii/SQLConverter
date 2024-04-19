@@ -2,9 +2,12 @@ package com.example.myjavafxapp;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.ComboBox;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
@@ -16,14 +19,17 @@ public class Controller
 {
 
     @FXML
-    private Label welcomeText, errorMessage, emailExistsError, passwordError, newPasswordErrorMessage, question1, question2;
+    private Label welcomeText, errorMessage, emailExistsError, newPasswordErrorMessage, question1, question2, serverNameLocationAnswer, dbConnectFailureAnswer, passwordChangeAnswer,
+            accountDifferencesAnswer, updateDatebaseInfoAnswer, emptyDropdownAnswer;
     @FXML
     private TextField signInEmailInputField, signInPasswordInputField, resetEmailField, response1, response2, newPasswordInputField, newConfirmationPasswordField;
     @FXML
     private AnchorPane signInPage, resetPasswordPage, newPasswordPage, faqPage, sqlConverterPage;
-
+    @FXML
+    private ComboBox<String> serverNameLocation, dbConnectFailure, passwordChange, accountDifferences, updateDatebaseInfo, emptyDropdown;
     private DatabaseManager databaseManager = new DatabaseManager();
     private String email;
+    private boolean isAnswerVisible = false;
 
     @FXML
     protected void onSignInSelectionClick() throws IOException
@@ -421,8 +427,117 @@ public class Controller
         stage.setTitle("Frequently Asked Questions");
     }
 
+
     @FXML
     public void onSignInBackButtonClick() throws IOException {
         loadPage("landing-page.fxml", "Welcome", "");
+    }
+
+    @FXML
+    public void onSignInFAQLink() throws IOException {
+        goToFAQPage();
+    }
+
+    @FXML
+    protected void displayServerNameAnswer(MouseEvent event) {
+        String message = "There are a few different ways to find your server name. Here are a few suggestions:" +
+                "\n \n Database Management Settings: " +
+                "\nIf you are using a database management system then the server name will specified in your connection settings. This will differ " +
+                "\n based on the exact management system you have. For example, if you are using SQL Server Management Studio, you can find this " +
+                "\n by referencing the ‘Connect to Server' window that populates when you first start the application." +
+                "\n \n Application Settings: " +
+                "\n If you are using a specific application that is not a database management system, then the application should have this" +
+                "\n information stored somewhere such as in preferences or settings." +
+                "\n \n IT Department: " +
+                "\n If you are connecting to a company database then it is recommended that you reach out to the IT " +
+                "\n department of your company as they will be able to assist you.";
+
+
+        if (event.getButton() == MouseButton.PRIMARY) {
+            displayAnswer(event, message);
+        }
+    }
+
+    @FXML
+    protected void displayDBFailureAnswer(MouseEvent event) {
+        String message = "Please see the following for a list of possible reason your database connection is failing." +
+                "\n \n Incorrect Login Information: " +
+                "\n One common reason is due to incorrect login credentials. If the your database username or password are incorrect you can update" +
+                "\n both in your profile." +
+                "\n \n Network Restrictions: " +
+                "\n Though this application is equip to handle database connections, your database may have settings in place that prevent a successful" +
+                "\n connection from happening. Be sure that you do not have any firewall restrictions in place would cause the database to be inaccessible." +
+                "\n information stored somewhere such as in preferences or settings." +
+                "\n \n Incorrect Database Selection: " +
+                "\n In the process of creating your account, did you select the checkbox indicating that you were using a local database? If this checkbox" +
+                "\n was checked and you are not using a local database or vice versa, then the connection will fail. If you beleive this is the case, try " +
+                "\n updating this accordingly in your profile section.";
+
+        if (event.getButton() == MouseButton.PRIMARY) {
+            displayAnswer(event, message);
+        }
+    }
+
+    @FXML
+    protected void displayEmptyDropdownAnswer(MouseEvent event) {
+        String message = "\nIncorrect Permissions: " +
+                "\n The main reason for this is because user you have set for your account likely does not have select permissions enabled. In order to interact " +
+                "\n with the main SQL Converter you must have select permissions enabled. ";
+
+        if (event.getButton() == MouseButton.PRIMARY) {
+            displayAnswer(event, message);
+        }
+    }
+
+    @FXML
+    protected void displayPasswordChangeAnswer(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY) {
+            displayAnswer(event, "password update");
+        }
+    }
+
+    @FXML
+    protected void displayAccountDifferencesAnswer(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY) {
+            displayAnswer(event, "account difference");
+        }
+    }
+
+    @FXML
+    protected void updateDatebaseInfoAnswer(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY) {
+            displayAnswer(event, "db info update");
+        }
+    }
+
+    @FXML
+    protected void displayAnswer(MouseEvent event, String message) {
+        ComboBox<String> comboBox = (ComboBox<String>) event.getSource();
+        Label answerLabel = null;
+
+        if (comboBox == serverNameLocation) {
+            answerLabel = serverNameLocationAnswer;
+        } else if (comboBox == dbConnectFailure) {
+            answerLabel = dbConnectFailureAnswer;
+        } else if (comboBox == passwordChange) {
+            answerLabel = passwordChangeAnswer;
+        } else if (comboBox == accountDifferences) {
+            answerLabel = accountDifferencesAnswer;
+        } else if (comboBox == updateDatebaseInfo) {
+            answerLabel = updateDatebaseInfoAnswer;
+        } else if (comboBox == emptyDropdown) {
+            answerLabel = emptyDropdownAnswer;
+        }
+
+        if (event.getButton() == MouseButton.PRIMARY && answerLabel != null) {
+            comboBox.hide();
+            isAnswerVisible = !isAnswerVisible;
+            answerLabel.setText(message);
+            answerLabel.setVisible(isAnswerVisible);
+            answerLabel.setManaged(isAnswerVisible);
+
+            int rotation = isAnswerVisible ? 0 : 90;
+            comboBox.lookup(".arrow-button").setStyle("-fx-rotate: " + rotation + ";");
+        }
     }
 }
