@@ -41,7 +41,7 @@ public class SQLConverterController {
     @FXML
     public void initialize() throws IOException
     {
-   //     SetConnection();
+        //SetConnection();
        // populateStaticRow();
     }
 
@@ -68,11 +68,12 @@ public class SQLConverterController {
         }
     }
 
-    public void populateStaticRow()
+    @FXML
+    protected void populateStaticRow(Connection userConnection)
     {
         try
         {
-            searchRow1.getItems().addAll(getTableNames(this.userConnection));
+            searchRow1.getItems().addAll(getTableNames(userConnection));
         }
         catch (Exception e)
         {
@@ -257,7 +258,7 @@ public class SQLConverterController {
         stage.setTitle("Update User Database Information");
     }
 
-    public void goResetPasswordPage() throws IOException {
+    public void goToResetPasswordPage() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("update-database-info.fxml"));
         AnchorPane updateUserDBPage = fxmlLoader.load();
         SQLConverterController controller = fxmlLoader.getController();
@@ -331,34 +332,6 @@ public class SQLConverterController {
         }
     }
 
-    public void loadPage(String pageFile, String pageTitle, String controllerSelection, String email, boolean setSecurityQuestions) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(SQLApplication.class.getResource(pageFile));
-        Parent page = fxmlLoader.load();
-
-        Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(page);
-        page.requestFocus();
-
-        switch(controllerSelection)
-        {
-            case "AccountController":
-                if (email != null) {
-                    AccountController controller = fxmlLoader.getController();
-                    controller.setEmail(email);
-                }
-                if (setSecurityQuestions)
-                {
-                    AccountController accountController = fxmlLoader.getController();
-                    accountController.setSecurityQuestionOptions();
-                }
-                break;
-        }
-        Stage stage = (Stage) currentScene.getWindow();
-        stage.sizeToScene();
-        stage.setTitle(pageTitle);
-    }
-
     public void onUpdateDBButtonClick() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("sql-converter.fxml"));
         AnchorPane sqlConverterPage = fxmlLoader.load();
@@ -371,5 +344,16 @@ public class SQLConverterController {
         Stage stage = (Stage) currentScene.getWindow();
         stage.sizeToScene();
         stage.setTitle("SQL Converter");
+    }
+
+    public void onConnectToDatabaseButton() throws IOException {
+        Connection connection = SetConnection();
+
+        if (connection == null) {
+            //showConnectionErrorPopup();
+        } else {
+            SQLConverterController controller = new SQLConverterController();
+            controller.populateStaticRow(connection);
+        }
     }
 }

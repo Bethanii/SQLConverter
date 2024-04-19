@@ -39,7 +39,7 @@
                 <Font size="18.0" />
             </font>
         </TextField>
-        <Button fx:id="databaseSetupNextButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onDatabaseSetupNextButton" prefHeight="48.0" prefWidth="246.0" text="Next" />
+        <Button fx:id="databaseSetupNextButton" layoutX="552.0" layoutY="558.0" mnemonicParsing="false" onAction="#onDatabaseSetupNextButton" prefHeight="48.0" prefWidth="246.0" text="Next" />
       <TextField id="dbUsernameField" fx:id="dbUsernameField" layoutX="226.0" layoutY="334.0" prefHeight="45.0" prefWidth="251.0" promptText="Admin username">
          <font>
             <Font size="18.0" />
@@ -60,15 +60,21 @@
             <Font size="18.0" />
          </font>
       </TextField>
-      <Label fx:id="connectionError" layoutX="104.0" layoutY="329.0" text="Database connection unsuccessful. Please click the FAQ for help getting started." textFill="red" visible="false">
+      <Label fx:id="connectionError" layoutX="200.0" layoutY="481.0" text="Database connection unsuccessful. Please click the FAQ link for help getting started." textFill="red" visible="false">
         <font>
             <Font size="18.0" />
         </font>
+      </Label>
+        <Label fx:id="connectionSuccess" layoutX="391.0" layoutY="481.0" text="Database connection successful!" textFill="green" visible="false">
+            <font>
+                <Font size="18.0" />
+            </font>
     </Label>
       <CheckBox fx:id="localDBCheckbox" layoutX="591.0" layoutY="423.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="217.0" text="This is a Local Database">
          <font>
             <Font size="16.0" />
          </font>
       </CheckBox>
+      <Button fx:id="testConnectionButton" layoutX="251.0" layoutY="558.0" mnemonicParsing="false" onAction="#onTestConnectionButton" prefHeight="48.0" prefWidth="246.0" text="Test Connection" />
     </children>
 </AnchorPane>

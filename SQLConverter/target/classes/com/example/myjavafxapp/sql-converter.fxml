@@ -14,14 +14,14 @@
     <children>
         <Label fx:id="welcomeText" styleClass="labelStyle" />
 
-        <ScrollPane fx:id="resultsWindow" hbarPolicy="AS_NEEDED" layoutX="534.0" layoutY="97.0" prefHeight="465.0" prefWidth="467.0">
+        <ScrollPane fx:id="resultsWindow" hbarPolicy="AS_NEEDED" layoutX="535.0" layoutY="149.0" prefHeight="472.0" prefWidth="511.0">
             <content>
                 <VBox fx:id="resultsContainer" spacing="5" />
             </content>
         </ScrollPane>
 
 
-        <ScrollPane fx:id="addRowScrollPane" hbarPolicy="NEVER" layoutX="59.0" layoutY="97.0" prefHeight="445.0" prefWidth="448.0">
+        <ScrollPane fx:id="addRowScrollPane" hbarPolicy="NEVER" layoutX="59.0" layoutY="152.0" prefHeight="462.0" prefWidth="448.0">
             <content>
                 <VBox fx:id="dynamicRowsContainer" layoutX="35.0" layoutY="102.0" spacing="10">
                    <children>
@@ -40,22 +40,22 @@
             </content>
         </ScrollPane>
 
-      <Button id="exportButton" layoutX="715.0" layoutY="574.0" mnemonicParsing="false" onAction="#onExportButtonClick" prefHeight="37.0" prefWidth="119.0" text="Export Data">
+      <Button id="exportButton" layoutX="717.0" layoutY="632.0" mnemonicParsing="false" onAction="#onExportButtonClick" prefHeight="37.0" prefWidth="119.0" text="Export Data">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Label layoutX="708.0" layoutY="60.0" prefHeight="17.0" prefWidth="134.0" text="Search Results">
+      <Label layoutX="717.0" layoutY="112.0" prefHeight="17.0" prefWidth="134.0" text="Search Results">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <Button id="addRow" layoutX="108.0" layoutY="574.0" mnemonicParsing="false" onAction="#onAddRowButtonClick" prefHeight="37.0" prefWidth="119.0" text="Add Row">
+      <Button id="addRow" layoutX="118.0" layoutY="632.0" mnemonicParsing="false" onAction="#onAddRowButtonClick" prefHeight="37.0" prefWidth="119.0" text="Add Row">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button fx:id="searchButton" layoutX="283.0" layoutY="574.0" mnemonicParsing="false" onAction="#onSearchButtonClick" prefHeight="37.0" prefWidth="119.0" text="Search">
+      <Button fx:id="searchButton" layoutX="283.0" layoutY="632.0" mnemonicParsing="false" onAction="#onSearchButtonClick" prefHeight="37.0" prefWidth="119.0" text="Search">
          <font>
             <Font size="16.0" />
          </font>
@@ -64,15 +64,20 @@
         <menus>
           <Menu mnemonicParsing="false" text="My Profile">
               <items>
-                  <MenuItem mnemonicParsing="false" text="Update Profile Info" onAction="#goToUserDatabaseSetupPage"/>
+                  <MenuItem mnemonicParsing="false" onAction="#goToUserDatabaseSetupPage" text="Update Profile Info" />
               </items>
           </Menu>
           <Menu mnemonicParsing="false" text="My Database">
               <items>
-                  <MenuItem mnemonicParsing="false" text="Update Database Info" onAction="#goToUserDatabaseSetupPage"/>
+                  <MenuItem mnemonicParsing="false" onAction="#goToUserDatabaseSetupPage" text="Update Database Info" />
               </items>
           </Menu>
         </menus>
       </MenuBar>
+      <Button fx:id="connectToDatabaseButton" onAction="#onConnectToDatabaseButton" layoutX="59.0" layoutY="56.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="192.0" text="Connect to Database">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
     </children>
 </AnchorPane>
