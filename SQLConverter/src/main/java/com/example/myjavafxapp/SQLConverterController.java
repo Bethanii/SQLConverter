@@ -28,7 +28,7 @@ public class SQLConverterController {
     @FXML private TextField searchField1;
     @FXML private VBox dynamicRowsContainer;
     @FXML private VBox resultsContainer;
-    @FXML private Label welcomeText, connectionError;
+    @FXML private Label welcomeText, connectionError, connectionSuccess;
     @FXML private TextField activeTextField, serverNameField, databaseNameField, dbUsernameField, dbPasswordField;
     @FXML private CheckBox localDBCheckbox;
     @FXML
@@ -332,7 +332,7 @@ public class SQLConverterController {
         }
     }
 
-    public void onUpdateDBButtonClick() throws IOException {
+    public void onUpdateDBBackButtonClick() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("sql-converter.fxml"));
         AnchorPane sqlConverterPage = fxmlLoader.load();
         SQLConverterController controller = fxmlLoader.getController();
@@ -354,6 +354,51 @@ public class SQLConverterController {
         } else {
             SQLConverterController controller = new SQLConverterController();
             controller.populateStaticRow(connection);
+        }
+    }
+
+    public void onUpdateDBTestConnectionButton()
+    {
+        String serverName = serverNameField.getText();
+        String databaseName = databaseNameField.getText();
+        String dbUsername = dbUsernameField.getText();
+        String dbPassword = dbPasswordField.getText();
+
+        Connection userConnection = null;
+        Connection connection = null;
+        DatabaseManager databaseManager = new DatabaseManager();
+
+        if (serverName.isEmpty() || databaseName.isEmpty() || dbUsername.isEmpty() || dbPassword.isEmpty())
+        {
+            connectionError.setText("Fields cannot be empty");
+            connectionError.setVisible(true);
+            return;
+        }
+        try
+        {
+            if (localDBCheckbox.isSelected())
+            {
+                userConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword, true);
+                connection = databaseManager.DatabaseConnection();
+                databaseManager.saveIsLocalValue(connection, this.email, 1);
+            }
+            else
+            {
+                userConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword, false);
+                connection = databaseManager.DatabaseConnection();
+                databaseManager.saveIsLocalValue(connection, this.email, 1);
+            }
+            if(userConnection == null)
+            {
+                connectionError.setVisible(true);
+            }
+            else
+            {
+                connectionSuccess.setVisible(true);
+            }
+
+        } catch (IOException e) {
+            connectionError.setVisible(true);
         }
     }
 }

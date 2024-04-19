@@ -39,7 +39,6 @@
                 </VBox>
             </content>
         </ScrollPane>
-
       <Button id="exportButton" layoutX="717.0" layoutY="632.0" mnemonicParsing="false" onAction="#onExportButtonClick" prefHeight="37.0" prefWidth="119.0" text="Export Data">
          <font>
             <Font size="16.0" />
@@ -74,10 +73,5 @@
           </Menu>
         </menus>
       </MenuBar>
-      <Button fx:id="connectToDatabaseButton" onAction="#onConnectToDatabaseButton" layoutX="59.0" layoutY="56.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="192.0" text="Connect to Database">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Button>
     </children>
 </AnchorPane>
