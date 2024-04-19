@@ -70,7 +70,7 @@ public class Controller
     }
 
     @FXML
-    protected void onSignInButtonClick() throws IOException, SQLException
+    protected void onSignInButtonCldick() throws IOException, SQLException
     {
         boolean missingFields = RequiredFieldsMissing();
 
@@ -116,7 +116,7 @@ public class Controller
                     }
                     else
                     {
-                        controller.populateStaticRow();
+                        controller.populateStaticRow(connection);
 
                         Scene currentScene = welcomeText.getScene();
                         currentScene.setRoot(sqlConverterPage);
@@ -131,6 +131,55 @@ public class Controller
         }
     }
 
+    public void onSignInButtonClick() throws IOException {
+        boolean missingFields = RequiredFieldsMissing();
+
+        if (missingFields == false)
+        {
+            boolean validLogin = LoginValidation();
+            if (validLogin == true)
+            {
+                DatabaseManager databaseManager = new DatabaseManager();
+                if(databaseManager.checkForTempPassword(this.email))
+                {
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("enter-new-password-page.fxml"));
+                    AnchorPane resetPasswordPage = fxmlLoader.load();
+                    SQLConverterController controller = fxmlLoader.getController();
+
+                    Scene currentScene = welcomeText.getScene();
+                    currentScene.setRoot(resetPasswordPage);
+                    resetPasswordPage.requestFocus();
+
+                    Stage stage = (Stage) currentScene.getWindow();
+                    stage.sizeToScene();
+                    stage.setTitle("Update Temporary Password");
+
+                    databaseManager.resetTempPassword(this.email);
+                }
+
+                else
+                {
+                    FXMLLoader fxmlLoader = new FXMLLoader();
+                    fxmlLoader.setLocation(SQLApplication.class.getResource("sql-converter.fxml"));
+                    sqlConverterPage = fxmlLoader.load();
+
+                    SQLConverterController controller = fxmlLoader.getController();
+                    controller.setEmail(this.email);
+                    Connection connection = controller.SetConnection();
+                    controller.populateStaticRow(connection);
+
+                    Scene currentScene = welcomeText.getScene();
+                    currentScene.setRoot(sqlConverterPage);
+                    sqlConverterPage.requestFocus();
+
+                    Stage stage = (Stage) currentScene.getWindow();
+                    stage.sizeToScene();
+                    stage.setTitle("SQL Converter");
+                    }
+               // }
+            }
+        }
+    }
 
     @FXML
     private void showConnectionErrorPopup() {
@@ -480,7 +529,7 @@ public class Controller
 
     @FXML
     protected void displayEmptyDropdownAnswer(MouseEvent event) {
-        String message = "\nIncorrect Permissions: " +
+        String message = "Incorrect Permissions: " +
                 "\n The main reason for this is because user you have set for your account likely does not have select permissions enabled. In order to interact " +
                 "\n with the main SQL Converter you must have select permissions enabled. ";
 
@@ -498,8 +547,15 @@ public class Controller
 
     @FXML
     protected void displayAccountDifferencesAnswer(MouseEvent event) {
+        String message = "Standard Account: " +
+                "\n Standard Accounts are meant for those who only need to provide access to a single user. Users in this group include students and hobbyists" +
+                "\n both in your profile." +
+                "\n \n Enterprise Account: " +
+                "\n Enterprise Accounts are meant for use in organizational settings whether that is with a large company or a small start-up. These accounts" +
+                "\n allow one main user to establish sub-accounts in order for those within the organization to get access to the database.";
+
         if (event.getButton() == MouseButton.PRIMARY) {
-            displayAnswer(event, "account difference");
+            displayAnswer(event, message);
         }
     }
 

@@ -17,7 +17,7 @@ import java.util.Objects;
 
 public class AccountController {
 
-    @FXML private Label welcomeText, connectionError, securityQuestionErrorMessage, enterpriseAccountInputError, standardAccountInputError;
+    @FXML private Label welcomeText, connectionError, securityQuestionErrorMessage, enterpriseAccountInputError, standardAccountInputError, connectionSuccess;
     @FXML private AnchorPane securityQuestionPage, sqlConverterPage, userDatabaseSetupPage, enterpriseAccountSubUserPage, confirmationPage;
     @FXML private TextField standardEmailInputField, standardPasswordInputField, standardConfirmPasswordField, serverNameField, dbUsernameField, dbPasswordField, databaseNameField, firstSecurityQuestionInput, secondSecurityQuestionInput, subUserEmailInputField, enterpriseEmailInputField, enterprisePasswordInputField, enterpriseConfirmPasswordField, tempPasswordInputField;
     @FXML private ChoiceBox<String> firstSecurityQuestion, secondSecurityQuestion;
@@ -196,7 +196,45 @@ public class AccountController {
         String dbUsername = dbUsernameField.getText();
         String dbPassword = dbPasswordField.getText();
 
-        Connection UserConnection = null;
+        Connection connection = null;
+        DatabaseManager databaseManager = new DatabaseManager();
+
+        if (serverName.isEmpty() || databaseName.isEmpty() || dbUsername.isEmpty() || dbPassword.isEmpty())
+        {
+            connectionError.setText("Fields cannot be empty");
+            connectionError.setVisible(true);
+        }
+        else
+        {
+            connection = databaseManager.DatabaseConnection();
+            String insertSQL = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ? WHERE email = ?";
+
+            try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
+                pstmt.setString(1, serverName);
+                pstmt.setString(2, databaseName);
+                pstmt.setString(3, dbUsername);
+                pstmt.setString(4, dbPassword);
+                pstmt.setString(5, this.email);
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                connectionError.setVisible(true);
+                System.out.println("Failed to insert data, error: " + e.getMessage());
+                e.printStackTrace();
+            }
+
+            loadPage("account-creation-confirmation-page.fxml", "Account Creation Confirmation", "Controller", this.email, false);
+        }
+    }
+
+    @FXML
+    protected void onTestConnectionButton() throws IOException
+    {
+        String serverName = serverNameField.getText();
+        String databaseName = databaseNameField.getText();
+        String dbUsername = dbUsernameField.getText();
+        String dbPassword = dbPasswordField.getText();
+
+        Connection userConnection = null;
         Connection connection = null;
         DatabaseManager databaseManager = new DatabaseManager();
 
@@ -208,42 +246,27 @@ public class AccountController {
         }
         try
         {
-            if (localDBCheckbox.isSelected())
+           if (localDBCheckbox.isSelected())
             {
-                UserConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword, true);
+                userConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword, true);
                 connection = databaseManager.DatabaseConnection();
                 databaseManager.saveIsLocalValue(connection, this.email, 1);
             }
             else
             {
-                UserConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword, false);
+                userConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword, false);
                 connection = databaseManager.DatabaseConnection();
                 databaseManager.saveIsLocalValue(connection, this.email, 1);
             }
-
-            if (UserConnection != null)
-            {
-                String insertSQL = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ? WHERE email = ?";
-
-                try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
-                    pstmt.setString(1, serverName);
-                    pstmt.setString(2, databaseName);
-                    pstmt.setString(3, dbUsername);
-                    pstmt.setString(4, dbPassword);
-                    pstmt.setString(5, this.email);
-
-                    pstmt.executeUpdate();
-                } catch (SQLException e) {
-                    connectionError.setVisible(true);
-                    System.out.println("Failed to insert data, error: " + e.getMessage());
-                    e.printStackTrace();
-                }
-                loadPage("account-creation-confirmation-page.fxml", "Account Creation Confirmation", "Controller", this.email, false);
-            }
-            else
+            if(userConnection == null)
             {
                 connectionError.setVisible(true);
             }
+            else
+            {
+                connectionSuccess.setVisible(true);
+            }
+
         } catch (IOException e) {
             connectionError.setVisible(true);
         }
