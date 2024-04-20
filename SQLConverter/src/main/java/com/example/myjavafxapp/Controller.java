@@ -24,6 +24,8 @@ public class Controller
 {
 
     @FXML
+    private Button updatePasswordButton;
+    @FXML
     private Label welcomeText, errorMessage, emailExistsError, newPasswordErrorMessage, question1, question2, serverNameLocationAnswer, dbConnectFailureAnswer, passwordChangeAnswer,
             accountDifferencesAnswer, updateDatebaseInfoAnswer, emptyDropdownAnswer;
     @FXML
@@ -615,7 +617,6 @@ public class Controller
         AnchorPane sqlConverterPage = fxmlLoader.load();
         SQLConverterController sqlController = fxmlLoader.getController();
 
-        // Using sessionService correctly
         SessionService sessionService = SessionService.getInstance();
         sqlController.setEmail(sessionService.getEmail());
         Connection connection = sqlController.SetConnection(sessionService.getConnection());
@@ -628,5 +629,10 @@ public class Controller
         Stage stage = (Stage) currentScene.getWindow();
         stage.sizeToScene();
         stage.setTitle("SQL Converter");
+    }
+
+    public void onUpdatePasswordButtonClick()
+    {
+
     }
 }

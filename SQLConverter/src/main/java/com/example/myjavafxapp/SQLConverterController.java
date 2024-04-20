@@ -441,11 +441,20 @@ public class SQLConverterController {
     public void goToResetPasswordPage() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("reset-password-page.fxml"));
         AnchorPane resetPasswordPage = fxmlLoader.load();
-        Controller controller = fxmlLoader.getController();  // Use the controller from FXMLLoader
+        Controller controller = fxmlLoader.getController();
 
         SessionService sessionService = SessionService.getInstance();
         controller.setEmail(sessionService.getEmail());
         this.userConnection = SetConnection(sessionService.getConnection());
+
+        Button backToHomeButton = (Button) resetPasswordPage.lookup("#backToHomeButton");
+        backToHomeButton.setVisible(true);
+
+        Button updatePasswordButton = (Button) resetPasswordPage.lookup("#updatePasswordButton");
+        updatePasswordButton.setVisible(true);
+
+        Button resetPasswordButton = (Button) resetPasswordPage.lookup("#resetPasswordButton");
+        resetPasswordButton.setVisible(false);
 
         Scene currentScene = welcomeText.getScene();
         currentScene.setRoot(resetPasswordPage);
@@ -460,6 +469,10 @@ public class SQLConverterController {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("sign-in-page.fxml"));
         AnchorPane signInPage = fxmlLoader.load();
         Controller controller = fxmlLoader.getController();
+
+        Button backButton = (Button) signInPage.lookup("#backButton");
+        backButton.setText("Create New Account");
+        backButton.setPrefWidth(150);
 
         Scene currentScene = welcomeText.getScene();
         currentScene.setRoot(signInPage);

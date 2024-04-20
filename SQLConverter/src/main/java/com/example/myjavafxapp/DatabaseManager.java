@@ -61,7 +61,6 @@ public class DatabaseManager {
                      "encrypt=true;" +
                     "trustServerCertificate=true;" +
                     "loginTimeout=30;";
-            System.out.println("Database is local.");
         } else {
             connectionUrl = "jdbc:sqlserver://" + serverName + ":1433;" +
                     "database=" + databaseName + ";" +
@@ -75,10 +74,8 @@ public class DatabaseManager {
 
         try {
             Connection connection = DriverManager.getConnection(connectionUrl);
-            System.out.println("Connected to the database successfully.");
             return connection;
         } catch (Exception e) {
-            System.out.println("Connection failed: " + e.getMessage());
             return null;
         }
     }
