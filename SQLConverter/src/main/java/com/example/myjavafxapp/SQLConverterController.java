@@ -35,7 +35,7 @@ public class SQLConverterController {
     @FXML private TextField activeTextField, serverNameField, databaseNameField, dbUsernameField, dbPasswordField;
     @FXML private CheckBox localDBCheckbox;
     @FXML
-    private AnchorPane updateUserDBPage, sqlConverterPage;
+    private AnchorPane updateUserDBPage, sqlConverterPage, resetPasswordPage;
     private Stage loadingStage;
     private ChoiceBox<String> activeChoiceBox;
     private Connection userConnection;
@@ -263,20 +263,6 @@ public class SQLConverterController {
         stage.setTitle("Update User Database Information");
     }
 
-    public void goToResetPasswordPage() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("update-database-info.fxml"));
-        AnchorPane updateUserDBPage = fxmlLoader.load();
-        SQLConverterController controller = fxmlLoader.getController();
-
-        Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(updateUserDBPage);
-        updateUserDBPage.requestFocus();
-
-        Stage stage = (Stage) currentScene.getWindow();
-        stage.sizeToScene();
-        stage.setTitle("Update User Database Information");
-    }
-
     public void onUpdateDatabaseInfoButton() throws IOException {
         String serverName = serverNameField.getText();
         String databaseName = databaseNameField.getText();
@@ -417,5 +403,33 @@ public class SQLConverterController {
         Scene loadingScene = new Scene(loadingPane, 400, 200);
         loadingStage.setScene(loadingScene);
         loadingStage.show();
+    }
+
+    public void goToResetPasswordPage() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("reset-password-page.fxml"));
+        AnchorPane resetPasswordPage = fxmlLoader.load();
+        Controller controller = fxmlLoader.getController();
+
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(resetPasswordPage);
+        resetPasswordPage.requestFocus();
+
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle("Update Password");
+    }
+
+    public void goToSignInPage() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("sign-in-page.fxml"));
+        AnchorPane signInPage = fxmlLoader.load();
+        Controller controller = fxmlLoader.getController();
+
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(signInPage);
+        signInPage.requestFocus();
+
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle("Sign In");
     }
 }
