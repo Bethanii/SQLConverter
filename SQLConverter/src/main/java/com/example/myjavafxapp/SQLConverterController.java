@@ -340,7 +340,12 @@ public class SQLConverterController {
     public void onUpdateDBBackButtonClick() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("sql-converter.fxml"));
         AnchorPane sqlConverterPage = fxmlLoader.load();
-        SQLConverterController controller = fxmlLoader.getController();
+        SQLConverterController sqlController = fxmlLoader.getController();
+
+        SessionService sessionService = SessionService.getInstance();
+        sqlController.setEmail(sessionService.getEmail());
+        Connection connection = sqlController.SetConnection(sessionService.getConnection());
+        sqlController.populateStaticRow(connection);
 
         Scene currentScene = welcomeText.getScene();
         currentScene.setRoot(sqlConverterPage);
@@ -468,7 +473,6 @@ public class SQLConverterController {
     public void goToSignInPage() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("sign-in-page.fxml"));
         AnchorPane signInPage = fxmlLoader.load();
-        Controller controller = fxmlLoader.getController();
 
         Button backButton = (Button) signInPage.lookup("#backButton");
         backButton.setText("Create New Account");
