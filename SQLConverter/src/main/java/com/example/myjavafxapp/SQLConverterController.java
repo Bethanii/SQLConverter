@@ -41,13 +41,17 @@ public class SQLConverterController {
     private Connection userConnection;
     private DatabaseManager databaseManager;
     private String email;
+    private SessionService sessionService;
 
     @FXML
-    public void initialize() throws IOException
-    {
-        //SetConnection();
-       // populateStaticRow();
+    public void initialize() throws IOException {
+        SessionService sessionService = SessionService.getInstance();
+        if (sessionService != null) {
+            setEmail(sessionService.getEmail());
+            SetConnection(sessionService.getConnection());
+        }
     }
+
 
     public Connection SetConnection() throws IOException
     {
@@ -69,6 +73,29 @@ public class SQLConverterController {
         {
             this.userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], false);
             return this.userConnection;
+        }
+    }
+
+    public Connection SetConnection(Connection userConnection) throws IOException
+    {
+        this.databaseManager = new DatabaseManager();
+        String[] dbValues = databaseManager.GetUserDBInfo(this.email);
+
+        if (dbValues == null) {
+            return null;
+        }
+
+        boolean localDb = databaseManager.checkForLocalDB(databaseManager.DatabaseConnection(), this.email);
+
+        if (localDb)
+        {
+            userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], true);
+            return userConnection;
+        }
+        else
+        {
+            userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], false);
+            return userConnection;
         }
     }
 
@@ -144,8 +171,13 @@ public class SQLConverterController {
         return columnNames;
     }
 
-    private List<String> querySelectedTables(String tableName, String searchText) throws SQLException {
+    private List<String> querySelectedTables(String tableName, String searchText) throws SQLException, IOException {
         List<String> results = new ArrayList<>();
+        SessionService sessionService = SessionService.getInstance();
+
+        SQLConverterController sqlController = new SQLConverterController();
+        sqlController.setEmail(sessionService.getEmail());
+        this.userConnection = SetConnection(sessionService.getConnection());
         List<String> columnNames = getColumnNames(this.userConnection, tableName);
 
         for (String columnName : columnNames)
@@ -339,7 +371,8 @@ public class SQLConverterController {
 
         if (serverName.isEmpty() || databaseName.isEmpty() || dbUsername.isEmpty() || dbPassword.isEmpty())
         {
-            connectionError.setText("Fields cannot be empty");
+            connectionError.setText("Fields cannot be blank");
+            connectionError.setLayoutX(450);
             connectionError.setVisible(true);
             return;
         }
@@ -408,7 +441,11 @@ public class SQLConverterController {
     public void goToResetPasswordPage() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("reset-password-page.fxml"));
         AnchorPane resetPasswordPage = fxmlLoader.load();
-        Controller controller = fxmlLoader.getController();
+        Controller controller = fxmlLoader.getController();  // Use the controller from FXMLLoader
+
+        SessionService sessionService = SessionService.getInstance();
+        controller.setEmail(sessionService.getEmail());
+        this.userConnection = SetConnection(sessionService.getConnection());
 
         Scene currentScene = welcomeText.getScene();
         currentScene.setRoot(resetPasswordPage);
