@@ -31,7 +31,7 @@ public class Controller
     @FXML
     private TextField signInEmailInputField, signInPasswordInputField, resetEmailField, response1, response2, newPasswordInputField, newConfirmationPasswordField;
     @FXML
-    private AnchorPane signInPage, resetPasswordPage, newPasswordPage, faqPage, sqlConverterPage, validateSecurityQuestionsPage;
+    private AnchorPane signInPage, resetPasswordPage, newPasswordPage, sqlConverterPage, validateSecurityQuestionsPage;
     @FXML
     private ComboBox<String> serverNameLocation, dbConnectFailure, passwordChange, accountDifferences, updateDatebaseInfo, emptyDropdown;
     private DatabaseManager databaseManager = new DatabaseManager();
@@ -476,20 +476,31 @@ public class Controller
         stage.setTitle(pageTitle);
     }
 
-    @FXML
-    public void goToFAQPage() throws IOException {
+    @FXML private AnchorPane faqPage;
+    private FXMLLoader loadPage2() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("faq-page.fxml"));
         AnchorPane faqPage = fxmlLoader.load();
-        Controller controller = fxmlLoader.getController();
+        return fxmlLoader;
+    }
 
+    private AnchorPane loadPage(String fxmlPath) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath));
+        return fxmlLoader.load(); 
+    }
+
+    public Scene setRootAndGetScene(AnchorPane anchorPane) {
         Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(faqPage);
-        faqPage.requestFocus();
+        currentScene.setRoot(anchorPane);
+        anchorPane.requestFocus();
+        return currentScene;
+    }
 
-        controller.setEmail(this.email);
-
+    @FXML
+    public void goToFAQPage() throws IOException
+    {
+        AnchorPane loadedAnchorPane = loadPage("faq-page.fxml");
+        Scene currentScene = setRootAndGetScene(loadedAnchorPane);
         Stage stage = (Stage) currentScene.getWindow();
-        stage.sizeToScene();
         stage.setTitle("Frequently Asked Questions");
     }
 
@@ -499,7 +510,7 @@ public class Controller
     }
 
     @FXML
-    public void onSignInFAQLink() throws IOException {
+    public void onSignInFAQLink() throws Exception {
         goToFAQPage();
     }
 
