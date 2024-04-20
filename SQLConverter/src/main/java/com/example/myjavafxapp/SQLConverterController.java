@@ -279,7 +279,6 @@ public class SQLConverterController {
         String dbUsername = dbUsernameField.getText();
         String dbPassword = dbPasswordField.getText();
 
-        Connection UserConnection = null;
         Connection connection = null;
         DatabaseManager databaseManager = new DatabaseManager();
 
@@ -349,7 +348,6 @@ public class SQLConverterController {
         String dbPassword = dbPasswordField.getText();
 
         Connection userConnection = null;
-        Connection connection = null;
         DatabaseManager databaseManager = new DatabaseManager();
 
         if (serverName.isEmpty() || databaseName.isEmpty() || dbUsername.isEmpty() || dbPassword.isEmpty())

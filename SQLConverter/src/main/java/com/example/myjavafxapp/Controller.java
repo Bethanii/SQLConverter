@@ -1,19 +1,26 @@
 package com.example.myjavafxapp;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
 import java.sql.*;
 import java.util.Optional;
 import java.util.Random;
+import javafx.stage.StageStyle;
 
 public class Controller
 {
@@ -30,6 +37,7 @@ public class Controller
     private DatabaseManager databaseManager = new DatabaseManager();
     private String email;
     private boolean isAnswerVisible = false;
+    private Stage loadingStage;
 
     @FXML
     protected void onSignInSelectionClick() throws IOException
@@ -69,68 +77,6 @@ public class Controller
         loadPage("sign-in-page.fxml", "Sign In", "");
     }
 
-    @FXML
-    protected void onSignInButtonCldick() throws IOException, SQLException
-    {
-        boolean missingFields = RequiredFieldsMissing();
-
-        if (missingFields == false)
-        {
-            boolean validLogin = LoginValidation();
-            if (validLogin == true)
-            {
-                DatabaseManager databaseManager = new DatabaseManager();
-                if(databaseManager.checkForTempPassword(this.email))
-                {
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("enter-new-password-page.fxml"));
-                    AnchorPane resetPasswordPage = fxmlLoader.load();
-                    Controller controller = fxmlLoader.getController();
-
-                    Scene currentScene = welcomeText.getScene();
-                    currentScene.setRoot(resetPasswordPage);
-                    resetPasswordPage.requestFocus();
-
-                    controller.setEmail(this.email);
-
-                    Stage stage = (Stage) currentScene.getWindow();
-                    stage.sizeToScene();
-                    stage.setTitle("Update Temporary Password");
-
-                    databaseManager.resetTempPassword(this.email);
-                }
-
-                else
-                {
-                    FXMLLoader fxmlLoader = new FXMLLoader();
-                    fxmlLoader.setLocation(SQLApplication.class.getResource("sql-converter.fxml"));
-                    sqlConverterPage = fxmlLoader.load();
-
-                    SQLConverterController controller = fxmlLoader.getController();
-                    controller.setEmail(this.email);
-
-                    Connection connection = controller.SetConnection();
-
-                    if (connection == null)
-                    {
-                        showConnectionErrorPopup();
-                    }
-                    else
-                    {
-                        controller.populateStaticRow(connection);
-
-                        Scene currentScene = welcomeText.getScene();
-                        currentScene.setRoot(sqlConverterPage);
-                        sqlConverterPage.requestFocus();
-
-                        Stage stage = (Stage) currentScene.getWindow();
-                        stage.sizeToScene();
-                        stage.setTitle("SQL Converter");
-                    }
-                }
-            }
-        }
-    }
-
     public void onSignInButtonClick() throws IOException {
         boolean missingFields = RequiredFieldsMissing();
 
@@ -162,48 +108,66 @@ public class Controller
                 {
                     FXMLLoader fxmlLoader = new FXMLLoader();
                     fxmlLoader.setLocation(SQLApplication.class.getResource("sql-converter.fxml"));
-                    sqlConverterPage = fxmlLoader.load();
+                    Stage primaryStage = (Stage) welcomeText.getScene().getWindow();
+                    showLoadingPopup(primaryStage);
 
-                    SQLConverterController controller = fxmlLoader.getController();
-                    controller.setEmail(this.email);
-                    Connection connection = controller.SetConnection();
-                    controller.populateStaticRow(connection);
+                    new Thread(() -> {
+                        try {
+                            Pane sqlConverterPage = fxmlLoader.load();
+                            SQLConverterController controller = fxmlLoader.getController();
+                            controller.setEmail(this.email);
+                            Connection connection = controller.SetConnection();
 
-                    Scene currentScene = welcomeText.getScene();
-                    currentScene.setRoot(sqlConverterPage);
-                    sqlConverterPage.requestFocus();
+                            Platform.runLater(() -> {
+                                controller.populateStaticRow(connection);
 
-                    Stage stage = (Stage) currentScene.getWindow();
-                    stage.sizeToScene();
-                    stage.setTitle("SQL Converter");
-                    }
-               // }
+                                Scene currentScene = welcomeText.getScene();
+                                currentScene.setRoot(sqlConverterPage);
+                                sqlConverterPage.requestFocus();
+
+                                Stage stage = (Stage) currentScene.getWindow();
+                                stage.sizeToScene();
+                                stage.setTitle("SQL Converter");
+
+                                hideLoadingPopup();
+                            });
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Platform.runLater(this::hideLoadingPopup);
+                        }
+                    }).start();
+                }
             }
         }
     }
 
-    @FXML
-    private void showConnectionErrorPopup() {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Connection Error");
-        alert.setHeaderText("Unable to connect to database");
-        alert.setContentText("Please try again or refer to the FAQ page for assistance.");
+    private void showLoadingPopup(Stage primaryStage) {
+        loadingStage = new Stage(StageStyle.UNDECORATED);
+        loadingStage.initModality(Modality.APPLICATION_MODAL);
+        loadingStage.initOwner(primaryStage);
 
-        ButtonType faqButton = new ButtonType("FAQ", ButtonBar.ButtonData.OK_DONE);
-        ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        ProgressIndicator progressIndicator = new ProgressIndicator(ProgressIndicator.INDETERMINATE_PROGRESS);
 
-        alert.getButtonTypes().setAll(faqButton, cancelButton);
+        Label loadingLabel = new Label("Loading...");
+        loadingLabel.setStyle("-fx-text-fill: white; -fx-font-size: 16px;");
 
-        Optional<ButtonType> result = alert.showAndWait();
-        result.ifPresent(buttonType -> {
-            if (buttonType == faqButton) {
-                try {
-                   goToFAQPage();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        Label infoLabel = new Label("Depending on your set up this can take up to 30 seconds.");
+        infoLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
+
+        VBox loadingPane = new VBox(10);
+        loadingPane.setAlignment(Pos.CENTER);
+        loadingPane.getChildren().addAll(progressIndicator, loadingLabel, infoLabel);
+        loadingPane.setStyle("-fx-padding: 20; -fx-background-color: rgba(0, 0, 0, 0.75);");
+
+        Scene loadingScene = new Scene(loadingPane, 350, 250);
+        loadingStage.setScene(loadingScene);
+        loadingStage.show();
+    }
+
+    private void hideLoadingPopup() {
+        if (loadingStage != null) {
+            loadingStage.close();
+        }
     }
 
     @FXML
@@ -477,7 +441,6 @@ public class Controller
         stage.setTitle("Frequently Asked Questions");
     }
 
-
     @FXML
     public void onSignInBackButtonClick() throws IOException {
         loadPage("landing-page.fxml", "Welcome", "");
@@ -490,9 +453,9 @@ public class Controller
 
     @FXML
     protected void displayServerNameAnswer(MouseEvent event) {
-        String message = "There are a few different ways to find your server name. Here are a few suggestions:" +
+        String message = " There are a few different ways to find your server name. Here are a few suggestions:" +
                 "\n \n Database Management Settings: " +
-                "\nIf you are using a database management system then the server name will specified in your connection settings. This will differ " +
+                "\n If you are using a database management system then the server name will specified in your connection settings. This will differ " +
                 "\n based on the exact management system you have. For example, if you are using SQL Server Management Studio, you can find this " +
                 "\n by referencing the ‘Connect to Server' window that populates when you first start the application." +
                 "\n \n Application Settings: " +
@@ -510,7 +473,7 @@ public class Controller
 
     @FXML
     protected void displayDBFailureAnswer(MouseEvent event) {
-        String message = "Please see the following for a list of possible reason your database connection is failing." +
+        String message = " Please see the following for a list of possible reason your database connection is failing." +
                 "\n \n Incorrect Login Information: " +
                 "\n One common reason is due to incorrect login credentials. If the your database username or password are incorrect you can update" +
                 "\n both in your profile." +
@@ -530,7 +493,7 @@ public class Controller
 
     @FXML
     protected void displayEmptyDropdownAnswer(MouseEvent event) {
-        String message = "Incorrect Permissions: " +
+        String message = " Incorrect Permissions: " +
                 "\n The main reason for this is because user you have set for your account likely does not have select permissions enabled. In order to interact " +
                 "\n with the main SQL Converter you must have select permissions enabled. ";
 
@@ -548,7 +511,7 @@ public class Controller
 
     @FXML
     protected void displayAccountDifferencesAnswer(MouseEvent event) {
-        String message = "Standard Account: " +
+        String message = " Standard Account: " +
                 "\n Standard Accounts are meant for those who only need to provide access to a single user. Users in this group include students and hobbyists" +
                 "\n both in your profile." +
                 "\n \n Enterprise Account: " +
