@@ -147,6 +147,7 @@ public class Controller
         loadingStage.initOwner(primaryStage);
 
         ProgressIndicator progressIndicator = new ProgressIndicator(ProgressIndicator.INDETERMINATE_PROGRESS);
+        progressIndicator.setStyle("-fx-progress-color: blue;");
 
         Label loadingLabel = new Label("Loading...");
         loadingLabel.setStyle("-fx-text-fill: white; -fx-font-size: 16px;");
@@ -159,7 +160,7 @@ public class Controller
         loadingPane.getChildren().addAll(progressIndicator, loadingLabel, infoLabel);
         loadingPane.setStyle("-fx-padding: 20; -fx-background-color: rgba(0, 0, 0, 0.75);");
 
-        Scene loadingScene = new Scene(loadingPane, 350, 250);
+        Scene loadingScene = new Scene(loadingPane, 400, 250);
         loadingStage.setScene(loadingScene);
         loadingStage.show();
     }
