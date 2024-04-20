@@ -228,7 +228,6 @@ public class AccountController {
                 System.out.println("Failed to insert data, error: " + e.getMessage());
                 e.printStackTrace();
             }
-
             loadPage("account-creation-confirmation-page.fxml", "Account Creation Confirmation", "Controller", this.email, false);
         }
     }
@@ -295,7 +294,7 @@ public class AccountController {
         Label loadingLabel = new Label("Testing Connection...");
         loadingLabel.setStyle("-fx-text-fill: white; -fx-font-size: 16px;");
 
-        Label infoLabel = new Label("Please wait while we test the database connection.");
+        Label infoLabel = new Label("Please wait while we test the database connection");
         infoLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px;");
 
         VBox loadingPane = new VBox(10);
