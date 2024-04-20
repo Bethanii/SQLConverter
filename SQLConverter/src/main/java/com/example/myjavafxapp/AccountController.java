@@ -1,7 +1,9 @@
 package com.example.myjavafxapp;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -14,6 +16,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.StageStyle;
 
 public class AccountController {
 
@@ -23,7 +30,7 @@ public class AccountController {
     @FXML private ChoiceBox<String> firstSecurityQuestion, secondSecurityQuestion;
     @FXML private TextArea emailsDisplayArea;
     @FXML private CheckBox localDBCheckbox;
-
+    private Stage loadingStage;
     private String email;
     private List<String> emails = new ArrayList<>();
     private DatabaseManager databaseManager = new DatabaseManager();
@@ -233,10 +240,8 @@ public class AccountController {
         String databaseName = databaseNameField.getText();
         String dbUsername = dbUsernameField.getText();
         String dbPassword = dbPasswordField.getText();
-
-        Connection userConnection = null;
-        Connection connection = null;
-        DatabaseManager databaseManager = new DatabaseManager();
+        final boolean isLocalDB = localDBCheckbox.isSelected();
+        final String userEmail = this.email;
 
         if (serverName.isEmpty() || databaseName.isEmpty() || dbUsername.isEmpty() || dbPassword.isEmpty())
         {
@@ -244,31 +249,68 @@ public class AccountController {
             connectionError.setVisible(true);
             return;
         }
-        try
-        {
-           if (localDBCheckbox.isSelected())
-            {
-                userConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword, true);
-                connection = databaseManager.DatabaseConnection();
-                databaseManager.saveIsLocalValue(connection, this.email, 1);
-            }
-            else
-            {
-                userConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword, false);
-                connection = databaseManager.DatabaseConnection();
-                databaseManager.saveIsLocalValue(connection, this.email, 1);
-            }
-            if(userConnection == null)
-            {
-                connectionError.setVisible(true);
-            }
-            else
-            {
-                connectionSuccess.setVisible(true);
-            }
 
-        } catch (IOException e) {
-            connectionError.setVisible(true);
+        Stage primaryStage = (Stage) dbUsernameField.getScene().getWindow();
+        showDatabaseLoadingPopup(primaryStage);
+
+        new Thread(() -> {
+            DatabaseManager databaseManager = new DatabaseManager();
+            Connection userConnection = null;
+
+            try {
+                userConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword, isLocalDB);
+                final boolean connectionSuccess = userConnection != null;
+
+                Platform.runLater(() -> {
+                    if (!connectionSuccess) {
+                        this.connectionError.setVisible(true);
+                        this.connectionSuccess.setVisible(false);
+                    } else {
+                        this.connectionSuccess.setVisible(true);
+                        this.connectionError.setVisible(false);
+                    }
+                    hideLoadingPopup();
+                });
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    connectionError.setVisible(true);
+                    this.connectionSuccess.setVisible(false);
+                    hideLoadingPopup();
+                });
+            }
+        }).start();
+    }
+
+    private void showDatabaseLoadingPopup(Stage primaryStage) {
+        if (loadingStage != null) {
+            loadingStage.close();
+        }
+        loadingStage = new Stage(StageStyle.UNDECORATED);
+        loadingStage.initModality(Modality.APPLICATION_MODAL);
+        loadingStage.initOwner(primaryStage);
+
+        ProgressIndicator progressIndicator = new ProgressIndicator(ProgressIndicator.INDETERMINATE_PROGRESS);
+        progressIndicator.setStyle("-fx-progress-color: blue;");
+
+        Label loadingLabel = new Label("Testing Connection...");
+        loadingLabel.setStyle("-fx-text-fill: white; -fx-font-size: 16px;");
+
+        Label infoLabel = new Label("Please wait while we test the database connection.");
+        infoLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px;");
+
+        VBox loadingPane = new VBox(10);
+        loadingPane.setAlignment(Pos.CENTER);
+        loadingPane.getChildren().addAll(progressIndicator, loadingLabel, infoLabel);
+        loadingPane.setStyle("-fx-padding: 20; -fx-background-color: rgba(0, 0, 0, 0.75);");
+
+        Scene loadingScene = new Scene(loadingPane, 400, 200);
+        loadingStage.setScene(loadingScene);
+        loadingStage.show();
+    }
+
+    private void hideLoadingPopup() {
+        if (loadingStage != null) {
+            loadingStage.close();
         }
     }
 
