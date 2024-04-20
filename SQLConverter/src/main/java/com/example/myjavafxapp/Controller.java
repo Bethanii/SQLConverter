@@ -146,6 +146,7 @@ public class Controller
                     AnchorPane resetPasswordPage = fxmlLoader.load();
                     SQLConverterController controller = fxmlLoader.getController();
 
+                    controller.setEmail(this.email);
                     Scene currentScene = welcomeText.getScene();
                     currentScene.setRoot(resetPasswordPage);
                     resetPasswordPage.requestFocus();

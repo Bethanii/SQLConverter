@@ -248,6 +248,7 @@ public class SQLConverterController {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("update-database-info.fxml"));
         AnchorPane updateUserDBPage = fxmlLoader.load();
         SQLConverterController controller = fxmlLoader.getController();
+        controller.setEmail(this.email);
 
         Scene currentScene = welcomeText.getScene();
         currentScene.setRoot(updateUserDBPage);
@@ -289,46 +290,29 @@ public class SQLConverterController {
             connectionError.setVisible(true);
             return;
         }
-        try
+        if (localDBCheckbox.isSelected())
         {
-            if (localDBCheckbox.isSelected())
-            {
-                UserConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword, true);
-                connection = databaseManager.DatabaseConnection();
-                databaseManager.saveIsLocalValue(connection, this.email, 1);
-            }
-            else
-            {
-                UserConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword, false);
-                connection = databaseManager.DatabaseConnection();
-                databaseManager.saveIsLocalValue(connection, this.email, 1);
-            }
+            connection = databaseManager.DatabaseConnection();
+            databaseManager.saveIsLocalValue(connection, this.email, 1);
+        }
+        else
+        {
+            connection = databaseManager.DatabaseConnection();
+            databaseManager.saveIsLocalValue(connection, this.email, 1);
+        }
+        connection = databaseManager.DatabaseConnection();
+        String insertSQL = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ? WHERE email = ?";
 
-            if (UserConnection != null)
-            {
-                String insertSQL = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ? WHERE email = ?";
-
-                try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
-                    pstmt.setString(1, serverName);
-                    pstmt.setString(2, databaseName);
-                    pstmt.setString(3, dbUsername);
-                    pstmt.setString(4, dbPassword);
-                    pstmt.setString(5, this.email);
-
-                    pstmt.executeUpdate();
-                } catch (SQLException e) {
-                    connectionError.setVisible(true);
-                    System.out.println("Failed to insert data, error: " + e.getMessage());
-                    e.printStackTrace();
-                }
-
-            }
-            else
-            {
-                connectionError.setVisible(true);
-            }
-        } catch (IOException e) {
+        try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
+            pstmt.setString(1, serverName);
+            pstmt.setString(2, databaseName);
+            pstmt.setString(3, dbUsername);
+            pstmt.setString(4, dbPassword);
+            pstmt.setString(5, this.email);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
             connectionError.setVisible(true);
+            e.printStackTrace();
         }
     }
 
@@ -379,14 +363,10 @@ public class SQLConverterController {
             if (localDBCheckbox.isSelected())
             {
                 userConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword, true);
-                connection = databaseManager.DatabaseConnection();
-                databaseManager.saveIsLocalValue(connection, this.email, 1);
             }
             else
             {
                 userConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword, false);
-                connection = databaseManager.DatabaseConnection();
-                databaseManager.saveIsLocalValue(connection, this.email, 1);
             }
             if(userConnection == null)
             {
