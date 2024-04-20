@@ -351,9 +351,6 @@ public class SQLConverterController {
         String dbUsername = dbUsernameField.getText();
         String dbPassword = dbPasswordField.getText();
 
-     //   Connection userConnection = null;
-       // DatabaseManager databaseManager = new DatabaseManager();
-
         if (serverName.isEmpty() || databaseName.isEmpty() || dbUsername.isEmpty() || dbPassword.isEmpty())
         {
             connectionError.setText("Fields cannot be empty");
@@ -361,7 +358,7 @@ public class SQLConverterController {
             return;
         }
         Stage primaryStage = (Stage) dbUsernameField.getScene().getWindow();
-        showDatabaseLoadingPopup(primaryStage); // Show loading popup
+        showDatabaseLoadingPopup(primaryStage);
 
         new Thread(() -> {
             DatabaseManager databaseManager = new DatabaseManager();
@@ -377,13 +374,13 @@ public class SQLConverterController {
                         connectionSuccess.setVisible(true);
                         connectionError.setVisible(false);
                     }
-                    hideLoadingPopup(); // Hide loading popup
+                    hideLoadingPopup();
                 });
             } catch (Exception e) {
                 Platform.runLater(() -> {
                     connectionError.setVisible(true);
                     connectionSuccess.setVisible(false);
-                    hideLoadingPopup(); // Hide loading popup
+                    hideLoadingPopup();
                 });
             }
         }).start();
@@ -421,5 +418,4 @@ public class SQLConverterController {
         loadingStage.setScene(loadingScene);
         loadingStage.show();
     }
-
 }
