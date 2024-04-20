@@ -27,7 +27,8 @@
 
 #enterpriseAccountButton, #standardAccountButton, #enterpriseNextButton, #securityQuestionNextButton, #enterpriseSubUsersNextButton,
 #standardNextButton, #databaseSetupNextButton, #resetPasswordButton, #newPasswordResetButton, #tempPasswordNextButton,
-#updateDatabaseInfoButton, #testConnectionButton, #connectToDatabaseButton {
+#updateDatabaseInfoButton, #testConnectionButton, #connectToDatabaseButton, #updatePasswordButton, #enterPasswordUpdateButton,
+ #updateNextButton {
     -fx-focus-color: transparent;
     -fx-background-radius: 20;
     -fx-font-family: 'Open Sans', sans-serif;

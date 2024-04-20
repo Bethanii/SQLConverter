@@ -11,14 +11,12 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
 import java.sql.*;
-import java.util.Optional;
 import java.util.Random;
 import javafx.stage.StageStyle;
 
@@ -26,18 +24,21 @@ public class Controller
 {
 
     @FXML
+    private Button updatePasswordButton;
+    @FXML
     private Label welcomeText, errorMessage, emailExistsError, newPasswordErrorMessage, question1, question2, serverNameLocationAnswer, dbConnectFailureAnswer, passwordChangeAnswer,
-            accountDifferencesAnswer, updateDatebaseInfoAnswer, emptyDropdownAnswer;
+            accountDifferencesAnswer, updateDatebaseInfoAnswer, emptyDropdownAnswer, updateConfirmationLabel;
     @FXML
     private TextField signInEmailInputField, signInPasswordInputField, resetEmailField, response1, response2, newPasswordInputField, newConfirmationPasswordField;
     @FXML
-    private AnchorPane signInPage, resetPasswordPage, newPasswordPage, faqPage, sqlConverterPage;
+    private AnchorPane signInPage, resetPasswordPage, newPasswordPage, faqPage, sqlConverterPage, validateSecurityQuestionsPage;
     @FXML
     private ComboBox<String> serverNameLocation, dbConnectFailure, passwordChange, accountDifferences, updateDatebaseInfo, emptyDropdown;
     private DatabaseManager databaseManager = new DatabaseManager();
     private String email;
     private boolean isAnswerVisible = false;
     private Stage loadingStage;
+    private Connection userConnection;
 
     @FXML
     protected void onSignInSelectionClick() throws IOException
@@ -117,6 +118,10 @@ public class Controller
                             SQLConverterController controller = fxmlLoader.getController();
                             controller.setEmail(this.email);
                             Connection connection = controller.SetConnection();
+                            controller.SetConnection(connection);
+
+                            SessionService sessionService = SessionService.getInstance();
+                            sessionService.setEmail(this.email);
 
                             Platform.runLater(() -> {
                                 controller.populateStaticRow(connection);
@@ -138,6 +143,52 @@ public class Controller
                     }).start();
                 }
             }
+        }
+    }
+
+    public Connection SetConnection(Connection userConnection) throws IOException
+    {
+        this.databaseManager = new DatabaseManager();
+        String[] dbValues = databaseManager.GetUserDBInfo(this.email);
+
+        if (dbValues == null) {
+            return null;
+        }
+
+        boolean localDb = databaseManager.checkForLocalDB(databaseManager.DatabaseConnection(), this.email);
+
+        if (localDb)
+        {
+            userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], true);
+            return userConnection;
+        }
+        else
+        {
+            userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], false);
+            return userConnection;
+        }
+    }
+
+    public Connection SetConnection() throws IOException
+    {
+        this.databaseManager = new DatabaseManager();
+        String[] dbValues = databaseManager.GetUserDBInfo(this.email);
+
+        if (dbValues == null) {
+            return null;
+        }
+
+        boolean localDb = databaseManager.checkForLocalDB(databaseManager.DatabaseConnection(), this.email);
+
+        if (localDb)
+        {
+            this.userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], true);
+            return this.userConnection;
+        }
+        else
+        {
+            this.userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], false);
+            return this.userConnection;
         }
     }
 
@@ -559,6 +610,138 @@ public class Controller
 
             int rotation = isAnswerVisible ? 0 : 90;
             comboBox.lookup(".arrow-button").setStyle("-fx-rotate: " + rotation + ";");
+        }
+    }
+    public void onBackToHomeButtonClick() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("sql-converter.fxml"));
+        AnchorPane sqlConverterPage = fxmlLoader.load();
+        SQLConverterController sqlController = fxmlLoader.getController();
+
+        SessionService sessionService = SessionService.getInstance();
+        sqlController.setEmail(sessionService.getEmail());
+        Connection connection = sqlController.SetConnection(sessionService.getConnection());
+        sqlController.populateStaticRow(connection);
+
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(sqlConverterPage);
+        sqlConverterPage.requestFocus();
+
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle("SQL Converter");
+    }
+
+    public void onUpdatePasswordButtonClick() throws IOException {
+        this.email = resetEmailField.getText();
+
+        DatabaseManager databaseManager = new DatabaseManager();
+        Connection connection = databaseManager.DatabaseConnection();
+
+        if (this.email.isBlank() || this.email.isEmpty())
+        {
+            errorMessage.setVisible(true);
+            errorMessage.setText("Fields cannot be blank");
+            resetEmailField.getStyleClass().add("text-field-error");
+        }
+
+        else
+        {
+            if (UserExists(this.email) == true) {
+                databaseManager.DatabaseConnection();
+
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("validate-security-questions-page.fxml"));
+                AnchorPane validateSecurityQuestionsPage = fxmlLoader.load();
+                Controller controller = fxmlLoader.getController();
+
+                SessionService sessionService = SessionService.getInstance();
+                controller.setEmail(sessionService.getEmail());
+                Connection userConnection = controller.SetConnection(sessionService.getConnection());
+
+                Button backToHomeButton = (Button) validateSecurityQuestionsPage.lookup("#backToHomeButton");
+                backToHomeButton.setVisible(true);
+
+                Scene currentScene = welcomeText.getScene();
+                currentScene.setRoot(validateSecurityQuestionsPage);
+                validateSecurityQuestionsPage.requestFocus();
+
+                String[] securityQuestions = databaseManager.getSecurityQuestions(this.email);
+                String firstQuestionString = securityQuestions[0];
+                String secondQuestionString = securityQuestions[1];
+
+                controller.setEmail(this.email);
+
+                controller.question1.setText(firstQuestionString);
+                controller.question2.setText(secondQuestionString);
+
+                Stage stage = (Stage) currentScene.getWindow();
+                stage.sizeToScene();
+                stage.setTitle("Sign In");
+            }
+        }
+    }
+
+    @FXML
+    protected void onEnterPasswordUpdateButtonClick() throws IOException, SQLException
+    {
+        DatabaseManager databaseManager = new DatabaseManager();
+
+        if (!newPasswordFieldsValidation())
+        {
+            databaseManager.updateNewPassword(this.email, newPasswordInputField.getText());
+
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("password-update-confirmation-page.fxml"));
+            AnchorPane passwordUpdateConfirmationPage = fxmlLoader.load();
+            Controller controller = fxmlLoader.getController();
+
+            Label updateConfirmationLabel = (Label) passwordUpdateConfirmationPage.lookup("#updateConfirmationLabel");
+            updateConfirmationLabel.setText("You must login again");
+
+            Scene currentScene = welcomeText.getScene();
+            currentScene.setRoot(passwordUpdateConfirmationPage);
+            passwordUpdateConfirmationPage.requestFocus();
+
+            controller.setEmail(this.email);
+
+            Stage stage = (Stage) currentScene.getWindow();
+            stage.sizeToScene();
+            stage.setTitle("Password Successfully Updated");
+
+            if(databaseManager.checkForTempPassword(this.email))
+            {
+                databaseManager.resetTempPassword(this.email);
+            }
+        }
+    }
+
+    @FXML
+    protected void onValidateSecurityQuestionsUpdateClick() throws Exception
+    {
+        DatabaseManager databaseManager = new DatabaseManager();
+
+        String response1Input = response1.getText();
+        String response2Input = response2.getText();
+
+        boolean validateResponse = databaseManager.validateSecurityAnswers(email, response1Input, response2Input);
+
+        if (validateResponse) {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("enter-new-password-page.fxml"));
+            AnchorPane newPasswordPage = fxmlLoader.load();
+            Controller controller = fxmlLoader.getController();
+
+            Button backToHomeButton = (Button) newPasswordPage.lookup("#backToHomeButton");
+            backToHomeButton.setVisible(true);
+
+            Scene currentScene = welcomeText.getScene();
+            currentScene.setRoot(newPasswordPage);
+            newPasswordPage.requestFocus();
+
+            controller.setEmail(this.email);
+
+            Stage stage = (Stage) currentScene.getWindow();
+            stage.sizeToScene();
+            stage.setTitle("Enter New Password");
+        } else {
+            errorMessage.setVisible(true);
         }
     }
 }
