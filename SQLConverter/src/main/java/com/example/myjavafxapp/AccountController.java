@@ -24,7 +24,9 @@ import java.util.List;
 public class AccountController {
 
     @FXML private Label welcomeText, connectionError, securityQuestionErrorMessage, enterpriseAccountInputError, standardAccountInputError, connectionSuccess;
-    @FXML private TextField standardEmailInputField, standardPasswordInputField, standardConfirmPasswordField, serverNameField, dbUsernameField, dbPasswordField, databaseNameField, firstSecurityQuestionInput, secondSecurityQuestionInput, subUserEmailInputField, enterpriseEmailInputField, enterprisePasswordInputField, enterpriseConfirmPasswordField, tempPasswordInputField;
+    @FXML private TextField standardEmailInputField, standardPasswordInputField, standardConfirmPasswordField, serverNameField, dbUsernameField, dbPasswordField, databaseNameField,
+            firstSecurityQuestionInput, secondSecurityQuestionInput, subUserEmailInputField, enterpriseEmailInputField, enterprisePasswordInputField, enterpriseConfirmPasswordField,
+            tempPasswordInputField;
     @FXML private ChoiceBox<String> firstSecurityQuestion, secondSecurityQuestion;
     @FXML private TextArea emailsDisplayArea;
     @FXML private CheckBox localDBCheckbox;
@@ -46,7 +48,6 @@ public class AccountController {
             case"Account Controller":
                 AccountController accountController = fxmlLoader.getController();
                 accountController.setEmail(email);
-
                 if (email != null) {
                     accountController.setEmail(email);
                 }
@@ -54,11 +55,9 @@ public class AccountController {
                     accountController.setSecurityQuestionOptions();
                 }
                 break;
-
             case "Controller":
                 Controller controller = fxmlLoader.getController();
                 controller.setEmail(email);
-
                 if (email != null) {
                     controller.setEmail(email);
                 }
@@ -127,7 +126,6 @@ public class AccountController {
             emailInputField.getStyleClass().remove("text-field-error");
             passwordInputField.getStyleClass().remove("text-field-error");
             confirmPasswordField.getStyleClass().remove("text-field-error");
-
             if (!emailExists) {
                 if (!passwordMatches) {
                     accountInputError.setVisible(true);
@@ -164,19 +162,16 @@ public class AccountController {
                 "What city were you born in?",
                 "What's your favorite color?"
         );
-
         secondSecurityQuestion.getItems().addAll(
                 "What was your first pet's name?",
                 "What's your mother's maiden name?",
                 "What city were you born in?",
                 "What's your favorite color?"
         );
-
         firstSecurityQuestion.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             String selectedQuestion = newValue.toString();
 
         });
-
         secondSecurityQuestion.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             String selectedQuestion = newValue.toString();
         });
@@ -196,7 +191,6 @@ public class AccountController {
     @FXML
     protected boolean securityQuestionMissingFields(TextField... fields) throws IOException {
         boolean blankFields = false;
-
         for (TextField field : fields) {
             boolean fieldBlank = field.getText().isBlank() || field.getText().isEmpty();
             if (fieldBlank) {
@@ -206,7 +200,6 @@ public class AccountController {
                 field.getStyleClass().remove("text-field-error");
             }
         }
-
         if (blankFields) {
             for (TextField field : fields) {
                 field.getStyleClass().add("text-field-error");
@@ -222,13 +215,10 @@ public class AccountController {
         {
             String firstAnswer = firstSecurityQuestionInput.getText();
             String secondAnswer = secondSecurityQuestionInput.getText();
-
             if (!securityQuestionMissingQuestions()) {
                 String firstQuestion = firstSecurityQuestion.getSelectionModel().getSelectedItem().toString();
                 String secondQuestion = secondSecurityQuestion.getSelectionModel().getSelectedItem().toString();
-
                 databaseManager.saveSecurityQuestions(firstAnswer, secondAnswer, firstQuestion, secondQuestion, this.email);
-
                 loadPage("user-database-setup-page.fxml", "Database Setup Information", this.email, "Account Controller", false);
             }
         }
@@ -243,12 +233,16 @@ public class AccountController {
         Connection connection = null;
 
         if (serverName.isEmpty() || databaseName.isEmpty() || dbUsername.isEmpty() || dbPassword.isEmpty()) {
-            connectionError.setText("Fields cannot be empty");
+            connectionError.setText("Fields cannot be blank");
+            connectionError.setLayoutX(440);
             connectionError.setVisible(true);
+            serverNameField.getStyleClass().add("text-field-error");
+            databaseNameField.getStyleClass().add("text-field-error");
+            dbUsernameField.getStyleClass().add("text-field-error");
+            dbPasswordField.getStyleClass().add("text-field-error");
         } else {
             connection = databaseManager.databaseConnection();
             String insertSQL = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ? WHERE email = ?";
-
             try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
                 pstmt.setString(1, serverName);
                 pstmt.setString(2, databaseName);
@@ -275,8 +269,13 @@ public class AccountController {
         final String userEmail = this.email;
 
         if (serverName.isEmpty() || databaseName.isEmpty() || dbUsername.isEmpty() || dbPassword.isEmpty()) {
-            connectionError.setText("Fields cannot be empty");
+            connectionError.setText("Fields cannot be blank");
+            connectionError.setLayoutX(440);
             connectionError.setVisible(true);
+            serverNameField.getStyleClass().add("text-field-error");
+            databaseNameField.getStyleClass().add("text-field-error");
+            dbUsernameField.getStyleClass().add("text-field-error");
+            dbPasswordField.getStyleClass().add("text-field-error");
             return;
         }
 
@@ -285,11 +284,9 @@ public class AccountController {
 
         new Thread(() -> {
             Connection userConnection = null;
-
             try {
                 userConnection = databaseManager.connectUserDatabase(serverName, databaseName, dbUsername, dbPassword, isLocalDB);
                 final boolean connectionSuccess = userConnection != null;
-
                 Platform.runLater(() -> {
                     if (!connectionSuccess) {
                         this.connectionError.setVisible(true);
@@ -311,7 +308,6 @@ public class AccountController {
     }
 
     public void showDatabaseLoadingPopup(Stage primaryStage) {
-
         if (loadingStage != null) {
             loadingStage.close();
         }

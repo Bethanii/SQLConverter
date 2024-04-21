@@ -33,7 +33,6 @@ public class DatabaseManager {
                     "hostNameInCertificate=*.database.windows.net;" +
                     "loginTimeout=30;";
         }
-
         try {
             Connection connection = DriverManager.getConnection(connectionUrl);
             return connection;
@@ -42,8 +41,7 @@ public class DatabaseManager {
         }
     }
 
-    public Connection databaseConnection() throws IOException
-    {
+    public Connection databaseConnection() throws IOException {
         String serverName = "sqlconverterserver.database.windows.net";
         String databaseName = "SQLConverterDB";
         String username = "Bethany";
@@ -57,21 +55,17 @@ public class DatabaseManager {
                 + "trustServerCertificate=false;"
                 + "hostNameInCertificate=*.database.windows.net;"
                 + "loginTimeout=30;";
-        try
-        {
+        try {
             Connection connection = DriverManager.getConnection(connectionUrl);
             System.out.println("Connected to Azure SQL Database successfully.");
             return connection;
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             return null;
         }
     }
 
     public void saveUserDetails(Connection connection, String email, String password) {
         String sql = "INSERT INTO Users (Email, Password) VALUES (?, ?);";
-
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, email);
             preparedStatement.setString(2, password);
@@ -83,7 +77,6 @@ public class DatabaseManager {
 
     public void saveIsLocalValue(Connection connection, String email, int isLocal) {
         String sql = "UPDATE Users SET isLocal = ? WHERE Email = ?;";
-
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, isLocal);
             preparedStatement.setString(2, email);
@@ -95,7 +88,6 @@ public class DatabaseManager {
 
     public boolean checkIfColumnValueExists(Connection connection, String columnName, String columnValue) {
         String sql = "SELECT * FROM Users WHERE " + columnName + " = ?";
-
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, columnValue);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -109,7 +101,6 @@ public class DatabaseManager {
 
     public boolean checkForLocalDB(Connection connection, String email) {
         String sql = "SELECT isLocal FROM Users WHERE Email = ?";
-
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, email);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -129,11 +120,9 @@ public class DatabaseManager {
     public boolean checkForTempPassword(String emailInput) {
         String sql = "SELECT tempPassword FROM Users WHERE Email = ?";
         boolean tempPW = false;
-
         try (Connection connection = databaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, emailInput);
-
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     String tempPassword = resultSet.getString("tempPassword");
@@ -151,7 +140,6 @@ public class DatabaseManager {
 
     public void setTempPassword(String email, String tempPassword) {
         String sql = "UPDATE users SET Password = ? WHERE Email = ?";
-
         try (Connection conn = databaseConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, tempPassword);
@@ -166,10 +154,8 @@ public class DatabaseManager {
 
     public void resetTempPassword(String emailInput) {
         String sql = "UPDATE Users SET tempPassword = '0' WHERE Email = ?";
-
         try (Connection connection = databaseConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql))
-        {
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, emailInput);
         } catch (SQLException | IOException e) {
             e.printStackTrace();
@@ -178,10 +164,8 @@ public class DatabaseManager {
 
     public String getUserPassword(Connection connection, String emailInput) {
         String sql = "SELECT Password FROM Users WHERE Email = ?";
-
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, emailInput);
-
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     return resultSet.getString("Password");
@@ -197,18 +181,15 @@ public class DatabaseManager {
 
     public String[] getUserDBInfo(String email) {
         String sql = "SELECT * FROM users WHERE email = ?";
-
         try (Connection conn = databaseConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, email);
-
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     String serverName = rs.getString("serverName");
                     String databaseName = rs.getString("databaseName");
                     String username = rs.getString("dbUsername");
                     String password = rs.getString("dbPassword");
-
                     String[] dbInfo = {serverName, databaseName, username, password};
                     return dbInfo;
                 }
@@ -222,7 +203,6 @@ public class DatabaseManager {
     public void saveSecurityQuestions(String firstAnswer, String secondAnswer, String firstQuestion, String secondQuestion, String email) {
         try (Connection conn = databaseConnection()) {
             String sql = "UPDATE Users SET securityAnswer1 = ?, securityAnswer2 = ?, securityQuestion1 = ?, securityQuestion2 = ? WHERE Email = ?";
-
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 pstmt.setString(1, firstAnswer);
                 pstmt.setString(2, secondAnswer);
@@ -241,11 +221,9 @@ public class DatabaseManager {
     public String[] getSecurityQuestions(String email) {
         String[] securityQuestions = new String[2];
         String sql = "SELECT securityQuestion1, securityQuestion2 FROM users WHERE email = ?";
-
         try (Connection conn = databaseConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, email);
-
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     securityQuestions[0] = rs.getString("securityQuestion1");
@@ -260,7 +238,6 @@ public class DatabaseManager {
 
     public boolean validateSecurityAnswers(String email, String response1, String response2) {
         String sql = "SELECT securityAnswer1, securityAnswer2 FROM Users WHERE Email = ?";
-
         try (Connection conn = databaseConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, email);
@@ -268,7 +245,6 @@ public class DatabaseManager {
                 if (rs.next()) {
                     String storedResponse1 = rs.getString("securityAnswer1");
                     String storedResponse2 = rs.getString("securityAnswer2");
-
                     if (response1.equals(storedResponse1) && response2.equals(storedResponse2)) {
                         return true;
                     }
@@ -293,16 +269,12 @@ public class DatabaseManager {
             throw e;
         }
     }
-
     public void saveEnterpriseSubUserEmails(List<String> emails) {
         String sql = "INSERT INTO Users (email, Password, tempPassword) VALUES (?, ?, ?)";
-
         try (Connection connection = databaseConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
-
             String defaultPassword = " ";
             int tempPasswordValue = 1;
-
             for (String email : emails) {
                 statement.setString(1, email);
                 statement.setString(2, defaultPassword);

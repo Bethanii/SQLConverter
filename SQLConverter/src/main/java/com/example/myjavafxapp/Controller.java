@@ -159,7 +159,6 @@ public class Controller
     public Connection setConnection(Connection userConnection) throws IOException {
         this.databaseManager = new DatabaseManager();
         String[] dbValues = databaseManager.getUserDBInfo(this.email);
-
         if (dbValues == null) {
             return null;
         }
@@ -206,7 +205,6 @@ public class Controller
     @FXML
     protected void onResetPasswordButton() throws Exception {
         this.email = resetEmailField.getText();
-
         DatabaseManager databaseManager = new DatabaseManager();
         Connection connection = databaseManager.databaseConnection();
 
@@ -274,7 +272,6 @@ public class Controller
     public boolean loginValidation() {
         String emailInput = signInEmailInputField.getText();
         String passwordInput = signInPasswordInputField.getText();
-
         try (Connection connection = databaseManager.databaseConnection()) {
             boolean emailExists = userExists(emailInput);
             if (emailExists) {
@@ -474,7 +471,6 @@ public class Controller
 
     public void onUpdatePasswordButtonClick() throws IOException {
         this.email = resetEmailField.getText();
-
         if (this.email.isBlank() || this.email.isEmpty()) {
             errorMessage.setVisible(true);
             errorMessage.setText("Fields cannot be blank");
@@ -507,7 +503,6 @@ public class Controller
     protected void onEnterPasswordUpdateButtonClick() throws IOException, SQLException {
         if (!newPasswordFieldsValidation()) {
             databaseManager.updateNewPassword(this.email, newPasswordInputField.getText());
-
             setupPage("password-update-confirmation-page.fxml", "Password Successfully Updated");
             FXMLLoader fxmlLoader = loadPage("password-update-confirmation-page.fxml");
             AnchorPane passwordUpdateConfirmationPage = fxmlLoader.getRoot();
