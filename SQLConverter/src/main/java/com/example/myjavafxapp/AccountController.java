@@ -80,18 +80,18 @@ public class AccountController {
         this.emails = emails;
     }
     @FXML
-    protected void onStandardAccountNextButtonClick() throws IOException {
+    protected void onStandardAccountNextButtonClick() throws IOException, SQLException {
         accountNextButtonClick("standard");
     }
     @FXML
-    protected void onEnterpriseAccountNextButtonClick() throws IOException {
+    protected void onEnterpriseAccountNextButtonClick() throws IOException, SQLException {
         accountNextButtonClick("enterprise");
     }
 
     @FXML
     protected void onEnterpriseSubUsersNextButtonClick() throws IOException {
         databaseManager.saveEnterpriseSubUserEmails(emails, this.email);
-        loadPage("sub-users-temporary-password.fxml", "Enterprise Account Sub-User Temporary Password", this.email, "Account Controller", false, this.emails);
+        loadPage("sub-users-temporary-password.fxml", "Enterprise Account Sub-User Temporary Password", this.email, "Account Controller", false, emails);
         AccountController controller = new AccountController();
         controller.setEmail(this.email);
         controller.setEmails(emails);
@@ -103,11 +103,13 @@ public class AccountController {
         for (String email : emails) {
             databaseManager.setTempPassword(email, tempPassword);
         }
-        loadPage("enterprise-security-question-page.fxml", "Enterprise Account Security Questions", this.email, "Account Controller", true, null);
+        AccountController controller = new AccountController();
+        controller.setEmails(emails);
+        loadPage("enterprise-security-question-page.fxml", "Enterprise Account Security Questions", this.email, "Account Controller", true, emails);
     }
 
     @FXML
-    protected void accountNextButtonClick(String accountType) throws IOException {
+    protected void accountNextButtonClick(String accountType) throws IOException, SQLException {
         TextField emailInputField = accountType.equals("standard") ? standardUsernameInputField : enterpriseUsernameInputField;
         TextField passwordInputField = accountType.equals("standard") ? standardPasswordInputField : enterprisePasswordInputField;
         TextField confirmPasswordField = accountType.equals("standard") ? standardConfirmPasswordField : enterpriseConfirmPasswordField;
@@ -148,6 +150,9 @@ public class AccountController {
                     databaseManager.saveUserDetails(connection, emailInput, passwordInput);
                     this.email = emailInput;
                     loadPage(nextPageFxml, nextPageTitle, this.email, "Account Controller", isStandard, null);
+                    if(accountType.equals("enterprise")) {
+                        databaseManager.updateIsAccountOwnerFlag(connection, this.email);
+                    }
                 }
             } else {
                 accountInputError.setVisible(true);
@@ -221,7 +226,7 @@ public class AccountController {
     }
 
     @FXML
-    protected void onSecurityQuestionNextButtonClick() throws IOException {
+    protected void onSecurityQuestionNextButtonClick() throws IOException, SQLException {
         if (!securityQuestionMissingFields(firstSecurityQuestionInput, secondSecurityQuestionInput))
         {
             String firstAnswer = firstSecurityQuestionInput.getText();
@@ -230,18 +235,25 @@ public class AccountController {
                 String firstQuestion = firstSecurityQuestion.getSelectionModel().getSelectedItem().toString();
                 String secondQuestion = secondSecurityQuestion.getSelectionModel().getSelectedItem().toString();
                 databaseManager.saveSecurityQuestions(firstAnswer, secondAnswer, firstQuestion, secondQuestion, this.email);
-                loadPage("user-database-setup-page.fxml", "Database Setup Information", this.email, "Account Controller", false, null);
+                boolean isAccountOwner = databaseManager.checkIfAccountOwner(databaseManager.databaseConnection(), this.email);
+                if(isAccountOwner)
+                {
+                    loadPage("user-database-setup-page.fxml", "Database Setup Information", this.email, "Account Controller", false, emails);
+                }
+                else
+                {
+                    loadPage("user-database-setup-page.fxml", "Database Setup Information", this.email, "Account Controller", false, null);
+                }
             }
         }
     }
 
     @FXML
-    protected void onDatabaseSetupNextButton() throws IOException {
+    protected void onDatabaseSetupNextButton() throws SQLException, IOException {
         String serverName = serverNameField.getText();
         String databaseName = databaseNameField.getText();
         String dbUsername = dbUsernameField.getText();
         String dbPassword = dbPasswordField.getText();
-        Connection connection = null;
 
         if (serverName.isEmpty() || databaseName.isEmpty() || dbUsername.isEmpty() || dbPassword.isEmpty()) {
             connectionError.setText("Fields cannot be blank");
@@ -252,19 +264,16 @@ public class AccountController {
             dbUsernameField.getStyleClass().add("text-field-error");
             dbPasswordField.getStyleClass().add("text-field-error");
         } else {
-            connection = databaseManager.databaseConnection();
-            String insertSQL = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ? WHERE email = ?";
-            try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
-                pstmt.setString(1, serverName);
-                pstmt.setString(2, databaseName);
-                pstmt.setString(3, dbUsername);
-                pstmt.setString(4, dbPassword);
-                pstmt.setString(5, this.email);
-                pstmt.executeUpdate();
-            } catch (SQLException e) {
-                connectionError.setVisible(true);
-                System.out.println("Failed to insert data, error: " + e.getMessage());
-                e.printStackTrace();
+            Connection connection = databaseManager.databaseConnection();
+            boolean isAccountOwner = databaseManager.checkIfAccountOwner(connection, this.email);
+            if(isAccountOwner)
+            {
+                databaseManager.saveEnterpriseSubUserDBInfo(emails, serverName, databaseName, dbUsername, dbPassword, this.email);
+                databaseManager.saveUserDBInfo(connection, serverName, databaseName, dbUsername, dbPassword, this.email);
+            }
+            else
+            {
+                databaseManager.saveUserDBInfo(connection, serverName, databaseName, dbUsername, dbPassword, this.email);
             }
             loadPage("account-creation-confirmation-page.fxml", "Account Creation Confirmation", this.email, "Controller", false, null);
         }
@@ -352,7 +361,7 @@ public class AccountController {
     }
 
     @FXML
-    protected void addEmailField() throws IOException {
+    protected void addEmailField() throws SQLException {
         String emailText = subUserEmailInputField.getText().trim();
         Connection connection = databaseManager.databaseConnection();
         boolean usernameExists = databaseManager.checkIfColumnValueExists(connection, "Email", emailText);
@@ -379,19 +388,10 @@ public class AccountController {
                 subUserEmailInputField.clear();
             }
         }
-     /*   String emailText = subUserEmailInputField.getText().trim();
-        emails.add(emailText);
-        displayEmails(emails);
-        subUserEmailInputField.clear(); */
     }
 
     public void displayEmails(List<String> emails) {
         String content = String.join("\n", emails);
         emailsDisplayArea.setText(content);
-    }
-
-    @FXML
-    protected void onUpdateButtonClick() throws IOException {
-        //database overrid
     }
 }

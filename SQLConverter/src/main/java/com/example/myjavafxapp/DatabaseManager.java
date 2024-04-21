@@ -41,7 +41,9 @@ public class DatabaseManager {
         }
     }
 
-    public Connection databaseConnection() throws IOException {
+    private static Connection connection;
+
+    public Connection databaseConnection() throws SQLException {
         String serverName = "sqlconverterserver.database.windows.net";
         String databaseName = "SQLConverterDB";
         String username = "Bethany";
@@ -55,13 +57,10 @@ public class DatabaseManager {
                 + "trustServerCertificate=false;"
                 + "hostNameInCertificate=*.database.windows.net;"
                 + "loginTimeout=30;";
-        try {
-            Connection connection = DriverManager.getConnection(connectionUrl);
-            System.out.println("Connected to Azure SQL Database successfully.");
-            return connection;
-        } catch (SQLException e) {
-            return null;
-        }
+
+        Connection connection = DriverManager.getConnection(connectionUrl);
+        System.out.println("Connected to Azure SQL Database successfully.");
+        return connection;
     }
 
     public void saveUserDetails(Connection connection, String email, String password) {
@@ -129,11 +128,8 @@ public class DatabaseManager {
                     tempPW = "1".equals(tempPassword);
                 }
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
         return tempPW;
     }
@@ -147,8 +143,6 @@ public class DatabaseManager {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -158,7 +152,7 @@ public class DatabaseManager {
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, emailInput);
             preparedStatement.executeUpdate();
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -195,7 +189,7 @@ public class DatabaseManager {
                     return dbInfo;
                 }
             }
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
@@ -214,8 +208,6 @@ public class DatabaseManager {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -231,7 +223,7 @@ public class DatabaseManager {
                     securityQuestions[1] = rs.getString("securityQuestion2");
                 }
             }
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return securityQuestions;
@@ -251,7 +243,7 @@ public class DatabaseManager {
                     }
                 }
             }
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
@@ -265,28 +257,11 @@ public class DatabaseManager {
             pstmt.setString(2, email);
             int rowsUpdated = pstmt.executeUpdate();
             return rowsUpdated > 0;
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             throw e;
         }
     }
-  /*  public void saveEnterpriseSubUserEmails(List<String> emails) {
-        String sql = "INSERT INTO Users (email, Password, tempPassword) VALUES (?, ?, ?)";
-        try (Connection connection = databaseConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            String defaultPassword = " ";
-            int tempPasswordValue = 1;
-            for (String email : emails) {
-                statement.setString(1, email);
-                statement.setString(2, defaultPassword);
-                statement.setInt(3, tempPasswordValue);
-                statement.addBatch();
-            }
-            statement.executeBatch();
-        } catch (SQLException | IOException e) {
-            e.printStackTrace();
-        }
-    } */
 
     public void saveEnterpriseSubUserEmails(List<String> emails, String mainEmail) {
         String sql = "INSERT INTO Users (email, Password, tempPassword, accountOwner, isSubUser) VALUES (?, ?, ?, ?, ?)";
@@ -304,10 +279,32 @@ public class DatabaseManager {
                 statement.addBatch();
             }
             statement.executeBatch();
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+    public void saveEnterpriseSubUserDBInfo(List<String> emails, String serverName, String databaseName, String dbUsername, String dbPassword, String mainEmail) {
+        String sql = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ?, accountOwner = ? WHERE email = ?";
+        try (Connection connection = databaseConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            for (String email : emails) {
+                // Correctly bind parameters
+                statement.setString(1, serverName);
+                statement.setString(2, databaseName);
+                statement.setString(3, dbUsername);
+                statement.setString(4, dbPassword);
+                statement.setString(5, mainEmail);
+                statement.setString(6, email);
+
+                statement.addBatch();
+            }
+            statement.executeBatch();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public boolean checkIfSubUser(Connection connection, String emailInput) {
         String sql = "SELECT isSubUser FROM Users WHERE Email = ?";
@@ -334,6 +331,61 @@ public class DatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public boolean checkIfAccountOwner(Connection connection, String emailInput) {
+        String sql = "SELECT isAccountOwner FROM Users WHERE Email = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, emailInput);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getBoolean("isAccountOwner");
+            }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void updateIsAccountOwnerFlag(Connection connection, String email) {
+        String sql = "UPDATE Users SET isAccountOwner = ? WHERE Email = ?;";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, '1');
+            preparedStatement.setString(2, email);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void saveUserDBInfo(Connection connection, String serverName, String databaseName, String dbUsername, String dbPassword, String email)
+    {
+        String insertSQL = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ? WHERE email = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
+            pstmt.setString(1, serverName);
+            pstmt.setString(2, databaseName);
+            pstmt.setString(3, dbUsername);
+            pstmt.setString(4, dbPassword);
+            pstmt.setString(5, email);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateSubUserDBInfo(Connection connection, String serverName, String databaseName, String dbUsername, String dbPassword, String email)
+    {
+        String insertSQL = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ? WHERE accountOwner = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
+            pstmt.setString(1, serverName);
+            pstmt.setString(2, databaseName);
+            pstmt.setString(3, dbUsername);
+            pstmt.setString(4, dbPassword);
+            pstmt.setString(5, email);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

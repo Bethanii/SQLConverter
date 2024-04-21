@@ -161,7 +161,7 @@ public class Controller
 
                                 hideLoadingPopup();
                             });
-                        } catch (IOException e) {
+                        } catch (IOException | SQLException e) {
                             e.printStackTrace();
                             Platform.runLater(this::hideLoadingPopup);
                         }
@@ -171,7 +171,7 @@ public class Controller
         }
     }
 
-    public Connection setConnection(Connection userConnection) throws IOException {
+    public Connection setConnection(Connection userConnection) throws IOException, SQLException {
         this.databaseManager = new DatabaseManager();
         String[] dbValues = databaseManager.getUserDBInfo(this.email);
         if (dbValues == null) {
@@ -317,7 +317,7 @@ public class Controller
         }
     }
 
-    public boolean userExists(String emailInput) throws IOException {
+    public boolean userExists(String emailInput) throws IOException, SQLException {
         Connection connection = databaseManager.databaseConnection();
         Boolean emailExists = databaseManager.checkIfColumnValueExists(connection, "Email", emailInput);
 
@@ -463,7 +463,7 @@ public class Controller
         }
     }
 
-    public void onBackToHomeButtonClick() throws IOException {
+    public void onBackToHomeButtonClick() throws IOException, SQLException {
         SQLConverterController sqlController = setupPage("sql-converter.fxml", "SQL Converter");
         SessionService sessionService = SessionService.getInstance();
         sqlController.setEmail(sessionService.getEmail());
@@ -471,7 +471,7 @@ public class Controller
         sqlController.populateStaticRow(connection);
     }
 
-    public void onUpdatePasswordButtonClick() throws IOException {
+    public void onUpdatePasswordButtonClick() throws IOException, SQLException {
         this.email = resetEmailField.getText();
         if (this.email.isBlank() || this.email.isEmpty()) {
             errorMessage.setVisible(true);
