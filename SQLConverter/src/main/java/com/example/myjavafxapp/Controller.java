@@ -107,10 +107,10 @@ public class Controller
     }
 
     public void onSignInButtonClick() throws IOException {
-        boolean missingFields = RequiredFieldsMissing();
+        boolean missingFields = requiredFieldsMissing();
 
         if (missingFields == false) {
-            boolean validLogin = LoginValidation();
+            boolean validLogin = loginValidation();
             if (validLogin == true) {
                 DatabaseManager databaseManager = new DatabaseManager();
                 if(databaseManager.checkForTempPassword(this.email)) {
@@ -127,8 +127,8 @@ public class Controller
                             Pane sqlConverterPage = fxmlLoader.load();
                             SQLConverterController controller = fxmlLoader.getController();
                             controller.setEmail(this.email);
-                            Connection connection = controller.SetConnection();
-                            controller.SetConnection(connection);
+                            Connection connection = controller.setConnection();
+                            controller.setConnection(connection);
 
                             SessionService sessionService = SessionService.getInstance();
                             sessionService.setEmail(this.email);
@@ -156,21 +156,19 @@ public class Controller
         }
     }
 
-    public Connection SetConnection(Connection userConnection) throws IOException {
+    public Connection setConnection(Connection userConnection) throws IOException {
         this.databaseManager = new DatabaseManager();
-        String[] dbValues = databaseManager.GetUserDBInfo(this.email);
+        String[] dbValues = databaseManager.getUserDBInfo(this.email);
 
         if (dbValues == null) {
             return null;
         }
-
-        boolean localDb = databaseManager.checkForLocalDB(databaseManager.DatabaseConnection(), this.email);
-
+        boolean localDb = databaseManager.checkForLocalDB(databaseManager.databaseConnection(), this.email);
         if (localDb) {
-            userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], true);
+            userConnection = databaseManager.connectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], true);
             return userConnection;
         } else {
-            userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], false);
+            userConnection = databaseManager.connectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], false);
             return userConnection;
         }
     }
@@ -210,15 +208,15 @@ public class Controller
         this.email = resetEmailField.getText();
 
         DatabaseManager databaseManager = new DatabaseManager();
-        Connection connection = databaseManager.DatabaseConnection();
+        Connection connection = databaseManager.databaseConnection();
 
         if (this.email.isBlank() || this.email.isEmpty()) {
             errorMessage.setVisible(true);
             errorMessage.setText("Field cannot be empty");
             resetEmailField.getStyleClass().add("text-field-error");
         } else {
-            if (UserExists(this.email) == true) {
-                databaseManager.DatabaseConnection();
+            if (userExists(this.email) == true) {
+                databaseManager.databaseConnection();
                 Controller controller = setupPage("validate-security-questions-page.fxml", "Account Confirmation");
 
                 String[] securityQuestions = databaseManager.getSecurityQuestions(this.email);
@@ -273,14 +271,14 @@ public class Controller
         }
     }
 
-    public boolean LoginValidation() {
+    public boolean loginValidation() {
         String emailInput = signInEmailInputField.getText();
         String passwordInput = signInPasswordInputField.getText();
 
-        try (Connection connection = databaseManager.DatabaseConnection()) {
-            boolean emailExists = UserExists(emailInput);
+        try (Connection connection = databaseManager.databaseConnection()) {
+            boolean emailExists = userExists(emailInput);
             if (emailExists) {
-                String storedPassword = databaseManager.GetUserPassword(connection, emailInput);
+                String storedPassword = databaseManager.getUserPassword(connection, emailInput);
                 if (storedPassword != null && storedPassword.equals(passwordInput)) {
                     this.email = emailInput;
                     return true;
@@ -304,9 +302,9 @@ public class Controller
         }
     }
 
-    public boolean UserExists(String emailInput) throws IOException {
-        Connection connection = databaseManager.DatabaseConnection();
-        Boolean emailExists = databaseManager.CheckIfColumnValueExists(connection, "Email", emailInput);
+    public boolean userExists(String emailInput) throws IOException {
+        Connection connection = databaseManager.databaseConnection();
+        Boolean emailExists = databaseManager.checkIfColumnValueExists(connection, "Email", emailInput);
 
         if (emailExists == true) {
             return true;
@@ -317,7 +315,7 @@ public class Controller
         }
     }
 
-    public boolean RequiredFieldsMissing() {
+    public boolean requiredFieldsMissing() {
         String emailInput = signInEmailInputField.getText();
         String passwordInput = signInPasswordInputField.getText();
 
@@ -470,7 +468,7 @@ public class Controller
         SQLConverterController sqlController = setupPage("sql-converter.fxml", "SQL Converter");
         SessionService sessionService = SessionService.getInstance();
         sqlController.setEmail(sessionService.getEmail());
-        Connection connection = sqlController.SetConnection(sessionService.getConnection());
+        Connection connection = sqlController.setConnection(sessionService.getConnection());
         sqlController.populateStaticRow(connection);
     }
 
@@ -482,14 +480,14 @@ public class Controller
             errorMessage.setText("Fields cannot be blank");
             resetEmailField.getStyleClass().add("text-field-error");
         } else {
-            if (UserExists(this.email) == true) {
+            if (userExists(this.email) == true) {
                 FXMLLoader fxmlLoader = loadPage("validate-security-questions-page.fxml");
                 AnchorPane validateSecurityQuestionsPage = fxmlLoader.getRoot();
                 Controller controller = fxmlLoader.getController();
 
                 SessionService sessionService = SessionService.getInstance();
                 controller.setEmail(sessionService.getEmail());
-                Connection userConnection = controller.SetConnection(sessionService.getConnection());
+                Connection userConnection = controller.setConnection(sessionService.getConnection());
 
                 Scene currentScene = setRootAndGetScene(validateSecurityQuestionsPage);
                 setStage(currentScene, "Security Question Confirmation");

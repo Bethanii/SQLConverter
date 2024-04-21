@@ -24,11 +24,11 @@
                 <Font size="18.0" />
             </font>
         </TextField>
-        <TextField fx:id="standardPasswordInputField" layoutX="598.0" layoutY="255.0" prefHeight="45.0" prefWidth="251.0" promptText="Password">
+        <PasswordField fx:id="standardPasswordInputField" layoutX="598.0" layoutY="255.0" prefHeight="45.0" prefWidth="251.0" promptText="Password">
             <font>
                 <Font size="18.0" />
             </font>
-        </TextField>
+        </PasswordField>
         <Label layoutX="599.0" layoutY="226.0" text="Password" wrapText="true">
             <font>
                 <Font size="20.0" />
@@ -44,11 +44,11 @@
                 <Font size="20.0" />
             </font>
         </Label>
-        <TextField fx:id="standardConfirmPasswordField" layoutX="598.0" layoutY="354.0" prefHeight="45.0" prefWidth="251.0" promptText="Confirm password">
+        <PasswordField fx:id="standardConfirmPasswordField" layoutX="598.0" layoutY="354.0" prefHeight="45.0" prefWidth="251.0" promptText="Confirm password">
             <font>
                 <Font size="18.0" />
             </font>
-        </TextField>
+        </PasswordField>
         <Label fx:id="standardAccountInputError" layoutX="345.0" layoutY="470.0" text="Password and Confirmation Password don't match" textFill="red" visible="false">
             <font>
                 <Font size="18.0" />

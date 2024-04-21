@@ -111,8 +111,8 @@ public class AccountController {
         String passwordInput = passwordInputField.getText();
         String passwordInputConfirmation = confirmPasswordField.getText();
 
-        Connection connection = databaseManager.DatabaseConnection();
-        Boolean emailExists = databaseManager.CheckIfColumnValueExists(connection, "Email", emailInput);
+        Connection connection = databaseManager.databaseConnection();
+        Boolean emailExists = databaseManager.checkIfColumnValueExists(connection, "Email", emailInput);
         Boolean passwordMatches = validatePasswordsMatch(passwordInput, passwordInputConfirmation);
 
         if(emailInput.isEmpty() || emailInput.isBlank() || passwordInput.isEmpty() || passwordInput.isBlank() || passwordInputConfirmation.isEmpty() || passwordInputConfirmation.isBlank()) {
@@ -136,7 +136,7 @@ public class AccountController {
                     passwordInputField.getStyleClass().add("text-field-error");
                     confirmPasswordField.getStyleClass().add("text-field-error");
                 } else {
-                    databaseManager.SaveUserDetails(connection, emailInput, passwordInput);
+                    databaseManager.saveUserDetails(connection, emailInput, passwordInput);
                     this.email = emailInput;
                     loadPage(nextPageFxml, nextPageTitle, this.email, "Account Controller", isStandard);
                 }
@@ -227,7 +227,7 @@ public class AccountController {
                 String firstQuestion = firstSecurityQuestion.getSelectionModel().getSelectedItem().toString();
                 String secondQuestion = secondSecurityQuestion.getSelectionModel().getSelectedItem().toString();
 
-                databaseManager.SaveSecurityQuestions(firstAnswer, secondAnswer, firstQuestion, secondQuestion, this.email);
+                databaseManager.saveSecurityQuestions(firstAnswer, secondAnswer, firstQuestion, secondQuestion, this.email);
 
                 loadPage("user-database-setup-page.fxml", "Database Setup Information", this.email, "Account Controller", false);
             }
@@ -246,7 +246,7 @@ public class AccountController {
             connectionError.setText("Fields cannot be empty");
             connectionError.setVisible(true);
         } else {
-            connection = databaseManager.DatabaseConnection();
+            connection = databaseManager.databaseConnection();
             String insertSQL = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ? WHERE email = ?";
 
             try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
@@ -261,7 +261,7 @@ public class AccountController {
                 System.out.println("Failed to insert data, error: " + e.getMessage());
                 e.printStackTrace();
             }
-            loadPage("account-creation-confirmation-page.fxml", "Account Creation Confirmation", this.email, "Account Controller", false);
+            loadPage("account-creation-confirmation-page.fxml", "Account Creation Confirmation", this.email, "Controller", false);
         }
     }
 
@@ -287,7 +287,7 @@ public class AccountController {
             Connection userConnection = null;
 
             try {
-                userConnection = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword, isLocalDB);
+                userConnection = databaseManager.connectUserDatabase(serverName, databaseName, dbUsername, dbPassword, isLocalDB);
                 final boolean connectionSuccess = userConnection != null;
 
                 Platform.runLater(() -> {

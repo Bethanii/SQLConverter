@@ -30,7 +30,7 @@ public class SQLConverterController {
     @FXML private Label welcomeText, connectionError, connectionSuccess;
     @FXML private TextField activeTextField, serverNameField, databaseNameField, dbUsernameField, dbPasswordField;
     @FXML private CheckBox localDBCheckbox;
-    @FXML private AnchorPane updateUserDBPage, sqlConverterPage, resetPasswordPage;
+ //   @FXML private AnchorPane updateUserDBPage, sqlConverterPage, resetPasswordPage;
     private Stage loadingStage;
     private ChoiceBox<String> activeChoiceBox;
     private Connection userConnection;
@@ -43,44 +43,44 @@ public class SQLConverterController {
         SessionService sessionService = SessionService.getInstance();
         if (sessionService != null) {
             setEmail(sessionService.getEmail());
-            SetConnection(sessionService.getConnection());
+            setConnection(sessionService.getConnection());
         }
     }
 
-    public Connection SetConnection() throws IOException {
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Connection setConnection() throws IOException {
         this.databaseManager = new DatabaseManager();
-        String[] dbValues = databaseManager.GetUserDBInfo(this.email);
+        String[] dbValues = databaseManager.getUserDBInfo(this.email);
 
         if (dbValues == null) {
             return null;
         }
-
-        boolean localDb = databaseManager.checkForLocalDB(databaseManager.DatabaseConnection(), this.email);
-
+        boolean localDb = databaseManager.checkForLocalDB(databaseManager.databaseConnection(), this.email);
         if (localDb) {
-            this.userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], true);
+            this.userConnection = databaseManager.connectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], true);
             return this.userConnection;
         } else {
-            this.userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], false);
+            this.userConnection = databaseManager.connectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], false);
             return this.userConnection;
         }
     }
 
-    public Connection SetConnection(Connection userConnection) throws IOException {
+    public Connection setConnection(Connection userConnection) throws IOException {
         this.databaseManager = new DatabaseManager();
-        String[] dbValues = databaseManager.GetUserDBInfo(this.email);
+        String[] dbValues = databaseManager.getUserDBInfo(this.email);
 
         if (dbValues == null) {
             return null;
         }
-
-        boolean localDb = databaseManager.checkForLocalDB(databaseManager.DatabaseConnection(), this.email);
-
+        boolean localDb = databaseManager.checkForLocalDB(databaseManager.databaseConnection(), this.email);
         if (localDb) {
-            userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], true);
+            userConnection = databaseManager.connectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], true);
             return userConnection;
         } else {
-            userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], false);
+            userConnection = databaseManager.connectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], false);
             return userConnection;
         }
     }
@@ -148,7 +148,7 @@ public class SQLConverterController {
 
         SQLConverterController sqlController = new SQLConverterController();
         sqlController.setEmail(sessionService.getEmail());
-        this.userConnection = SetConnection(sessionService.getConnection());
+        this.userConnection = setConnection(sessionService.getConnection());
         List<String> columnNames = getColumnNames(this.userConnection, tableName);
 
         for (String columnName : columnNames) {
@@ -193,12 +193,10 @@ public class SQLConverterController {
         newTextField.setPromptText("Enter value");
 
         newChoiceBox.getItems().addAll(getTableNames(this.userConnection));
-
         HBox newRow = new HBox(10);
         newRow.getChildren().addAll(newChoiceBox, newTextField);
 
         dynamicRowsContainer.getChildren().add(newRow);
-
         newChoiceBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> activeChoiceBox = newChoiceBox);
         newTextField.focusedProperty().addListener((obs, wasFocused, isNowFocused) ->
         {
@@ -206,10 +204,6 @@ public class SQLConverterController {
                 activeTextField = newTextField;
             }
         });
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     @FXML
@@ -265,13 +259,13 @@ public class SQLConverterController {
             return;
         }
         if (localDBCheckbox.isSelected()) {
-            connection = databaseManager.DatabaseConnection();
+            connection = databaseManager.databaseConnection();
             databaseManager.saveIsLocalValue(connection, this.email, 1);
         } else {
-            connection = databaseManager.DatabaseConnection();
+            connection = databaseManager.databaseConnection();
             databaseManager.saveIsLocalValue(connection, this.email, 1);
         }
-        connection = databaseManager.DatabaseConnection();
+        connection = databaseManager.databaseConnection();
         String insertSQL = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ? WHERE email = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
@@ -294,7 +288,7 @@ public class SQLConverterController {
 
         SessionService sessionService = SessionService.getInstance();
         sqlController.setEmail(sessionService.getEmail());
-        Connection connection = sqlController.SetConnection(sessionService.getConnection());
+        Connection connection = sqlController.setConnection(sessionService.getConnection());
         sqlController.populateStaticRow(connection);
 
         Scene currentScene = welcomeText.getScene();
@@ -325,7 +319,7 @@ public class SQLConverterController {
             DatabaseManager databaseManager = new DatabaseManager();
             final Connection[] userConnection = new Connection[1];
             try {
-                userConnection[0] = databaseManager.ConnectUserDatabase(serverName, databaseName, dbUsername, dbPassword, localDBCheckbox.isSelected());
+                userConnection[0] = databaseManager.connectUserDatabase(serverName, databaseName, dbUsername, dbPassword, localDBCheckbox.isSelected());
 
                 Platform.runLater(() -> {
                     if (userConnection[0] == null) {
@@ -387,7 +381,7 @@ public class SQLConverterController {
 
         SessionService sessionService = SessionService.getInstance();
         controller.setEmail(sessionService.getEmail());
-        this.userConnection = SetConnection(sessionService.getConnection());
+        this.userConnection = setConnection(sessionService.getConnection());
 
         Button backToHomeButton = (Button) resetPasswordPage.lookup("#backToHomeButton");
         backToHomeButton.setVisible(true);

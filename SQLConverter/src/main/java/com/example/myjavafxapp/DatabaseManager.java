@@ -1,57 +1,19 @@
 package com.example.myjavafxapp;
 
-import javafx.fxml.FXML;
-import java.io.IOException;
-import java.sql.*;
-import java.util.List;
-
 import javafx.scene.control.*;
+import java.io.IOException;
+import javafx.fxml.FXML;
+import java.util.List;
+import java.sql.*;
 
 public class DatabaseManager {
-    @FXML
-    private Label connectionError;
-    @FXML
-    private Label welcomeText;
-    private Connection userConnection;
-    private Connection sqlAppConnection;
+    @FXML private Label connectionError;
+    @FXML private Label welcomeText;
+    private Connection userConnection, sqlAppConnection;
     private DatabaseManager databaseManager;
     private String email;
 
-    public void SetConnection() throws IOException
-    {
-        this.databaseManager = new DatabaseManager();
-        String[] dbValues = databaseManager.GetUserDBInfo(this.email);
-
-        if (dbValues == null)
-        {
-            return;
-        }
-        this.userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], false);
-    }
-
-    public void SetSQLAppConnection() throws IOException
-    {
-        this.databaseManager = new DatabaseManager();
-        this.sqlAppConnection = databaseManager.DatabaseConnection();
-    }
-
-   /* public Connection ConnectUserDatabase(String serverName, String databaseName, String username, String password) throws IOException {
-        String connectionUrl = "jdbc:sqlserver://" + serverName + ":1433;"
-                + "database=" + databaseName + ";"
-                + "user=" + username + ";"
-                + "password=" + password + ";"
-                + "encrypt=true;"
-                + "trustServerCertificate=false;"
-                + "loginTimeout=30;";
-        try {
-            Connection connection = DriverManager.getConnection(connectionUrl);
-            return connection;
-        } catch (Exception e) {
-            return null;
-        }
-    } */
-
-    public Connection ConnectUserDatabase(String serverName, String databaseName, String username, String password, boolean isLocal) throws IOException {
+    public Connection connectUserDatabase(String serverName, String databaseName, String username, String password, boolean isLocal) throws IOException {
         String connectionUrl;
         if (isLocal) {
             connectionUrl = "jdbc:sqlserver://" + serverName + ":1433;" +
@@ -80,7 +42,7 @@ public class DatabaseManager {
         }
     }
 
-    public Connection DatabaseConnection() throws IOException
+    public Connection databaseConnection() throws IOException
     {
         String serverName = "sqlconverterserver.database.windows.net";
         String databaseName = "SQLConverterDB";
@@ -103,12 +65,11 @@ public class DatabaseManager {
         }
         catch (SQLException e)
         {
-            showConnectionErrorPopup();
             return null;
         }
     }
 
-    public void SaveUserDetails(Connection connection, String email, String password) {
+    public void saveUserDetails(Connection connection, String email, String password) {
         String sql = "INSERT INTO Users (Email, Password) VALUES (?, ?);";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -132,33 +93,25 @@ public class DatabaseManager {
         }
     }
 
-    public boolean CheckIfColumnValueExists(Connection connection, String columnName, String columnValue)
-    {
+    public boolean checkIfColumnValueExists(Connection connection, String columnName, String columnValue) {
         String sql = "SELECT * FROM Users WHERE " + columnName + " = ?";
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql))
-        {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, columnValue);
-
-            try (ResultSet resultSet = preparedStatement.executeQuery())
-            {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 return resultSet.next();
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    public boolean checkForLocalDB(Connection connection, String email)
-    {
+    public boolean checkForLocalDB(Connection connection, String email) {
         String sql = "SELECT isLocal FROM Users WHERE Email = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, email);
-
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     int isLocal = resultSet.getInt("isLocal");
@@ -173,27 +126,22 @@ public class DatabaseManager {
         }
     }
 
-    public boolean checkForTempPassword(String emailInput)
-    {
+    public boolean checkForTempPassword(String emailInput) {
         String sql = "SELECT tempPassword FROM Users WHERE Email = ?";
         boolean tempPW = false;
 
-        try (Connection connection = DatabaseConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql))
-        {
+        try (Connection connection = databaseConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, emailInput);
 
-            try (ResultSet resultSet = preparedStatement.executeQuery())
-            {
-                if (resultSet.next())
-                {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
                     String tempPassword = resultSet.getString("tempPassword");
                     tempPW = "1".equals(tempPassword);
                 }
             }
         }
-        catch (SQLException e)
-        {
+        catch (SQLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -204,7 +152,7 @@ public class DatabaseManager {
     public void setTempPassword(String email, String tempPassword) {
         String sql = "UPDATE users SET Password = ? WHERE Email = ?";
 
-        try (Connection conn = DatabaseConnection();
+        try (Connection conn = databaseConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, tempPassword);
             pstmt.setString(2, email);
@@ -219,7 +167,7 @@ public class DatabaseManager {
     public void resetTempPassword(String emailInput) {
         String sql = "UPDATE Users SET tempPassword = '0' WHERE Email = ?";
 
-        try (Connection connection = DatabaseConnection();
+        try (Connection connection = databaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql))
         {
             preparedStatement.setString(1, emailInput);
@@ -228,46 +176,34 @@ public class DatabaseManager {
         }
     }
 
-    public String GetUserPassword(Connection connection, String emailInput)
-    {
+    public String getUserPassword(Connection connection, String emailInput) {
         String sql = "SELECT Password FROM Users WHERE Email = ?";
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql))
-        {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, emailInput);
 
-            try (ResultSet resultSet = preparedStatement.executeQuery())
-            {
-                if (resultSet.next())
-                {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
                     return resultSet.getString("Password");
-                }
-                else
-                {
+                } else {
                     return null;
                 }
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public String[] GetUserDBInfo(String email)
-    {
+    public String[] getUserDBInfo(String email) {
         String sql = "SELECT * FROM users WHERE email = ?";
 
-        try (Connection conn = DatabaseConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql))
-        {
+        try (Connection conn = databaseConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, email);
 
-            try (ResultSet rs = pstmt.executeQuery())
-            {
-                if (rs.next())
-                {
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
                     String serverName = rs.getString("serverName");
                     String databaseName = rs.getString("databaseName");
                     String username = rs.getString("dbUsername");
@@ -283,9 +219,8 @@ public class DatabaseManager {
         return null;
     }
 
-    public void SaveSecurityQuestions(String firstAnswer, String secondAnswer, String firstQuestion, String secondQuestion, String email)
-    {
-        try (Connection conn = DatabaseConnection()) {
+    public void saveSecurityQuestions(String firstAnswer, String secondAnswer, String firstQuestion, String secondQuestion, String email) {
+        try (Connection conn = databaseConnection()) {
             String sql = "UPDATE Users SET securityAnswer1 = ?, securityAnswer2 = ?, securityQuestion1 = ?, securityQuestion2 = ? WHERE Email = ?";
 
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -294,16 +229,11 @@ public class DatabaseManager {
                 pstmt.setString(3, firstQuestion);
                 pstmt.setString(4, secondQuestion);
                 pstmt.setString(5, email);
-
                 pstmt.executeUpdate();
-
-                System.out.println("Security questions saved successfully.");
             }
         } catch (SQLException e) {
-            System.out.println("Error saving security questions: " + e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
-            System.out.println("Error establishing database connection: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -312,7 +242,7 @@ public class DatabaseManager {
         String[] securityQuestions = new String[2];
         String sql = "SELECT securityQuestion1, securityQuestion2 FROM users WHERE email = ?";
 
-        try (Connection conn = DatabaseConnection();
+        try (Connection conn = databaseConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, email);
 
@@ -331,10 +261,9 @@ public class DatabaseManager {
     public boolean validateSecurityAnswers(String email, String response1, String response2) {
         String sql = "SELECT securityAnswer1, securityAnswer2 FROM Users WHERE Email = ?";
 
-        try (Connection conn = DatabaseConnection();
+        try (Connection conn = databaseConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, email);
-
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     String storedResponse1 = rs.getString("securityAnswer1");
@@ -353,7 +282,7 @@ public class DatabaseManager {
 
     public boolean updateNewPassword(String email, String newPassword) throws SQLException, IOException {
         String sql = "UPDATE users SET password = ? WHERE email = ?";
-        try (Connection conn = DatabaseConnection();
+        try (Connection conn = databaseConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, newPassword);
             pstmt.setString(2, email);
@@ -365,22 +294,10 @@ public class DatabaseManager {
         }
     }
 
-    public void showConnectionErrorPopup() {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Connection Error");
-        alert.setHeaderText("Unable to connect to database");
-        alert.setContentText("Please try again or refer to the FAQs for assistance.");
-
-        ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-        alert.getButtonTypes().setAll(cancelButton);
-
-        alert.showAndWait();
-    }
-
     public void saveEnterpriseSubUserEmails(List<String> emails) {
         String sql = "INSERT INTO Users (email, Password, tempPassword) VALUES (?, ?, ?)";
 
-        try (Connection connection = DatabaseConnection();
+        try (Connection connection = databaseConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
             String defaultPassword = " ";

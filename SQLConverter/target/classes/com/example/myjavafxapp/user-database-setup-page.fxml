@@ -34,11 +34,11 @@
                 <Font size="20.0" />
             </font>
         </Label>
-        <TextField id="dbPasswordField" fx:id="dbPasswordField" layoutX="590.0" layoutY="332.0" prefHeight="45.0" prefWidth="251.0" promptText="Password">
+        <PasswordField id="dbPasswordField" fx:id="dbPasswordField" layoutX="590.0" layoutY="332.0" prefHeight="45.0" prefWidth="251.0" promptText="Password">
             <font>
                 <Font size="18.0" />
             </font>
-        </TextField>
+        </PasswordField>
         <Button fx:id="databaseSetupNextButton" layoutX="552.0" layoutY="558.0" mnemonicParsing="false" onAction="#onDatabaseSetupNextButton" prefHeight="48.0" prefWidth="246.0" text="Next" />
       <TextField id="dbUsernameField" fx:id="dbUsernameField" layoutX="226.0" layoutY="334.0" prefHeight="45.0" prefWidth="251.0" promptText="Admin username">
          <font>

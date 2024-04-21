@@ -23,11 +23,11 @@
             <Font size="18.0" />
          </font>
         </TextField>
-      <TextField fx:id="enterprisePasswordInputField" layoutX="598.0" layoutY="255.0" prefHeight="45.0" prefWidth="251.0" promptText="Password">
+      <PasswordField fx:id="enterprisePasswordInputField" layoutX="598.0" layoutY="255.0" prefHeight="45.0" prefWidth="251.0" promptText="Password">
          <font>
             <Font size="18.0" />
          </font>
-      </TextField>
+      </PasswordField>
         <Label fx:id="enterpriseAccountInputError" layoutX="345.0" layoutY="470.0" text="Password and Confirmation Password don't match" textFill="red" visible="false">
             <font>
                 <Font size="18.0" />
@@ -48,11 +48,11 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <TextField fx:id="enterpriseConfirmPasswordField" layoutX="598.0" layoutY="354.0" prefHeight="45.0" prefWidth="251.0" promptText="Confirm password">
+      <PasswordField fx:id="enterpriseConfirmPasswordField" layoutX="598.0" layoutY="354.0" prefHeight="45.0" prefWidth="251.0" promptText="Confirm password">
          <font>
             <Font size="18.0" />
          </font>
-      </TextField>
+      </PasswordField>
       <Button fx:id="enterpriseNextButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onEnterpriseAccountNextButtonClick" prefHeight="48.0" prefWidth="246.0" text="Next" />
         <Button id="backButton" layoutX="38.0" layoutY="28.0" mnemonicParsing="false" onAction="#onEnterpriseAccountBackButtonClick" prefHeight="30.0" prefWidth="62.0" text="Back">
          <font>
