@@ -24,6 +24,8 @@ public class Controller
             accountDifferencesAnswer, updateDatebaseInfoAnswer, emptyDropdownAnswer, updateConfirmationLabel;
     @FXML private TextField signInEmailInputField, signInPasswordInputField, resetEmailField, response1, response2, newPasswordInputField, newConfirmationPasswordField;
     @FXML private ComboBox<String> serverNameLocation, dbConnectFailure, passwordChange, accountDifferences, updateDatebaseInfo, emptyDropdown;
+    @FXML MenuItem updateDatabase;
+    @FXML AnchorPane updateUserDBPage;
     private DatabaseManager databaseManager = new DatabaseManager();
     private boolean isAnswerVisible = false;
     private Stage loadingStage;
@@ -134,16 +136,19 @@ public class Controller
                     showLoadingPopup(primaryStage);
                     new Thread(() -> {
                         try {
+                            boolean isSubUser = databaseManager.checkIfSubUser(databaseManager.databaseConnection(), this.email);
                             Pane sqlConverterPage = fxmlLoader.load();
                             SQLConverterController controller = fxmlLoader.getController();
                             controller.setEmail(this.email);
                             Connection connection = controller.setConnection();
                             controller.setConnection(connection);
-
                             SessionService sessionService = SessionService.getInstance();
                             sessionService.setEmail(this.email);
 
                             Platform.runLater(() -> {
+                                if (isSubUser) {
+                                    controller.disableUpdateDatabaseMenuItem();
+                                }
                                 controller.populateStaticRow(connection);
 
                                 Scene currentScene = welcomeText.getScene();

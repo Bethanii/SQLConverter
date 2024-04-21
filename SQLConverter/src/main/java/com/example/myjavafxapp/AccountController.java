@@ -90,7 +90,7 @@ public class AccountController {
 
     @FXML
     protected void onEnterpriseSubUsersNextButtonClick() throws IOException {
-        databaseManager.saveEnterpriseSubUserEmails(emails);
+        databaseManager.saveEnterpriseSubUserEmails(emails, this.email);
         loadPage("sub-users-temporary-password.fxml", "Enterprise Account Sub-User Temporary Password", this.email, "Account Controller", false, this.emails);
         AccountController controller = new AccountController();
         controller.setEmail(this.email);
@@ -379,7 +379,6 @@ public class AccountController {
                 subUserEmailInputField.clear();
             }
         }
-
      /*   String emailText = subUserEmailInputField.getText().trim();
         emails.add(emailText);
         displayEmails(emails);

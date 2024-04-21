@@ -157,6 +157,7 @@ public class DatabaseManager {
         try (Connection connection = databaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, emailInput);
+            preparedStatement.executeUpdate();
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
@@ -269,7 +270,7 @@ public class DatabaseManager {
             throw e;
         }
     }
-    public void saveEnterpriseSubUserEmails(List<String> emails) {
+  /*  public void saveEnterpriseSubUserEmails(List<String> emails) {
         String sql = "INSERT INTO Users (email, Password, tempPassword) VALUES (?, ?, ?)";
         try (Connection connection = databaseConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -284,6 +285,42 @@ public class DatabaseManager {
             statement.executeBatch();
         } catch (SQLException | IOException e) {
             e.printStackTrace();
+        }
+    } */
+
+    public void saveEnterpriseSubUserEmails(List<String> emails, String mainEmail) {
+        String sql = "INSERT INTO Users (email, Password, tempPassword, accountOwner, isSubUser) VALUES (?, ?, ?, ?, ?)";
+        try (Connection connection = databaseConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            String defaultPassword = " ";
+            int isSubUser = 1;
+            int tempPasswordValue = 1;
+            for (String email : emails) {
+                statement.setString(1, email);
+                statement.setString(2, defaultPassword);
+                statement.setInt(3, tempPasswordValue);
+                statement.setString(4, mainEmail);
+                statement.setInt(5, isSubUser);
+                statement.addBatch();
+            }
+            statement.executeBatch();
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean checkIfSubUser(Connection connection, String emailInput) {
+        String sql = "SELECT isSubUser FROM Users WHERE Email = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, emailInput);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getBoolean("isSubUser");
+            }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 

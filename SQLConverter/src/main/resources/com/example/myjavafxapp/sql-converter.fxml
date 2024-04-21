@@ -71,7 +71,7 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Database">
               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#goToUserDatabaseSetupPage" text="Update" />
+                  <MenuItem fx:id="updateDatabase" mnemonicParsing="false" onAction="#goToUserDatabaseSetupPage" text="Update" />
               </items>
           </Menu>
         </menus>

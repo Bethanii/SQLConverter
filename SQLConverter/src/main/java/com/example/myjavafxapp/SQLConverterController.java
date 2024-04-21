@@ -33,6 +33,7 @@ public class SQLConverterController {
     @FXML private CheckBox localDBCheckbox;
     @FXML private AnchorPane updateUserDBPage, sqlConverterPage, resetPasswordPage, standardAccountPage;
     private Stage loadingStage;
+    @FXML MenuItem updateDatabase;
     private ChoiceBox<String> activeChoiceBox;
     private Connection userConnection;
     private DatabaseManager databaseManager;
@@ -50,6 +51,13 @@ public class SQLConverterController {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+
+    public void disableUpdateDatabaseMenuItem() {
+        if (updateDatabase != null) {
+            updateDatabase.setDisable(true);
+        }
     }
 
     public Connection setConnection() throws IOException {
