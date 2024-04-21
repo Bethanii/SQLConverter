@@ -24,7 +24,7 @@ import java.util.List;
 
 public class AccountController {
 
-    @FXML private Label welcomeText, connectionError, securityQuestionErrorMessage, enterpriseAccountInputError, standardAccountInputError, connectionSuccess;
+    @FXML private Label welcomeText, connectionError, securityQuestionErrorMessage, enterpriseAccountInputError, standardAccountInputError, connectionSuccess, errorMessage;
     @FXML private TextField standardUsernameInputField, standardPasswordInputField, standardConfirmPasswordField, serverNameField, dbUsernameField, dbPasswordField, databaseNameField,
             firstSecurityQuestionInput, secondSecurityQuestionInput, subUserEmailInputField, enterpriseUsernameInputField, enterprisePasswordInputField, enterpriseConfirmPasswordField,
             tempPasswordInputField;
@@ -354,9 +354,36 @@ public class AccountController {
     @FXML
     protected void addEmailField() throws IOException {
         String emailText = subUserEmailInputField.getText().trim();
+        Connection connection = databaseManager.databaseConnection();
+        boolean usernameExists = databaseManager.checkIfColumnValueExists(connection, "Email", emailText);
+
+        if(usernameExists)
+        {
+            subUserEmailInputField.getStyleClass().add("text-field-error");
+            errorMessage.setVisible(true);
+        }
+        else
+        {
+            if(emails.contains(emailText))
+            {
+                subUserEmailInputField.getStyleClass().add("text-field-error");
+                errorMessage.setText("Cannot enter duplicate usernames");
+                errorMessage.setLayoutX(380);
+                errorMessage.setVisible(true);
+            }
+            else {
+                subUserEmailInputField.getStyleClass().remove("text-field-error");
+                errorMessage.setVisible(false);
+                emails.add(emailText);
+                displayEmails(emails);
+                subUserEmailInputField.clear();
+            }
+        }
+
+     /*   String emailText = subUserEmailInputField.getText().trim();
         emails.add(emailText);
         displayEmails(emails);
-        subUserEmailInputField.clear();
+        subUserEmailInputField.clear(); */
     }
 
     public void displayEmails(List<String> emails) {

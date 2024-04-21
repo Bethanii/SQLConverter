@@ -23,7 +23,7 @@
     -fx-focus-color: transparent;
     -fx-background-radius: 20;
     -fx-font-family: 'Open Sans', sans-serif;
-    -fx-font-size: 14px;
+    -fx-font-size: 16px;
 }
 
 #enterpriseAccountButton, #standardAccountButton, #enterpriseNextButton, #securityQuestionNextButton, #enterpriseSubUsersNextButton,
@@ -33,7 +33,7 @@
     -fx-focus-color: transparent;
     -fx-background-radius: 20;
     -fx-font-family: 'Open Sans', sans-serif;
-    -fx-font-size: 18px;
+    -fx-font-size: 20px;
 }
 
 #signInLabelField {

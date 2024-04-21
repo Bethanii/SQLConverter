@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import java.net.*?>
 <?import javafx.scene.control.*?>
@@ -11,12 +10,12 @@
         <URL value="@static/style.css" />
     </stylesheets>
     <children>
-        <Label fx:id="welcomeText" layoutX="205.0" layoutY="38.0" prefHeight="35.0" prefWidth="676.0" styleClass="labelStyle" text="Add users below that you want to have access to the database">
+        <Label fx:id="welcomeText" layoutX="212.0" layoutY="39.0" prefHeight="35.0" prefWidth="676.0" styleClass="labelStyle" text="Add users below that you want to have access to the database">
          <font>
             <Font size="24.0" />
          </font></Label>
 
-        <Label layoutX="246.0" layoutY="126.0" text="Enter Sub-User Email:">
+        <Label layoutX="246.0" layoutY="126.0" prefHeight="30.0" prefWidth="246.0" text="Enter Sub-User Username">
             <font>
                 <Font size="20.0" />
             </font>
@@ -24,17 +23,28 @@
 
         <VBox fx:id="emailFieldsVBox" layoutX="105.0" layoutY="141.0" prefWidth="559.0" spacing="10" />
 
-        <Button layoutX="763.0" layoutY="169.0" mnemonicParsing="false" onAction="#addEmailField" prefHeight="35.0" prefWidth="90.0" text="Add Email">
+        <Button layoutX="731.0" layoutY="169.0" mnemonicParsing="false" onAction="#addEmailField" prefHeight="35.0" prefWidth="112.0" text="Add Username">
          <font>
             <Font size="14.0" />
          </font></Button>
 
         <ScrollPane layoutX="245.0" layoutY="235.0" prefHeight="260.0" prefWidth="598.0">
             <content>
-                <TextArea fx:id="emailsDisplayArea" editable="false" prefHeight="271.0" prefWidth="569.0" wrapText="true" />
+                <TextArea fx:id="emailsDisplayArea" editable="false" prefHeight="271.0" prefWidth="586.0" wrapText="true">
+               <font>
+                  <Font size="16.0" />
+               </font></TextArea>
             </content>
         </ScrollPane>
-        <Button fx:id="enterpriseSubUsersNextButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onEnterpriseSubUsersNextButtonClick" prefHeight="48.0" prefWidth="246.0" text="Next" />
-          <TextField fx:id="subUserEmailInputField" layoutX="245.0" layoutY="164.0" prefHeight="45.0" prefWidth="507.0" promptText="Email" />
+        <Button fx:id="enterpriseSubUsersNextButton" layoutX="412.0" layoutY="575.0" mnemonicParsing="false" onAction="#onEnterpriseSubUsersNextButtonClick" prefHeight="48.0" prefWidth="246.0" text="Next" />
+          <TextField fx:id="subUserEmailInputField" layoutX="245.0" layoutY="164.0" prefHeight="45.0" prefWidth="474.0" promptText="Username">
+         <font>
+            <Font size="16.0" />
+         </font></TextField>
+      <Label fx:id="errorMessage" layoutX="362.0" layoutY="521.0" prefHeight="27.0" prefWidth="373.0" text="Username already exists, please enter another" textFill="red" visible="false" >
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
     </children>
 </AnchorPane>
