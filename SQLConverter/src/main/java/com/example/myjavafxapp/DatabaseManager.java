@@ -305,7 +305,6 @@ public class DatabaseManager {
         }
     }
 
-
     public boolean checkIfSubUser(Connection connection, String emailInput) {
         String sql = "SELECT isSubUser FROM Users WHERE Email = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -359,8 +358,7 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
-    public void saveUserDBInfo(Connection connection, String serverName, String databaseName, String dbUsername, String dbPassword, String email)
-    {
+    public void saveUserDBInfo(Connection connection, String serverName, String databaseName, String dbUsername, String dbPassword, String email) {
         String insertSQL = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ? WHERE email = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
             pstmt.setString(1, serverName);
@@ -374,8 +372,7 @@ public class DatabaseManager {
         }
     }
 
-    public void updateSubUserDBInfo(Connection connection, String serverName, String databaseName, String dbUsername, String dbPassword, String email)
-    {
+    public void updateSubUserDBInfo(Connection connection, String serverName, String databaseName, String dbUsername, String dbPassword, String email) {
         String insertSQL = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ? WHERE accountOwner = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
             pstmt.setString(1, serverName);
@@ -384,6 +381,16 @@ public class DatabaseManager {
             pstmt.setString(4, dbPassword);
             pstmt.setString(5, email);
             pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteUserDetails(Connection connection, String email) {
+        String sql = "DELETE FROM Users WHERE Email = ?";
+        try (PreparedStatement deleteStmt = connection.prepareStatement(sql)) {
+            deleteStmt.setString(1, email);
+            deleteStmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

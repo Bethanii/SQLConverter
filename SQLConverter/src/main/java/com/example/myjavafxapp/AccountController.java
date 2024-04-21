@@ -397,13 +397,11 @@ public class AccountController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("exit-confirmation-popup.fxml"));
             Parent root = loader.load();
-
             Stage popupStage = new Stage();
             popupStage.setTitle("Exit Account Creation");
             popupStage.initModality(Modality.APPLICATION_MODAL);
             popupStage.setScene(new Scene(root));
             popupStage.showAndWait();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -413,12 +411,18 @@ public class AccountController {
         stage.close();
     }
 
-    public void onPopUpExit() throws IOException {
+    public void onPopUpExit() throws IOException, SQLException {
         for (Window window : Window.getWindows()) {
             if (window instanceof Stage && !"Landing Page".equals(((Stage) window).getTitle())) {
                 ((Stage) window).close();
             }
         }
+        AccountController controller = new AccountController();
+        SessionService sessionService = SessionService.getInstance();
+        controller.setEmail(sessionService.getEmail());
+
+        Connection connection = databaseManager.databaseConnection();
+        databaseManager.deleteUserDetails(connection, this.email);
         loadPage("landing-page.fxml", "Welcome", null, "Controller", false, null);
     }
 }
