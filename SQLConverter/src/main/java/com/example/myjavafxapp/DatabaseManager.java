@@ -286,4 +286,17 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
+
+    public boolean updateUsername(Connection connection, String email, String emailInput) {
+        String sql = "UPDATE Users SET Email = ? WHERE Email = ?;";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, emailInput);
+            preparedStatement.setString(2, email);
+            int affectedRows = preparedStatement.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

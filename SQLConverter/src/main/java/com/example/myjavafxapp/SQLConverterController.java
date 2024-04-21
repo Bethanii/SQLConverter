@@ -28,8 +28,8 @@ public class SQLConverterController {
     @FXML private TextField searchField1;
     @FXML private VBox dynamicRowsContainer;
     @FXML private VBox resultsContainer;
-    @FXML private Label welcomeText, connectionError, connectionSuccess;
-    @FXML private TextField activeTextField, serverNameField, databaseNameField, dbUsernameField, dbPasswordField;
+    @FXML private Label welcomeText, connectionError, connectionSuccess, updateSuccessMessage, errorMessage;
+    @FXML private TextField activeTextField, serverNameField, databaseNameField, dbUsernameField, dbPasswordField, updateUsernameInput;
     @FXML private CheckBox localDBCheckbox;
     @FXML private AnchorPane updateUserDBPage, sqlConverterPage, resetPasswordPage, standardAccountPage;
     private Stage loadingStage;
@@ -447,6 +447,7 @@ public class SQLConverterController {
         controller.setEmail(sessionService.getEmail());
         SQLConverterController sqlController = new SQLConverterController();
         Connection connection = controller.setConnection(sessionService.getConnection());
+        controller.setEmail(this.email);
         controller.populateStaticRow(connection);
 
         Scene currentScene = welcomeText.getScene();
@@ -460,6 +461,74 @@ public class SQLConverterController {
 
     @FXML
     public void onUpdateUsernameUpdateButtonClick() throws IOException {
+ //       SessionService sessionService = SessionService.getInstance();
+ //       Connection userConnection = controller.setConnection(sessionService.getConnection());
+  //      controller.setConnection(userConnection);
 
+        String emailInput = updateUsernameInput.getText();
+        Connection connection = databaseManager.databaseConnection();
+
+        boolean usernameExists = databaseManager.checkIfColumnValueExists(connection, "Email", emailInput);
+
+        if(usernameExists)
+        {
+            updateUsernameInput.getStyleClass().add("text-field-error");
+            errorMessage.setVisible(true);
+            updateSuccessMessage.setVisible(false);
+        }
+        else
+        {
+            if (databaseManager.updateUsername(connection, this.email, emailInput))
+            {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("username-update-confirmation.fxml"));
+                AnchorPane usernameUpdateConfirmation = fxmlLoader.load();
+                SQLConverterController controller = fxmlLoader.getController();
+
+                Scene currentScene = welcomeText.getScene();
+                currentScene.setRoot(usernameUpdateConfirmation);
+                usernameUpdateConfirmation.requestFocus();
+
+                Stage stage = (Stage) currentScene.getWindow();
+                stage.sizeToScene();
+                stage.setTitle("Username Successfully Updated");
+
+           //     errorMessage.setVisible(false);
+            //    updateUsernameInput.getStyleClass().remove("text-field-error");
+             //   updateSuccessMessage.setVisible(true);
+            }
+        }
+    }
+
+    private FXMLLoader loadPage(String page) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(page));
+        fxmlLoader.load();
+        return fxmlLoader;
+    }
+
+    public Scene setRootAndGetScene(AnchorPane anchorPane) {
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(anchorPane);
+        anchorPane.requestFocus();
+        return currentScene;
+    }
+
+    public void setStage(Scene currentScene, String title) {
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle(title);
+    }
+
+    public <T> T setupPage(String pagePath, String title) throws IOException {
+        FXMLLoader fxmlLoader = loadPage(pagePath);
+        AnchorPane pageRoot = fxmlLoader.getRoot();
+        T controller = fxmlLoader.getController();
+        Scene currentScene = setRootAndGetScene(pageRoot);
+        setStage(currentScene, title);
+        return controller;
+    }
+
+    @FXML
+    protected void onSignInSelectionClick() throws IOException {
+        setupPage("sign-in-page.fxml", "Log In");
     }
 }

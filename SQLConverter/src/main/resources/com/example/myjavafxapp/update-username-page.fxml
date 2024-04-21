@@ -14,12 +14,7 @@
 
     <children>
         <Label fx:id="welcomeText" styleClass="labelStyle" />
-        <Label layoutX="312.0" layoutY="241.0" prefHeight="38.0" prefWidth="108.0" text="Username">
-            <font>
-                <Font size="20.0" />
-            </font>
-        </Label>
-        <TextField id="updateUsernameButton" fx:id="emailInputField" layoutX="312.0" layoutY="293.0" prefHeight="45.0" prefWidth="251.0" promptText="Username">
+        <TextField fx:id="updateUsernameInput" layoutX="410.0" layoutY="328.0" prefHeight="45.0" prefWidth="251.0" promptText="Username">
             <font>
                 <Font size="18.0" />
             </font>
@@ -29,12 +24,17 @@
                 <Font size="24.0" />
             </font>
         </Label>
-        <Label fx:id="standardAccountInputError" layoutX="345.0" layoutY="470.0" text="Password and Confirmation Password don't match" textFill="red" visible="false">
+        <Label fx:id="errorMessage" layoutX="345.0" layoutY="457.0" text="Username not available, please choose another" textFill="red" visible="false">
             <font>
                 <Font size="18.0" />
             </font>
         </Label>
-        <Button fx:id="updateButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onUpdateUsernameUpdateButtonClick" prefHeight="48.0" prefWidth="246.0" text="Update" />
+        <Label fx:id="updateSuccessMessage" layoutX="380.0" layoutY="457.0" text="Username has been successfully updated" textFill="green" visible="false">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </Label>
+        <Button fx:id="updateUsernameButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onUpdateUsernameUpdateButtonClick" prefHeight="48.0" prefWidth="246.0" text="Update" />
         <Button id="backButton" layoutX="38.0" layoutY="28.0" mnemonicParsing="false" onAction="#onUpdateUsernameBackButtonClick" prefHeight="30.0" prefWidth="62.0" text="Back">
             <font>
                 <Font size="14.0" />
