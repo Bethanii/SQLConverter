@@ -1,30 +1,26 @@
 package com.example.myjavafxapp;
 
-import javafx.application.Platform;
-import javafx.fxml.FXML;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.*;
-import java.util.ArrayList;
-
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-
-import java.util.List;
-
 import javafx.scene.layout.AnchorPane;
+import java.io.FileNotFoundException;
+import javafx.application.Platform;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.scene.control.*;
+import javafx.fxml.FXMLLoader;
+import javafx.stage.Modality;
+import java.util.ArrayList;
+import javafx.geometry.Pos;
+import java.io.IOException;
+import java.io.PrintWriter;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.scene.Node;
+import javafx.fxml.FXML;
+import java.util.List;
+import java.io.File;
+import java.sql.*;
 
 public class SQLConverterController {
     @FXML private ChoiceBox<String> searchRow1;
@@ -34,8 +30,7 @@ public class SQLConverterController {
     @FXML private Label welcomeText, connectionError, connectionSuccess;
     @FXML private TextField activeTextField, serverNameField, databaseNameField, dbUsernameField, dbPasswordField;
     @FXML private CheckBox localDBCheckbox;
-    @FXML
-    private AnchorPane updateUserDBPage, sqlConverterPage, resetPasswordPage;
+    @FXML private AnchorPane updateUserDBPage, sqlConverterPage, resetPasswordPage;
     private Stage loadingStage;
     private ChoiceBox<String> activeChoiceBox;
     private Connection userConnection;
@@ -52,9 +47,7 @@ public class SQLConverterController {
         }
     }
 
-
-    public Connection SetConnection() throws IOException
-    {
+    public Connection SetConnection() throws IOException {
         this.databaseManager = new DatabaseManager();
         String[] dbValues = databaseManager.GetUserDBInfo(this.email);
 
@@ -64,20 +57,16 @@ public class SQLConverterController {
 
         boolean localDb = databaseManager.checkForLocalDB(databaseManager.DatabaseConnection(), this.email);
 
-        if (localDb)
-        {
+        if (localDb) {
             this.userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], true);
             return this.userConnection;
-        }
-        else
-        {
+        } else {
             this.userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], false);
             return this.userConnection;
         }
     }
 
-    public Connection SetConnection(Connection userConnection) throws IOException
-    {
+    public Connection SetConnection(Connection userConnection) throws IOException {
         this.databaseManager = new DatabaseManager();
         String[] dbValues = databaseManager.GetUserDBInfo(this.email);
 
@@ -87,13 +76,10 @@ public class SQLConverterController {
 
         boolean localDb = databaseManager.checkForLocalDB(databaseManager.DatabaseConnection(), this.email);
 
-        if (localDb)
-        {
+        if (localDb) {
             userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], true);
             return userConnection;
-        }
-        else
-        {
+        } else {
             userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], false);
             return userConnection;
         }
@@ -102,12 +88,9 @@ public class SQLConverterController {
     @FXML
     protected void populateStaticRow(Connection userConnection)
     {
-        try
-        {
+        try {
             searchRow1.getItems().addAll(getTableNames(userConnection));
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -116,56 +99,44 @@ public class SQLConverterController {
     protected void onSearchButtonClick() throws IOException, SQLException {
         List<String> results = new ArrayList<>();
 
-        if (searchRow1.getValue() != null && !searchField1.getText().isEmpty())
-        {
+        if (searchRow1.getValue() != null && !searchField1.getText().isEmpty()) {
             results.addAll(querySelectedTables(searchRow1.getValue(), searchField1.getText()));
         }
 
-        for (HBox hbox : dynamicRowsContainer.getChildren().stream().map(node -> (HBox) node).toList())
-        {
+        for (HBox hbox : dynamicRowsContainer.getChildren().stream().map(node -> (HBox) node).toList()) {
             ChoiceBox<String> choiceBox = (ChoiceBox<String>) hbox.getChildren().get(0);
             TextField textField = (TextField) hbox.getChildren().get(1);
 
-            if (choiceBox.getValue() != null && !textField.getText().isEmpty())
-            {
+            if (choiceBox.getValue() != null && !textField.getText().isEmpty()) {
                 results.addAll(querySelectedTables(choiceBox.getValue(), textField.getText()));
             }
         }
         displayQueryResults(results);
     }
 
-    public List<String> getTableNames(Connection connection)
-    {
+    public List<String> getTableNames(Connection connection) {
         List<String> tableNames = new ArrayList<>();
-        try
-        {
+        try {
             DatabaseMetaData metaData = connection.getMetaData();
             ResultSet tables = metaData.getTables(null, "dbo", "%", new String[]{"TABLE"});
-            while (tables.next())
-            {
+            while (tables.next()) {
                 tableNames.add(tables.getString("TABLE_NAME"));
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return tableNames;
     }
 
-    public List<String> getColumnNames(Connection connection, String tableName)
-    {
+    public List<String> getColumnNames(Connection connection, String tableName) {
         List<String> columnNames = new ArrayList<>();
         try {
             DatabaseMetaData metaData = connection.getMetaData();
             ResultSet columns = metaData.getColumns(null, null, tableName, null);
-            while (columns.next())
-            {
+            while (columns.next()) {
                 columnNames.add(columns.getString("COLUMN_NAME"));
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return columnNames;
@@ -180,22 +151,16 @@ public class SQLConverterController {
         this.userConnection = SetConnection(sessionService.getConnection());
         List<String> columnNames = getColumnNames(this.userConnection, tableName);
 
-        for (String columnName : columnNames)
-        {
+        for (String columnName : columnNames) {
             String query = "SELECT * FROM " + tableName + " WHERE " + columnName + " LIKE ?";
-            try (PreparedStatement statement = this.userConnection.prepareStatement(query))
-            {
+            try (PreparedStatement statement = this.userConnection.prepareStatement(query)) {
                 statement.setString(1, "%" + searchText + "%");
-
-                try (ResultSet resultSet = statement.executeQuery())
-                {
-                    while (resultSet.next())
-                    {
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
                         StringBuilder row = new StringBuilder();
                         ResultSetMetaData rsmd = resultSet.getMetaData();
                         int columnCount = rsmd.getColumnCount();
-                        for (int i = 1; i <= columnCount; i++)
-                        {
+                        for (int i = 1; i <= columnCount; i++) {
                             if (i > 1) row.append(", ");
                             row.append(rsmd.getColumnName(i)).append(": ").append(resultSet.getString(i));
                         }
@@ -207,11 +172,9 @@ public class SQLConverterController {
         return results;
     }
 
-    public void displayQueryResults(List<String> results)
-    {
+    public void displayQueryResults(List<String> results) {
         resultsContainer.getChildren().clear();
-        for (String row : results)
-        {
+        for (String row : results) {
             Label rowLabel = new Label(row);
             rowLabel.setStyle("-fx-padding: 5;");
             resultsContainer.getChildren().add(rowLabel);
@@ -219,8 +182,7 @@ public class SQLConverterController {
     }
 
     @FXML
-    protected void onAddRowButtonClick()
-    {
+    protected void onAddRowButtonClick() {
         ChoiceBox<String> newChoiceBox = new ChoiceBox<>();
         newChoiceBox.setPrefWidth(167.0);
         newChoiceBox.setPrefHeight(33.0);
@@ -240,8 +202,7 @@ public class SQLConverterController {
         newChoiceBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> activeChoiceBox = newChoiceBox);
         newTextField.focusedProperty().addListener((obs, wasFocused, isNowFocused) ->
         {
-            if (isNowFocused)
-            {
+            if (isNowFocused) {
                 activeTextField = newTextField;
             }
         });
@@ -252,29 +213,22 @@ public class SQLConverterController {
     }
 
     @FXML
-    protected void onExportButtonClick()
-    {
+    protected void onExportButtonClick() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialFileName("SearchResults.csv");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
         File file = fileChooser.showSaveDialog(null);
 
-        if (file != null)
-        {
-            try (PrintWriter writer = new PrintWriter(file))
-            {
-                for (Node node : resultsContainer.getChildren())
-                {
-                    if (node instanceof Label)
-                    {
+        if (file != null) {
+            try (PrintWriter writer = new PrintWriter(file)) {
+                for (Node node : resultsContainer.getChildren()) {
+                    if (node instanceof Label) {
                         String text = ((Label) node).getText();
                         String csvLine = text.replace(", ", ",");
                         writer.println(csvLine);
                     }
                 }
-            }
-            catch (FileNotFoundException e)
-            {
+            } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
         }
@@ -304,20 +258,16 @@ public class SQLConverterController {
         Connection connection = null;
         DatabaseManager databaseManager = new DatabaseManager();
 
-        if (serverName.isEmpty() || databaseName.isEmpty() || dbUsername.isEmpty() || dbPassword.isEmpty())
-        {
+        if (serverName.isEmpty() || databaseName.isEmpty() || dbUsername.isEmpty() || dbPassword.isEmpty()) {
             connectionError.setText("Fields cannot be blank");
             connectionError.setLayoutX(450);
             connectionError.setVisible(true);
             return;
         }
-        if (localDBCheckbox.isSelected())
-        {
+        if (localDBCheckbox.isSelected()) {
             connection = databaseManager.DatabaseConnection();
             databaseManager.saveIsLocalValue(connection, this.email, 1);
-        }
-        else
-        {
+        } else {
             connection = databaseManager.DatabaseConnection();
             databaseManager.saveIsLocalValue(connection, this.email, 1);
         }
@@ -356,26 +306,13 @@ public class SQLConverterController {
         stage.setTitle("SQL Converter");
     }
 
-    public void onConnectToDatabaseButton() throws IOException {
-        Connection connection = SetConnection();
-
-        if (connection == null) {
-            //showConnectionErrorPopup();
-        } else {
-            SQLConverterController controller = new SQLConverterController();
-            controller.populateStaticRow(connection);
-        }
-    }
-
-    public void onUpdateDBTestConnectionButton()
-    {
+    public void onUpdateDBTestConnectionButton() {
         String serverName = serverNameField.getText();
         String databaseName = databaseNameField.getText();
         String dbUsername = dbUsernameField.getText();
         String dbPassword = dbPasswordField.getText();
 
-        if (serverName.isEmpty() || databaseName.isEmpty() || dbUsername.isEmpty() || dbPassword.isEmpty())
-        {
+        if (serverName.isEmpty() || databaseName.isEmpty() || dbUsername.isEmpty() || dbPassword.isEmpty()) {
             connectionError.setText("Fields cannot be blank");
             connectionError.setLayoutX(450);
             connectionError.setVisible(true);

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.text.*?>
-<?import java.lang.*?>
 <?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -21,7 +20,7 @@
         </Label>
 
         <ScrollPane hbarPolicy="NEVER" layoutX="62.0" layoutY="97.0" pickOnBounds="false" prefHeight="535.0" prefWidth="977.0" vbarPolicy="ALWAYS">
-   <content>
+            <content>
                <VBox id="serverNameLocationContainer" minHeight="0.0" minWidth="0.0" prefWidth="1000.0" spacing="10.0">
                    <children>
                        <ComboBox fx:id="serverNameLocation" onMouseClicked="#displayServerNameAnswer" prefWidth="950.0" promptText="Where can I find my Server Name?" style="-fx-font-size: 18px;" />
@@ -62,7 +61,7 @@
                        </Label>
                    </children>
                </VBox>
-   </content>
+            </content>
         </ScrollPane>
     </children>
 </AnchorPane>
