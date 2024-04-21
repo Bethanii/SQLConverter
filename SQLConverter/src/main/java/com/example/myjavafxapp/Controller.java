@@ -24,8 +24,9 @@ public class Controller
             accountDifferencesAnswer, updateDatebaseInfoAnswer, emptyDropdownAnswer, updateConfirmationLabel;
     @FXML private TextField signInEmailInputField, signInPasswordInputField, resetEmailField, response1, response2, newPasswordInputField, newConfirmationPasswordField;
     @FXML private ComboBox<String> serverNameLocation, dbConnectFailure, passwordChange, accountDifferences, updateDatebaseInfo, emptyDropdown;
-    @FXML MenuItem updateDatabase;
-    @FXML AnchorPane updateUserDBPage;
+    @FXML private MenuItem updateDatabase;
+    @FXML private AnchorPane updateUserDBPage;
+    @FXML private Button createAccountButton;
     private DatabaseManager databaseManager = new DatabaseManager();
     private boolean isAnswerVisible = false;
     private Stage loadingStage;

@@ -108,3 +108,9 @@
 #serverNameLocationContainer > ComboBox {
     -fx-pref-height: 39.0;
 }
+
+#exitConfirmation {
+    -fx-border-color: black;
+    -fx-border-width: 2px;
+    -fx-border-style: solid;
+}

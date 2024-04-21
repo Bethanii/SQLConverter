@@ -2,15 +2,14 @@ package com.example.myjavafxapp;
 
 import javafx.scene.control.ProgressIndicator;
 import javafx.application.Platform;
-import java.sql.PreparedStatement;
 import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.StageStyle;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
 import java.sql.SQLException;
+import javafx.stage.Window;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import java.io.IOException;
@@ -31,6 +30,7 @@ public class AccountController {
     @FXML private ChoiceBox<String> firstSecurityQuestion, secondSecurityQuestion;
     @FXML private TextArea emailsDisplayArea;
     @FXML private CheckBox localDBCheckbox;
+    @FXML private Button cancelOption, exitOption;
     private Stage loadingStage;
     private String email;
     private List<String> emails = new ArrayList<>();
@@ -44,15 +44,14 @@ public class AccountController {
         currentScene.setRoot(page);
         page.requestFocus();
 
-        switch(controllerSelection) {
-            case"Account Controller":
+        switch (controllerSelection) {
+            case "Account Controller":
                 AccountController accountController = fxmlLoader.getController();
                 accountController.setEmail(email);
                 if (email != null) {
                     accountController.setEmail(email);
                 }
-                if(emails != null)
-                {
+                if (emails != null) {
                     accountController.setEmails(emails);
                 }
                 if (setSecurityQuestions) {
@@ -79,10 +78,12 @@ public class AccountController {
     public void setEmails(List<String> emails) {
         this.emails = emails;
     }
+
     @FXML
     protected void onStandardAccountNextButtonClick() throws IOException, SQLException {
         accountNextButtonClick("standard");
     }
+
     @FXML
     protected void onEnterpriseAccountNextButtonClick() throws IOException, SQLException {
         accountNextButtonClick("enterprise");
@@ -100,8 +101,7 @@ public class AccountController {
     @FXML
     protected void onTempPasswordNextButtonClick() throws IOException {
         String tempPassword = tempPasswordInputField.getText().trim();
-
-        if(tempPassword.isEmpty() && !emails.isEmpty()) {
+        if (tempPassword.isEmpty() && !emails.isEmpty()) {
             errorMessage.setVisible(true);
             tempPasswordInputField.getStyleClass().add("text-field-error");
         } else {
@@ -134,7 +134,7 @@ public class AccountController {
         Boolean emailExists = databaseManager.checkIfColumnValueExists(connection, "Email", emailInput);
         Boolean passwordMatches = validatePasswordsMatch(passwordInput, passwordInputConfirmation);
 
-        if(emailInput.isEmpty() || emailInput.isBlank() || passwordInput.isEmpty() || passwordInput.isBlank() || passwordInputConfirmation.isEmpty() || passwordInputConfirmation.isBlank()) {
+        if (emailInput.isEmpty() || emailInput.isBlank() || passwordInput.isEmpty() || passwordInput.isBlank() || passwordInputConfirmation.isEmpty() || passwordInputConfirmation.isBlank()) {
             accountInputError.setText("Fields cannot be blank");
             accountInputError.setLayoutX(450);
             accountInputError.setVisible(true);
@@ -157,7 +157,7 @@ public class AccountController {
                     databaseManager.saveUserDetails(connection, emailInput, passwordInput);
                     this.email = emailInput;
                     loadPage(nextPageFxml, nextPageTitle, this.email, "Account Controller", isStandard, null);
-                    if(accountType.equals("enterprise")) {
+                    if (accountType.equals("enterprise")) {
                         databaseManager.updateIsAccountOwnerFlag(connection, this.email);
                     }
                 }
@@ -234,8 +234,7 @@ public class AccountController {
 
     @FXML
     protected void onSecurityQuestionNextButtonClick() throws IOException, SQLException {
-        if (!securityQuestionMissingFields(firstSecurityQuestionInput, secondSecurityQuestionInput))
-        {
+        if (!securityQuestionMissingFields(firstSecurityQuestionInput, secondSecurityQuestionInput)) {
             String firstAnswer = firstSecurityQuestionInput.getText();
             String secondAnswer = secondSecurityQuestionInput.getText();
             if (!securityQuestionMissingQuestions()) {
@@ -243,12 +242,9 @@ public class AccountController {
                 String secondQuestion = secondSecurityQuestion.getSelectionModel().getSelectedItem().toString();
                 databaseManager.saveSecurityQuestions(firstAnswer, secondAnswer, firstQuestion, secondQuestion, this.email);
                 boolean isAccountOwner = databaseManager.checkIfAccountOwner(databaseManager.databaseConnection(), this.email);
-                if(isAccountOwner)
-                {
+                if (isAccountOwner) {
                     loadPage("user-database-setup-page.fxml", "Database Setup Information", this.email, "Account Controller", false, emails);
-                }
-                else
-                {
+                } else {
                     loadPage("user-database-setup-page.fxml", "Database Setup Information", this.email, "Account Controller", false, null);
                 }
             }
@@ -273,7 +269,7 @@ public class AccountController {
         } else {
             Connection connection = databaseManager.databaseConnection();
             boolean isAccountOwner = databaseManager.checkIfAccountOwner(connection, this.email);
-            if(isAccountOwner) {
+            if (isAccountOwner) {
                 databaseManager.saveEnterpriseSubUserDBInfo(emails, serverName, databaseName, dbUsername, dbPassword, this.email);
                 databaseManager.saveUserDBInfo(connection, serverName, databaseName, dbUsername, dbPassword, this.email);
             } else {
@@ -368,21 +364,16 @@ public class AccountController {
         Connection connection = databaseManager.databaseConnection();
         boolean usernameExists = databaseManager.checkIfColumnValueExists(connection, "Email", emailText);
 
-        if(usernameExists)
-        {
+        if (usernameExists) {
             subUserEmailInputField.getStyleClass().add("text-field-error");
             errorMessage.setVisible(true);
-        }
-        else
-        {
-            if(emails.contains(emailText))
-            {
+        } else {
+            if (emails.contains(emailText)) {
                 subUserEmailInputField.getStyleClass().add("text-field-error");
                 errorMessage.setText("Cannot enter duplicate usernames");
                 errorMessage.setLayoutX(380);
                 errorMessage.setVisible(true);
-            }
-            else {
+            } else {
                 subUserEmailInputField.getStyleClass().remove("text-field-error");
                 errorMessage.setVisible(false);
                 emails.add(emailText);
@@ -399,6 +390,35 @@ public class AccountController {
 
     @FXML
     public void onExitButtonClick() {
+        showExitPopup();
+    }
 
+    public void showExitPopup() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("exit-confirmation-popup.fxml"));
+            Parent root = loader.load();
+
+            Stage popupStage = new Stage();
+            popupStage.setTitle("Exit Account Creation");
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+            popupStage.setScene(new Scene(root));
+            popupStage.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void onPopUpCancel() {
+        Stage stage = (Stage) cancelOption.getScene().getWindow();
+        stage.close();
+    }
+
+    public void onPopUpExit() throws IOException {
+        for (Window window : Window.getWindows()) {
+            if (window instanceof Stage && !"Landing Page".equals(((Stage) window).getTitle())) {
+                ((Stage) window).close();
+            }
+        }
+        loadPage("landing-page.fxml", "Welcome", null, "Controller", false, null);
     }
 }
