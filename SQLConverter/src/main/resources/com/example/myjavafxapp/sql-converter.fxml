@@ -63,7 +63,7 @@
         <menus>
           <Menu mnemonicParsing="false" text="Profile">
               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#goToUserDatabaseSetupPage" text="Update" />
+                  <MenuItem mnemonicParsing="false" onAction="#goToUserUpdatePage" text="Update" />
               </items>
               <items>
                   <MenuItem mnemonicParsing="false" onAction="#goToResetPasswordPage" text="Reset Password" />

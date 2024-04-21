@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import java.net.*?>
 <?import javafx.scene.control.*?>
@@ -42,7 +41,7 @@
                 <Font size="22.0" />
             </font>
         </Label>
-        <Button fx:id="standardNextButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onValidateSecurityQuestionsNextClick" prefHeight="48.0" prefWidth="246.0" text="Next" />
+        <Button fx:id="standardNextButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="246.0" text="Next" />
         <Button fx:id="updateNextButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onValidateSecurityQuestionsUpdateClick" prefHeight="48.0" prefWidth="246.0" text="Next" />
         <Button fx:id="backToHomeButton" layoutX="38.0" layoutY="28.0" mnemonicParsing="false" onAction="#onBackToHomeButtonClick" prefHeight="30.0" prefWidth="116.0" text="Back to Home" visible="false">
             <font>

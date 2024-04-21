@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.text.*?>
-<?import java.lang.*?>
 <?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="passwordUpdateConfirmationPage" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.Controller">
+<AnchorPane fx:id="faqPage" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.Controller">
 
     <stylesheets>
         <URL value="@static/style.css" />
@@ -21,7 +20,7 @@
         </Label>
 
         <ScrollPane hbarPolicy="NEVER" layoutX="62.0" layoutY="97.0" pickOnBounds="false" prefHeight="535.0" prefWidth="977.0" vbarPolicy="ALWAYS">
-   <content>
+            <content>
                <VBox id="serverNameLocationContainer" minHeight="0.0" minWidth="0.0" prefWidth="1000.0" spacing="10.0">
                    <children>
                        <ComboBox fx:id="serverNameLocation" onMouseClicked="#displayServerNameAnswer" prefWidth="950.0" promptText="Where can I find my Server Name?" style="-fx-font-size: 18px;" />
@@ -62,7 +61,12 @@
                        </Label>
                    </children>
                </VBox>
-   </content>
+            </content>
         </ScrollPane>
+        <Button id="backButton" layoutX="38.0" layoutY="28.0" mnemonicParsing="false" onAction="#onFAQBackButtonClick" prefHeight="30.0" prefWidth="62.0" text="Back">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Button>
     </children>
 </AnchorPane>

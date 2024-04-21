@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import java.lang.*?>
 <?import javafx.scene.image.*?>
 <?import java.net.*?>
 <?import javafx.scene.control.*?>
@@ -23,6 +21,7 @@
              <Image url="@images/multipleUsers.png" />
          </image>
       </ImageView>
+
       <ImageView id="enterpriseAccountImage" fitHeight="169.0" fitWidth="197.0" layoutX="279.0" layoutY="204.0" pickOnBounds="true" preserveRatio="true">
          <image>
              <Image url="@images/singleUser.png" />
@@ -30,5 +29,6 @@
       </ImageView>
       <Button id="enterpriseAccountButton" layoutX="597.0" layoutY="408.0" mnemonicParsing="false" onAction="#onEnterpriseAccountButtonClick" prefHeight="43.0" prefWidth="258.0" text="Enterprise Account" />
       <Button id="standardAccountButton" layoutX="245.0" layoutY="408.0" mnemonicParsing="false" onAction="#onStandardAccountButtonClick" prefHeight="43.0" prefWidth="258.0" text="Standard Account" />
+        <Button id="backButton" layoutX="38.0" layoutY="28.0" mnemonicParsing="false" onAction="#onSelectAccountBackButtonClick" prefHeight="30.0" prefWidth="62.0" text="Back" style="-fx-font-size: 14px" />
     </children>
 </AnchorPane>
