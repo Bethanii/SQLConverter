@@ -100,12 +100,19 @@ public class AccountController {
     @FXML
     protected void onTempPasswordNextButtonClick() throws IOException {
         String tempPassword = tempPasswordInputField.getText().trim();
-        for (String email : emails) {
-            databaseManager.setTempPassword(email, tempPassword);
+
+        if(tempPassword.isEmpty() && !emails.isEmpty()) {
+            errorMessage.setVisible(true);
+            tempPasswordInputField.getStyleClass().add("text-field-error");
+        } else {
+            errorMessage.setVisible(false);
+            for (String email : emails) {
+                databaseManager.setTempPassword(email, tempPassword);
+            }
+            AccountController controller = new AccountController();
+            controller.setEmails(emails);
+            loadPage("enterprise-security-question-page.fxml", "Enterprise Account Security Questions", this.email, "Account Controller", true, emails);
         }
-        AccountController controller = new AccountController();
-        controller.setEmails(emails);
-        loadPage("enterprise-security-question-page.fxml", "Enterprise Account Security Questions", this.email, "Account Controller", true, emails);
     }
 
     @FXML
@@ -266,13 +273,10 @@ public class AccountController {
         } else {
             Connection connection = databaseManager.databaseConnection();
             boolean isAccountOwner = databaseManager.checkIfAccountOwner(connection, this.email);
-            if(isAccountOwner)
-            {
+            if(isAccountOwner) {
                 databaseManager.saveEnterpriseSubUserDBInfo(emails, serverName, databaseName, dbUsername, dbPassword, this.email);
                 databaseManager.saveUserDBInfo(connection, serverName, databaseName, dbUsername, dbPassword, this.email);
-            }
-            else
-            {
+            } else {
                 databaseManager.saveUserDBInfo(connection, serverName, databaseName, dbUsername, dbPassword, this.email);
             }
             loadPage("account-creation-confirmation-page.fxml", "Account Creation Confirmation", this.email, "Controller", false, null);
@@ -298,10 +302,8 @@ public class AccountController {
             dbPasswordField.getStyleClass().add("text-field-error");
             return;
         }
-
         Stage primaryStage = (Stage) dbUsernameField.getScene().getWindow();
         showDatabaseLoadingPopup(primaryStage);
-
         new Thread(() -> {
             Connection userConnection = null;
             try {
@@ -393,5 +395,10 @@ public class AccountController {
     public void displayEmails(List<String> emails) {
         String content = String.join("\n", emails);
         emailsDisplayArea.setText(content);
+    }
+
+    @FXML
+    public void onExitButtonClick() {
+
     }
 }

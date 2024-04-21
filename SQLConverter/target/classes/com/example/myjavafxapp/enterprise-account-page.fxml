@@ -54,5 +54,6 @@
          </font>
       </PasswordField>
       <Button fx:id="enterpriseNextButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onEnterpriseAccountNextButtonClick" prefHeight="48.0" prefWidth="246.0" text="Next" />
+        <Button id="exitButton" layoutX="38.0" layoutY="28.0" mnemonicParsing="false" onAction="#onExitButtonClick" prefHeight="30.0" prefWidth="62.0" text="Exit" style="-fx-font-size: 14px" />
     </children>
 </AnchorPane>
