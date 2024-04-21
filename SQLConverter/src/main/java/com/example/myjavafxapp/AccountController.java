@@ -35,11 +35,10 @@ public class AccountController {
     private List<String> emails = new ArrayList<>();
     private DatabaseManager databaseManager = new DatabaseManager();
 
-    public void loadPage(String pageFile, String pageTitle, String email, String controllerSelection, boolean setSecurityQuestions) throws IOException {
+    public void loadPage(String pageFile, String pageTitle, String email, String controllerSelection, boolean setSecurityQuestions, List<String> emails) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(SQLApplication.class.getResource(pageFile));
         Parent page = fxmlLoader.load();
-
         Scene currentScene = welcomeText.getScene();
         currentScene.setRoot(page);
         page.requestFocus();
@@ -50,6 +49,10 @@ public class AccountController {
                 accountController.setEmail(email);
                 if (email != null) {
                     accountController.setEmail(email);
+                }
+                if(emails != null)
+                {
+                    accountController.setEmails(emails);
                 }
                 if (setSecurityQuestions) {
                     accountController.setSecurityQuestionOptions();
@@ -78,12 +81,12 @@ public class AccountController {
 
     @FXML
     public void onEnterpriseAccountBackButtonClick() throws IOException {
-        loadPage("select-account-type-page.fxml", "Select Account Type", "", "Controller", false);
+        loadPage("select-account-type-page.fxml", "Select Account Type", "", "Controller", false, null);
     }
 
     @FXML
     public void onStandardAccountBackButtonClick() throws IOException {
-        loadPage("select-account-type-page.fxml", "Select Account Type", "", "Controller", false);
+        loadPage("select-account-type-page.fxml", "Select Account Type", "", "Controller", false, null);
     }
 
     @FXML
@@ -136,7 +139,7 @@ public class AccountController {
                 } else {
                     databaseManager.saveUserDetails(connection, emailInput, passwordInput);
                     this.email = emailInput;
-                    loadPage(nextPageFxml, nextPageTitle, this.email, "Account Controller", isStandard);
+                    loadPage(nextPageFxml, nextPageTitle, this.email, "Account Controller", isStandard, null);
                 }
             } else {
                 accountInputError.setVisible(true);
@@ -219,7 +222,7 @@ public class AccountController {
                 String firstQuestion = firstSecurityQuestion.getSelectionModel().getSelectedItem().toString();
                 String secondQuestion = secondSecurityQuestion.getSelectionModel().getSelectedItem().toString();
                 databaseManager.saveSecurityQuestions(firstAnswer, secondAnswer, firstQuestion, secondQuestion, this.email);
-                loadPage("user-database-setup-page.fxml", "Database Setup Information", this.email, "Account Controller", false);
+                loadPage("user-database-setup-page.fxml", "Database Setup Information", this.email, "Account Controller", false, null);
             }
         }
     }
@@ -255,7 +258,7 @@ public class AccountController {
                 System.out.println("Failed to insert data, error: " + e.getMessage());
                 e.printStackTrace();
             }
-            loadPage("account-creation-confirmation-page.fxml", "Account Creation Confirmation", this.email, "Controller", false);
+            loadPage("account-creation-confirmation-page.fxml", "Account Creation Confirmation", this.email, "Controller", false, null);
         }
     }
 
@@ -343,7 +346,7 @@ public class AccountController {
     @FXML
     protected void onEnterpriseSubUsersNextButtonClick() throws IOException {
         databaseManager.saveEnterpriseSubUserEmails(emails);
-        loadPage("sub-users-temporary-password.fxml", "Enterprise Account Sub-User Temporary Password", this.email, "Account Controller", false);
+        loadPage("sub-users-temporary-password.fxml", "Enterprise Account Sub-User Temporary Password", this.email, "Account Controller", false, this.emails);
         AccountController controller = new AccountController();
         controller.setEmail(this.email);
         controller.setEmails(emails);
@@ -355,7 +358,7 @@ public class AccountController {
         for (String email : emails) {
             databaseManager.setTempPassword(email, tempPassword);
         }
-        loadPage("enterprise-security-question-page.fxml", "Enterprise Account Security Questions", this.email, "Account Controller", true);
+        loadPage("enterprise-security-question-page.fxml", "Enterprise Account Security Questions", this.email, "Account Controller", true, null);
     }
 
     @FXML

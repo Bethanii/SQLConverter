@@ -210,7 +210,9 @@ public class Controller
 
         if (this.email.isBlank() || this.email.isEmpty()) {
             errorMessage.setVisible(true);
-            errorMessage.setText("Field cannot be empty");
+            errorMessage.setText("Field cannot be blank");
+            errorMessage.setLayoutX(440);
+            errorMessage.setLayoutY(430);
             resetEmailField.getStyleClass().add("text-field-error");
         } else {
             if (userExists(this.email) == true) {
@@ -246,20 +248,18 @@ public class Controller
         String newPasswordConfirmationInput = newConfirmationPasswordField.getText();
         if (newPasswordInput.isEmpty() || newPasswordInput.isBlank() || newPasswordConfirmationInput.isEmpty() || newPasswordConfirmationInput.isBlank()) {
             if (newPasswordInput.isEmpty() || newPasswordInput.isBlank()) {
-                newPasswordErrorMessage.setText("Fields cannot be empty");
+                newPasswordErrorMessage.setText("Fields cannot be blank");
+                newPasswordErrorMessage.setLayoutX(440);
+                newPasswordErrorMessage.setLayoutY(430);
                 newPasswordErrorMessage.setVisible(true);
                 newPasswordInputField.getStyleClass().add("text-field-error");
-                return true;
-            }
-            if (newPasswordConfirmationInput.isEmpty() || newPasswordConfirmationInput.isBlank()) {
-                newPasswordErrorMessage.setText("Fields cannot be empty");
-                newPasswordErrorMessage.setVisible(true);
                 newConfirmationPasswordField.getStyleClass().add("text-field-error");
                 return true;
             }
         }
         if(!newPasswordInput.equals(newPasswordConfirmationInput)) {
             newPasswordErrorMessage.setText("Password and Confirmation Password don't match");
+            newPasswordErrorMessage.setLayoutX(440);
             newPasswordErrorMessage.setVisible(true);
             newPasswordInputField.getStyleClass().add("text-field-error");
             newConfirmationPasswordField.getStyleClass().add("text-field-error");
@@ -307,7 +307,8 @@ public class Controller
             return true;
         } else {
             errorMessage.setVisible(true);
-            errorMessage.setText("Email doesn't exist");
+            errorMessage.setLayoutX(440);
+            errorMessage.setText("Account doesn't exist");
             return false;
         }
     }
@@ -335,23 +336,6 @@ public class Controller
         return false;
     }
 
-    @FXML
-    protected void onValidateSecurityQuestionsNextClick() throws Exception {
-        String response1Input = response1.getText();
-        String response2Input = response2.getText();
-        boolean validateResponse = databaseManager.validateSecurityAnswers(email, response1Input, response2Input);
-
-        if (validateResponse) {
-            FXMLLoader fxmlLoader = loadPage("enter-new-password-page.fxml");
-            AnchorPane newPasswordPage = fxmlLoader.getRoot();
-            Controller controller = fxmlLoader.getController();
-            Scene currentScene = setRootAndGetScene(newPasswordPage);
-            controller.setEmail(this.email);
-            setStage(currentScene, "test");
-        } else {
-            errorMessage.setVisible(true);
-        }
-    }
 
     @FXML
     protected void displayServerNameAnswer(MouseEvent event) {
@@ -521,15 +505,27 @@ public class Controller
         String response2Input = response2.getText();
         boolean validateResponse = databaseManager.validateSecurityAnswers(email, response1Input, response2Input);
 
-        if (validateResponse) {
-            Controller controller = setupPage("enter-new-password-page.fxml", "Enter New Password");
-            FXMLLoader fxmlLoader = loadPage("enter-new-password-page.fxml");
-            AnchorPane newPasswordPage = fxmlLoader.getRoot();
-            Button backToHomeButton = (Button) newPasswordPage.lookup("#backToHomeButton");
-            backToHomeButton.setVisible(true);
-            controller.setEmail(this.email);
-        } else {
+        if (response1Input.isEmpty() || response2Input.isEmpty()) {
+            response1.getStyleClass().add("text-field-error");
+            response2.getStyleClass().add("text-field-error");
+            errorMessage.setText("Fields cannot be blank");
             errorMessage.setVisible(true);
+            errorMessage.setLayoutX(415);
+            errorMessage.setLayoutY(460);
+        } else {
+            if (validateResponse) {
+                Controller controller = setupPage("enter-new-password-page.fxml", "Enter New Password");
+                FXMLLoader fxmlLoader = loadPage("enter-new-password-page.fxml");
+                AnchorPane newPasswordPage = fxmlLoader.getRoot();
+                Button backToHomeButton = (Button) newPasswordPage.lookup("#backToHomeButton");
+                backToHomeButton.setVisible(true);
+                controller.setEmail(this.email);
+            } else {
+                errorMessage.setText("Incorrect security question response. Please try again");
+                errorMessage.setVisible(true);
+                errorMessage.setLayoutX(310);
+                errorMessage.setLayoutY(460);
+            }
         }
     }
 }
