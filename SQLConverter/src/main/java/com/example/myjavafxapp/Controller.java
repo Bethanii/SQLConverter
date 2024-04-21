@@ -1,22 +1,22 @@
 package com.example.myjavafxapp;
 
-import javafx.application.Platform;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
-import javafx.scene.control.ComboBox;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.input.MouseButton;
+import javafx.scene.control.ComboBox;
 import javafx.scene.input.MouseEvent;
+import javafx.application.Platform;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.scene.layout.AnchorPane;
-import java.io.IOException;
-import java.sql.*;
 import javafx.stage.StageStyle;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.*;
+import javafx.stage.Modality;
+import javafx.geometry.Pos;
+import java.io.IOException;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.fxml.FXML;
+import java.sql.*;
 
 public class Controller
 {
@@ -62,7 +62,6 @@ public class Controller
     public void setEmail(String email) {
         this.email = email;
     }
-
     @FXML
     public void onSignInBackButtonClick() throws IOException {
         setupPage("landing-page.fxml", "Welcome");
@@ -79,38 +78,32 @@ public class Controller
     }
 
     @FXML
-    protected void onForgotPasswordLinkClick() throws IOException
-    {
+    protected void onForgotPasswordLinkClick() throws IOException {
         setupPage("reset-password-page.fxml", "Reset Password");
     }
 
     @FXML
-    protected void onEnterpriseAccountButtonClick() throws IOException
-    {
+    protected void onEnterpriseAccountButtonClick() throws IOException {
         setupPage("enterprise-account-page.fxml", "Enterprise Account Information");
     }
 
     @FXML
-    protected void onStandardAccountButtonClick() throws IOException
-    {
+    protected void onStandardAccountButtonClick() throws IOException {
         setupPage("standard-account-page.fxml", "Standard Account Information");
     }
 
     @FXML
-    protected void onCreateAccountButtonClick() throws IOException
-    {
+    protected void onCreateAccountButtonClick() throws IOException {
         setupPage("select-account-type-page.fxml", "Select Account Type");
     }
 
     @FXML
-    protected void onPasswordUpdateSignInButtonClick() throws IOException, SQLException
-    {
+    protected void onPasswordUpdateSignInButtonClick() throws IOException, SQLException {
         setupPage("sign-in-page.fxml", "Log In");
     }
 
     @FXML
-    public void goToFAQPage() throws IOException
-    {
+    public void goToFAQPage() throws IOException {
         setupPage("faq-page.fxml", "Frequently Asked Questions");
     }
 
@@ -171,8 +164,7 @@ public class Controller
         }
     }
 
-    public Connection SetConnection(Connection userConnection) throws IOException
-    {
+    public Connection SetConnection(Connection userConnection) throws IOException {
         this.databaseManager = new DatabaseManager();
         String[] dbValues = databaseManager.GetUserDBInfo(this.email);
 
@@ -225,8 +217,7 @@ public class Controller
     }
 
     @FXML
-    protected void onResetPasswordButton() throws Exception
-    {
+    protected void onResetPasswordButton() throws Exception {
         this.email = resetEmailField.getText();
 
         DatabaseManager databaseManager = new DatabaseManager();
@@ -257,8 +248,7 @@ public class Controller
     }
 
     @FXML
-    protected void onNewPasswordResetButtonClick() throws IOException, SQLException
-    {
+    protected void onNewPasswordResetButtonClick() throws IOException, SQLException {
         if (!newPasswordFieldsValidation())
         {
             databaseManager.updateNewPassword(this.email, newPasswordInputField.getText());
@@ -271,8 +261,7 @@ public class Controller
     }
 
     @FXML
-    public boolean newPasswordFieldsValidation()
-    {
+    public boolean newPasswordFieldsValidation() {
         String newPasswordInput = newPasswordInputField.getText();
         String newPasswordConfirmationInput = newConfirmationPasswordField.getText();
         if (newPasswordInput.isEmpty() || newPasswordInput.isBlank() || newPasswordConfirmationInput.isEmpty() || newPasswordConfirmationInput.isBlank())
@@ -306,8 +295,7 @@ public class Controller
         }
     }
 
-    public boolean LoginValidation()
-    {
+    public boolean LoginValidation() {
         String emailInput = signInEmailInputField.getText();
         String passwordInput = signInPasswordInputField.getText();
 
@@ -350,8 +338,7 @@ public class Controller
         }
     }
 
-    public boolean UserExists(String emailInput) throws IOException
-    {
+    public boolean UserExists(String emailInput) throws IOException {
         Connection connection = databaseManager.DatabaseConnection();
         Boolean emailExists = databaseManager.CheckIfColumnValueExists(connection, "Email", emailInput);
 
@@ -361,13 +348,13 @@ public class Controller
         }
         else
         {
-            emailExistsError.setVisible(true);
+            errorMessage.setVisible(true);
+            errorMessage.setText("Email doesn't exist");
             return false;
         }
     }
 
-    public boolean RequiredFieldsMissing()
-    {
+    public boolean RequiredFieldsMissing() {
         String emailInput = signInEmailInputField.getText();
         String passwordInput = signInPasswordInputField.getText();
 
@@ -394,8 +381,7 @@ public class Controller
     }
 
     @FXML
-    protected void onValidateSecurityQuestionsNextClick() throws Exception
-    {
+    protected void onValidateSecurityQuestionsNextClick() throws Exception {
         String response1Input = response1.getText();
         String response2Input = response2.getText();
         boolean validateResponse = databaseManager.validateSecurityAnswers(email, response1Input, response2Input);
@@ -426,7 +412,6 @@ public class Controller
                 "\n \n IT Department: " +
                 "\n If you are connecting to a company database then it is recommended that you reach out to the IT " +
                 "\n department of your company as they will be able to assist you.";
-
 
         if (event.getButton() == MouseButton.PRIMARY) {
             displayAnswer(event, message);
@@ -523,8 +508,7 @@ public class Controller
         }
     }
 
-    public void onBackToHomeButtonClick() throws IOException
-    {
+    public void onBackToHomeButtonClick() throws IOException {
         SQLConverterController sqlController = setupPage("sql-converter.fxml", "SQL Converter");
         SessionService sessionService = SessionService.getInstance();
         sqlController.setEmail(sessionService.getEmail());
@@ -568,11 +552,11 @@ public class Controller
     }
 
     @FXML
-    protected void onEnterPasswordUpdateButtonClick() throws IOException, SQLException
-    {
+    protected void onEnterPasswordUpdateButtonClick() throws IOException, SQLException {
         if (!newPasswordFieldsValidation())
         {
             databaseManager.updateNewPassword(this.email, newPasswordInputField.getText());
+
             setupPage("password-update-confirmation-page.fxml", "Password Successfully Updated");
             FXMLLoader fxmlLoader = loadPage("password-update-confirmation-page.fxml");
             AnchorPane passwordUpdateConfirmationPage = fxmlLoader.getRoot();
@@ -587,8 +571,9 @@ public class Controller
     }
 
     @FXML
-    protected void onValidateSecurityQuestionsUpdateClick() throws Exception
-    {
+    protected void onValidateSecurityQuestionsUpdateClick() throws Exception {
+        DatabaseManager databaseManager = new DatabaseManager();
+
         String response1Input = response1.getText();
         String response2Input = response2.getText();
 
