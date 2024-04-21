@@ -1,32 +1,33 @@
 package com.example.myjavafxapp;
 
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
 import java.io.IOException;
 
-public class JavaFXUtils
+public class JavaFXUtils<T>
 {
-    public static <T> T loadFXML(String resourcePath, AnchorPane anchorPane) throws IOException {
-        FXMLLoader loader = new FXMLLoader(JavaFXUtils.class.getResource(resourcePath));
-        anchorPane.getChildren().setAll((Pane) loader.load());
-        return loader.getController();
+    @FXML
+    private static Label welcomeText;
+
+    private AnchorPane anchorPane;
+    private T controller;
+
+    public JavaFXUtils(AnchorPane anchorPane, T controller) {
+        this.anchorPane = anchorPane;
+        this.controller = controller;
     }
 
-    public static <T> T getController(String fxmlPath) throws IOException {
-        FXMLLoader loader = new FXMLLoader(JavaFXUtils.class.getResource(fxmlPath));
-        loader.load();
-        return loader.getController();
+    public AnchorPane getAnchorPane() {
+        return anchorPane;
     }
 
-    public static <T> void setController(String fxmlPath, T controller) throws IOException {
-        FXMLLoader loader = new FXMLLoader(JavaFXUtils.class.getResource(fxmlPath));
-        loader.setController(controller);
-    }
-
-    public static FXMLLoader getFXMLLoader(String fxmlPath) {
-        return new FXMLLoader(JavaFXUtils.class.getResource(fxmlPath));
+    public T getController() {
+        return controller;
     }
 }

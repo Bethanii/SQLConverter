@@ -17,7 +17,8 @@ import javafx.stage.Stage;
 import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
 import java.sql.*;
-import java.util.Random;
+import java.util.function.Consumer;
+
 import javafx.stage.StageStyle;
 
 public class Controller
@@ -31,7 +32,7 @@ public class Controller
     @FXML
     private TextField signInEmailInputField, signInPasswordInputField, resetEmailField, response1, response2, newPasswordInputField, newConfirmationPasswordField;
     @FXML
-    private AnchorPane signInPage, resetPasswordPage, newPasswordPage, sqlConverterPage, validateSecurityQuestionsPage;
+    private AnchorPane signInPage, resetPasswordPage, newPasswordPage, sqlConverterPage, validateSecurityQuestionsPage, passwordUpdateConfirmationPage;
     @FXML
     private ComboBox<String> serverNameLocation, dbConnectFailure, passwordChange, accountDifferences, updateDatebaseInfo, emptyDropdown;
     private DatabaseManager databaseManager = new DatabaseManager();
@@ -39,43 +40,70 @@ public class Controller
     private boolean isAnswerVisible = false;
     private Stage loadingStage;
     private Connection userConnection;
+    
+    private FXMLLoader loadPage(String page) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(page));
+        fxmlLoader.load();
+        return fxmlLoader;
+    }
 
+    public Scene setRootAndGetScene(AnchorPane anchorPane) {
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(anchorPane);
+        anchorPane.requestFocus();
+        return currentScene;
+    }
+
+    public void setStage(Scene currentScene, String title)
+    {
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle(title);
+    }
+
+    public <T> T setupPage(String pagePath, String title) throws IOException {
+        FXMLLoader fxmlLoader = loadPage(pagePath);
+        AnchorPane pageRoot = fxmlLoader.getRoot();
+        T controller = fxmlLoader.getController();
+
+        Scene currentScene = setRootAndGetScene(pageRoot);
+        setStage(currentScene, title);
+        return controller;
+    }
     @FXML
     protected void onSignInSelectionClick() throws IOException
     {
-        loadPage("sign-in-page.fxml", "Sign In", "");
+        setupPage("sign-in-page.fxml", "Log In");
     }
 
     @FXML
     protected void onForgotPasswordLinkClick() throws IOException
     {
-        loadPage("reset-password-page.fxml", "Reset Password", "");
+        setupPage("reset-password-page.fxml", "Reset Password");
     }
 
     @FXML
     protected void onEnterpriseAccountButtonClick() throws IOException
-
-
     {
-        loadPage("enterprise-account-page.fxml", "Enterprise Account Information", "");
+        setupPage("enterprise-account-page.fxml", "Enterprise Account Information");
     }
 
     @FXML
     protected void onStandardAccountButtonClick() throws IOException
     {
-        loadPage("standard-account-page.fxml", "Standard Account Information", "");
+        setupPage("standard-account-page.fxml", "Standard Account Information");
     }
 
     @FXML
     protected void onCreateAccountButtonClick() throws IOException
     {
-        loadPage("select-account-type-page.fxml", "Select Account Type", "");
+        setupPage("select-account-type-page.fxml", "Select Account Type");
     }
 
     @FXML
     protected void onPasswordUpdateSignInButtonClick() throws IOException, SQLException
     {
-        loadPage("sign-in-page.fxml", "Sign In", "");
+        setupPage("sign-in-page.fxml", "Log In");
     }
 
     public void onSignInButtonClick() throws IOException {
@@ -89,19 +117,13 @@ public class Controller
                 DatabaseManager databaseManager = new DatabaseManager();
                 if(databaseManager.checkForTempPassword(this.email))
                 {
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("enter-new-password-page.fxml"));
-                    AnchorPane resetPasswordPage = fxmlLoader.load();
-                    SQLConverterController controller = fxmlLoader.getController();
+                    FXMLLoader fxmlLoader = loadPage("enter-new-password-page.fxml");
+                    AnchorPane resetPasswordPage = fxmlLoader.getRoot();
+                    Controller controller = fxmlLoader.getController();
+                    Scene currentScene = setRootAndGetScene(resetPasswordPage);
+                    setStage(currentScene, "Update Temporary Password");
 
                     controller.setEmail(this.email);
-                    Scene currentScene = welcomeText.getScene();
-                    currentScene.setRoot(resetPasswordPage);
-                    resetPasswordPage.requestFocus();
-
-                    Stage stage = (Stage) currentScene.getWindow();
-                    stage.sizeToScene();
-                    stage.setTitle("Update Temporary Password");
-
                     databaseManager.resetTempPassword(this.email);
                 }
 
@@ -169,29 +191,6 @@ public class Controller
         }
     }
 
-    public Connection SetConnection() throws IOException
-    {
-        this.databaseManager = new DatabaseManager();
-        String[] dbValues = databaseManager.GetUserDBInfo(this.email);
-
-        if (dbValues == null) {
-            return null;
-        }
-
-        boolean localDb = databaseManager.checkForLocalDB(databaseManager.DatabaseConnection(), this.email);
-
-        if (localDb)
-        {
-            this.userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], true);
-            return this.userConnection;
-        }
-        else
-        {
-            this.userConnection = databaseManager.ConnectUserDatabase(dbValues[0], dbValues[1], dbValues[2], dbValues[3], false);
-            return this.userConnection;
-        }
-    }
-
     private void showLoadingPopup(Stage primaryStage) {
         loadingStage = new Stage(StageStyle.UNDECORATED);
         loadingStage.initModality(Modality.APPLICATION_MODAL);
@@ -242,26 +241,21 @@ public class Controller
             if (UserExists(this.email) == true) {
                 databaseManager.DatabaseConnection();
 
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("validate-security-questions-page.fxml"));
-                AnchorPane validateSecurityQuestionsPage = fxmlLoader.load();
+       /*         FXMLLoader fxmlLoader = loadPage("validate-security-questions-page.fxml");
+                AnchorPane validateSecurityQuestionsPage = fxmlLoader.getRoot();
                 Controller controller = fxmlLoader.getController();
+                Scene currentScene = setRootAndGetScene(validateSecurityQuestionsPage);
+                setStage(currentScene, "Account Confirmation"); */
 
-                Scene currentScene = welcomeText.getScene();
-                currentScene.setRoot(validateSecurityQuestionsPage);
-                validateSecurityQuestionsPage.requestFocus();
+                Controller controller = setupPage("validate-security-questions-page.fxml", "Account Confirmation test");
 
                 String[] securityQuestions = databaseManager.getSecurityQuestions(this.email);
                 String firstQuestionString = securityQuestions[0];
                 String secondQuestionString = securityQuestions[1];
 
                 controller.setEmail(this.email);
-
                 controller.question1.setText(firstQuestionString);
                 controller.question2.setText(secondQuestionString);
-
-                Stage stage = (Stage) currentScene.getWindow();
-                stage.sizeToScene();
-                stage.setTitle("Sign In");
             }
         }
     }
@@ -274,7 +268,8 @@ public class Controller
         if (!newPasswordFieldsValidation())
         {
             databaseManager.updateNewPassword(this.email, newPasswordInputField.getText());
-            loadPage("password-update-confirmation-page.fxml", "Password Successfully Updated", "");
+
+            setupPage("password-update-confirmation-page.fxml", "Password Successfully Updated");
 
             if(databaseManager.checkForTempPassword(this.email))
             {
@@ -418,7 +413,7 @@ public class Controller
     @FXML
     protected void onValidateSecurityQuestionsNextClick() throws Exception
     {
-        DatabaseManager databaseManager = new DatabaseManager();
+ //       DatabaseManager databaseManager = new DatabaseManager();
 
         String response1Input = response1.getText();
         String response2Input = response2.getText();
@@ -426,87 +421,31 @@ public class Controller
         boolean validateResponse = databaseManager.validateSecurityAnswers(email, response1Input, response2Input);
 
         if (validateResponse) {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("enter-new-password-page.fxml"));
-            AnchorPane newPasswordPage = fxmlLoader.load();
+            FXMLLoader fxmlLoader = loadPage("enter-new-password-page.fxml");
+            AnchorPane newPasswordPage = fxmlLoader.getRoot();
             Controller controller = fxmlLoader.getController();
-
-            Scene currentScene = welcomeText.getScene();
-            currentScene.setRoot(newPasswordPage);
-            newPasswordPage.requestFocus();
-
+            Scene currentScene = setRootAndGetScene(newPasswordPage);
             controller.setEmail(this.email);
+            setStage(currentScene, "test");
+       //     newPasswordPage.requestFocus();
 
-            Stage stage = (Stage) currentScene.getWindow();
-            stage.sizeToScene();
-            stage.setTitle("Enter New Password");
         } else {
             errorMessage.setVisible(true);
         }
     }
 
-    private String generateTemporaryPassword()
-    {
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        StringBuilder tempPassword = new StringBuilder();
-        Random random = new Random();
-        for (int i = 0; i < 10; i++)
-        {
-            tempPassword.append(chars.charAt(random.nextInt(chars.length())));
-        }
-        return tempPassword.toString();
-    }
-
-    public void loadPage(String pageFile, String pageTitle, String email) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(SQLApplication.class.getResource(pageFile));
-
-        Parent page = fxmlLoader.load();
-
-        if (email != null && !email.isEmpty()) {
-            AccountController controller = fxmlLoader.getController();
-            controller.setEmail(email);
-        }
-
-        Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(page);
-        page.requestFocus();
-
-        Stage stage = (Stage) currentScene.getWindow();
-        stage.sizeToScene();
-        stage.setTitle(pageTitle);
-    }
-
-    @FXML private AnchorPane faqPage;
-    private FXMLLoader loadPage2() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("faq-page.fxml"));
-        AnchorPane faqPage = fxmlLoader.load();
-        return fxmlLoader;
-    }
-
-    private AnchorPane loadPage(String fxmlPath) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath));
-        return fxmlLoader.load(); 
-    }
-
-    public Scene setRootAndGetScene(AnchorPane anchorPane) {
-        Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(anchorPane);
-        anchorPane.requestFocus();
-        return currentScene;
-    }
-
     @FXML
     public void goToFAQPage() throws IOException
     {
-        AnchorPane loadedAnchorPane = loadPage("faq-page.fxml");
-        Scene currentScene = setRootAndGetScene(loadedAnchorPane);
-        Stage stage = (Stage) currentScene.getWindow();
-        stage.setTitle("Frequently Asked Questions");
+        FXMLLoader fxmlLoader = loadPage("faq-page.fxml");
+        AnchorPane loadedPage = fxmlLoader.getRoot();
+        Scene currentScene = setRootAndGetScene(loadedPage);
+        setStage(currentScene, "Frequently Asked Questions");
     }
 
     @FXML
     public void onSignInBackButtonClick() throws IOException {
-        loadPage("landing-page.fxml", "Welcome", "");
+        setupPage("landing-page.fxml", "Welcome");
     }
 
     @FXML
@@ -623,30 +562,25 @@ public class Controller
             comboBox.lookup(".arrow-button").setStyle("-fx-rotate: " + rotation + ";");
         }
     }
-    public void onBackToHomeButtonClick() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("sql-converter.fxml"));
-        AnchorPane sqlConverterPage = fxmlLoader.load();
+
+    public void onBackToHomeButtonClick() throws IOException
+    {
+        SQLConverterController sqlController = setupPage("sql-converter.fxml", "SQL Converter");
+
+     /*   FXMLLoader fxmlLoader = loadPage("sql-converter.fxml");
+        AnchorPane sqlConverterPage = (AnchorPane) fxmlLoader.getRoot();
         SQLConverterController sqlController = fxmlLoader.getController();
+        Scene currentScene = setRootAndGetScene(sqlConverterPage);
+        setStage(currentScene, "SQL Converter"); */
 
         SessionService sessionService = SessionService.getInstance();
         sqlController.setEmail(sessionService.getEmail());
         Connection connection = sqlController.SetConnection(sessionService.getConnection());
         sqlController.populateStaticRow(connection);
-
-        Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(sqlConverterPage);
-        sqlConverterPage.requestFocus();
-
-        Stage stage = (Stage) currentScene.getWindow();
-        stage.sizeToScene();
-        stage.setTitle("SQL Converter");
     }
 
     public void onUpdatePasswordButtonClick() throws IOException {
         this.email = resetEmailField.getText();
-
-        DatabaseManager databaseManager = new DatabaseManager();
-        Connection connection = databaseManager.DatabaseConnection();
 
         if (this.email.isBlank() || this.email.isEmpty())
         {
@@ -658,35 +592,24 @@ public class Controller
         else
         {
             if (UserExists(this.email) == true) {
-                databaseManager.DatabaseConnection();
-
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("validate-security-questions-page.fxml"));
-                AnchorPane validateSecurityQuestionsPage = fxmlLoader.load();
+                FXMLLoader fxmlLoader = loadPage("validate-security-questions-page.fxml");
+                AnchorPane validateSecurityQuestionsPage = fxmlLoader.getRoot();
                 Controller controller = fxmlLoader.getController();
 
                 SessionService sessionService = SessionService.getInstance();
                 controller.setEmail(sessionService.getEmail());
                 Connection userConnection = controller.SetConnection(sessionService.getConnection());
 
+                Scene currentScene = setRootAndGetScene(validateSecurityQuestionsPage);
+                setStage(currentScene, "Security Question Confirmation");
+
                 Button backToHomeButton = (Button) validateSecurityQuestionsPage.lookup("#backToHomeButton");
                 backToHomeButton.setVisible(true);
 
-                Scene currentScene = welcomeText.getScene();
-                currentScene.setRoot(validateSecurityQuestionsPage);
-                validateSecurityQuestionsPage.requestFocus();
-
                 String[] securityQuestions = databaseManager.getSecurityQuestions(this.email);
-                String firstQuestionString = securityQuestions[0];
-                String secondQuestionString = securityQuestions[1];
-
+                controller.question1.setText(securityQuestions[0]);
+                controller.question2.setText(securityQuestions[1]);
                 controller.setEmail(this.email);
-
-                controller.question1.setText(firstQuestionString);
-                controller.question2.setText(secondQuestionString);
-
-                Stage stage = (Stage) currentScene.getWindow();
-                stage.sizeToScene();
-                stage.setTitle("Sign In");
             }
         }
     }
@@ -694,28 +617,23 @@ public class Controller
     @FXML
     protected void onEnterPasswordUpdateButtonClick() throws IOException, SQLException
     {
-        DatabaseManager databaseManager = new DatabaseManager();
-
         if (!newPasswordFieldsValidation())
         {
             databaseManager.updateNewPassword(this.email, newPasswordInputField.getText());
 
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("password-update-confirmation-page.fxml"));
-            AnchorPane passwordUpdateConfirmationPage = fxmlLoader.load();
-            Controller controller = fxmlLoader.getController();
-
+            setupPage("password-update-confirmation-page.fxml", "Password Successfully Updated");
+            FXMLLoader fxmlLoader = loadPage("password-update-confirmation-page.fxml");
+            AnchorPane passwordUpdateConfirmationPage = fxmlLoader.getRoot();
             Label updateConfirmationLabel = (Label) passwordUpdateConfirmationPage.lookup("#updateConfirmationLabel");
             updateConfirmationLabel.setText("You must login again");
 
-            Scene currentScene = welcomeText.getScene();
-            currentScene.setRoot(passwordUpdateConfirmationPage);
-            passwordUpdateConfirmationPage.requestFocus();
+    /*        FXMLLoader fxmlLoader = loadPage("password-update-confirmation-page.fxml");
+            AnchorPane passwordUpdateConfirmationPage = fxmlLoader.getRoot();
+            Controller controller = fxmlLoader.getController();
+            Scene currentScene = setRootAndGetScene(passwordUpdateConfirmationPage);/       setStage(currentScene, "Password Successfully Updated");
 
-            controller.setEmail(this.email);
-
-            Stage stage = (Stage) currentScene.getWindow();
-            stage.sizeToScene();
-            stage.setTitle("Password Successfully Updated");
+            Label updateConfirmationLabel = (Label) passwordUpdateConfirmationPage.lookup("#updateConfirmationLabel");
+            updateConfirmationLabel.setText("You must login again"); */
 
             if(databaseManager.checkForTempPassword(this.email))
             {
@@ -735,22 +653,15 @@ public class Controller
         boolean validateResponse = databaseManager.validateSecurityAnswers(email, response1Input, response2Input);
 
         if (validateResponse) {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("enter-new-password-page.fxml"));
-            AnchorPane newPasswordPage = fxmlLoader.load();
+            FXMLLoader fxmlLoader = loadPage("enter-new-password-page.fxml");
+            AnchorPane newPasswordPage = fxmlLoader.getRoot();
             Controller controller = fxmlLoader.getController();
+            Scene currentScene = setRootAndGetScene(newPasswordPage);
+            setStage(currentScene, "Enter New Password");
 
             Button backToHomeButton = (Button) newPasswordPage.lookup("#backToHomeButton");
             backToHomeButton.setVisible(true);
-
-            Scene currentScene = welcomeText.getScene();
-            currentScene.setRoot(newPasswordPage);
-            newPasswordPage.requestFocus();
-
             controller.setEmail(this.email);
-
-            Stage stage = (Stage) currentScene.getWindow();
-            stage.sizeToScene();
-            stage.setTitle("Enter New Password");
         } else {
             errorMessage.setVisible(true);
         }
