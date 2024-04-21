@@ -30,7 +30,7 @@ public class SQLConverterController {
     @FXML private Label welcomeText, connectionError, connectionSuccess;
     @FXML private TextField activeTextField, serverNameField, databaseNameField, dbUsernameField, dbPasswordField;
     @FXML private CheckBox localDBCheckbox;
- //   @FXML private AnchorPane updateUserDBPage, sqlConverterPage, resetPasswordPage;
+    @FXML private AnchorPane updateUserDBPage, sqlConverterPage, resetPasswordPage, standardAccountPage;
     private Stage loadingStage;
     private ChoiceBox<String> activeChoiceBox;
     private Connection userConnection;
@@ -416,5 +416,29 @@ public class SQLConverterController {
         Stage stage = (Stage) currentScene.getWindow();
         stage.sizeToScene();
         stage.setTitle("Sign In");
+    }
+
+    public void goToUserUpdatePage() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("standard-account-page.fxml"));
+        AnchorPane standardAccountPage = fxmlLoader.load();
+        AccountController controller = fxmlLoader.getController();
+
+        SessionService sessionService = SessionService.getInstance();
+        controller.setEmail(sessionService.getEmail());
+        this.userConnection = setConnection(sessionService.getConnection());
+
+        Button backButton = (Button) standardAccountPage.lookup("#backButton");
+        backButton.setText("Back");
+
+        Button updateButton = (Button) standardAccountPage.lookup("#updateButton");
+        updateButton.setVisible(true);
+
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(standardAccountPage);
+        standardAccountPage.requestFocus();
+
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle("Update User Info");
     }
 }

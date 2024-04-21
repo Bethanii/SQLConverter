@@ -63,5 +63,10 @@
                </VBox>
             </content>
         </ScrollPane>
+        <Button id="backButton" layoutX="38.0" layoutY="28.0" mnemonicParsing="false" onAction="#onFAQBackButtonClick" prefHeight="30.0" prefWidth="62.0" text="Back">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Button>
     </children>
 </AnchorPane>

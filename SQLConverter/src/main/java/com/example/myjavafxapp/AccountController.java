@@ -373,4 +373,12 @@ public class AccountController {
         String content = String.join("\n", emails);
         emailsDisplayArea.setText(content);
     }
+
+    @FXML
+    protected void onUpdateButtonClick() throws IOException {
+        String emailText = subUserEmailInputField.getText().trim();
+        emails.add(emailText);
+        displayEmails(emails);
+        subUserEmailInputField.clear();
+    }
 }

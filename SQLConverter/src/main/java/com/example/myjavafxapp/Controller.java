@@ -67,6 +67,16 @@ public class Controller
     }
 
     @FXML
+    public void onSelectAccountBackButtonClick() throws IOException {
+        setupPage("landing-page.fxml", "Welcome");
+    }
+
+    @FXML
+    protected void onFAQBackButtonClick() throws IOException {
+        setupPage("sign-in-page.fxml", "Log In");
+    }
+
+    @FXML
     public void onSignInFAQLink() throws Exception {
         goToFAQPage();
     }
@@ -259,7 +269,7 @@ public class Controller
         }
         if(!newPasswordInput.equals(newPasswordConfirmationInput)) {
             newPasswordErrorMessage.setText("Password and Confirmation Password don't match");
-            newPasswordErrorMessage.setLayoutX(440);
+            newPasswordErrorMessage.setLayoutX(340);
             newPasswordErrorMessage.setVisible(true);
             newPasswordInputField.getStyleClass().add("text-field-error");
             newConfirmationPasswordField.getStyleClass().add("text-field-error");
