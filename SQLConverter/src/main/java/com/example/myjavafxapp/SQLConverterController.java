@@ -461,10 +461,6 @@ public class SQLConverterController {
 
     @FXML
     public void onUpdateUsernameUpdateButtonClick() throws IOException {
- //       SessionService sessionService = SessionService.getInstance();
- //       Connection userConnection = controller.setConnection(sessionService.getConnection());
-  //      controller.setConnection(userConnection);
-
         String emailInput = updateUsernameInput.getText();
         Connection connection = databaseManager.databaseConnection();
 
@@ -491,44 +487,22 @@ public class SQLConverterController {
                 Stage stage = (Stage) currentScene.getWindow();
                 stage.sizeToScene();
                 stage.setTitle("Username Successfully Updated");
-
-           //     errorMessage.setVisible(false);
-            //    updateUsernameInput.getStyleClass().remove("text-field-error");
-             //   updateSuccessMessage.setVisible(true);
             }
         }
     }
 
-    private FXMLLoader loadPage(String page) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(page));
-        fxmlLoader.load();
-        return fxmlLoader;
-    }
-
-    public Scene setRootAndGetScene(AnchorPane anchorPane) {
-        Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(anchorPane);
-        anchorPane.requestFocus();
-        return currentScene;
-    }
-
-    public void setStage(Scene currentScene, String title) {
-        Stage stage = (Stage) currentScene.getWindow();
-        stage.sizeToScene();
-        stage.setTitle(title);
-    }
-
-    public <T> T setupPage(String pagePath, String title) throws IOException {
-        FXMLLoader fxmlLoader = loadPage(pagePath);
-        AnchorPane pageRoot = fxmlLoader.getRoot();
-        T controller = fxmlLoader.getController();
-        Scene currentScene = setRootAndGetScene(pageRoot);
-        setStage(currentScene, title);
-        return controller;
-    }
-
     @FXML
     protected void onSignInSelectionClick() throws IOException {
-        setupPage("sign-in-page.fxml", "Log In");
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("sign-in-page.fxml"));
+        AnchorPane signInPage = fxmlLoader.load();
+        Controller controller = fxmlLoader.getController();
+
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(signInPage);
+        signInPage.requestFocus();
+
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle("Log In");
     }
 }

@@ -25,8 +25,8 @@ import java.util.List;
 public class AccountController {
 
     @FXML private Label welcomeText, connectionError, securityQuestionErrorMessage, enterpriseAccountInputError, standardAccountInputError, connectionSuccess;
-    @FXML private TextField standardEmailInputField, standardPasswordInputField, standardConfirmPasswordField, serverNameField, dbUsernameField, dbPasswordField, databaseNameField,
-            firstSecurityQuestionInput, secondSecurityQuestionInput, subUserEmailInputField, enterpriseEmailInputField, enterprisePasswordInputField, enterpriseConfirmPasswordField,
+    @FXML private TextField standardUsernameInputField, standardPasswordInputField, standardConfirmPasswordField, serverNameField, dbUsernameField, dbPasswordField, databaseNameField,
+            firstSecurityQuestionInput, secondSecurityQuestionInput, subUserEmailInputField, enterpriseUsernameInputField, enterprisePasswordInputField, enterpriseConfirmPasswordField,
             tempPasswordInputField;
     @FXML private ChoiceBox<String> firstSecurityQuestion, secondSecurityQuestion;
     @FXML private TextArea emailsDisplayArea;
@@ -108,7 +108,7 @@ public class AccountController {
 
     @FXML
     protected void accountNextButtonClick(String accountType) throws IOException {
-        TextField emailInputField = accountType.equals("standard") ? standardEmailInputField : enterpriseEmailInputField;
+        TextField emailInputField = accountType.equals("standard") ? standardUsernameInputField : enterpriseUsernameInputField;
         TextField passwordInputField = accountType.equals("standard") ? standardPasswordInputField : enterprisePasswordInputField;
         TextField confirmPasswordField = accountType.equals("standard") ? standardConfirmPasswordField : enterpriseConfirmPasswordField;
         Label accountInputError = accountType.equals("standard") ? standardAccountInputError : enterpriseAccountInputError;

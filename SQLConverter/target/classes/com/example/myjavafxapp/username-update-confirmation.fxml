@@ -22,7 +22,7 @@
             <font>
                 <Font size="24.0" />
             </font></Label>
-        <Label layoutX="417.0" layoutY="251.0" text="Click below to sign in again ">
+        <Label layoutX="417.0" layoutY="251.0" text="Click below to log in again ">
             <font>
                 <Font size="24.0" />
             </font></Label>

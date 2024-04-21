@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import java.net.*?>
 <?import javafx.scene.control.*?>
@@ -25,11 +24,6 @@
             </font>
         </Label>
         <Label fx:id="errorMessage" layoutX="345.0" layoutY="457.0" text="Username not available, please choose another" textFill="red" visible="false">
-            <font>
-                <Font size="18.0" />
-            </font>
-        </Label>
-        <Label fx:id="updateSuccessMessage" layoutX="380.0" layoutY="457.0" text="Username has been successfully updated" textFill="green" visible="false">
             <font>
                 <Font size="18.0" />
             </font>
