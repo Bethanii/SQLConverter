@@ -291,17 +291,20 @@ public class Controller
                     return true;
                 } else {
                     emailExistsError.setText("Invalid email or password, please try again");
+                    emailExistsError.setLayoutX(430);
                     emailExistsError.setVisible(true);
                     return false;
                 }
             } else {
                 emailExistsError.setText("Invalid email or password, please try again");
+                emailExistsError.setLayoutX(430);
                 emailExistsError.setVisible(true);
                 return false;
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             emailExistsError.setText("Invalid email or password, please try again");
+            emailExistsError.setLayoutX(430);
             emailExistsError.setVisible(true);
             return false;
         } catch (IOException e) {
@@ -316,9 +319,9 @@ public class Controller
         if (emailExists == true) {
             return true;
         } else {
-            errorMessage.setVisible(true);
-            errorMessage.setLayoutX(440);
-            errorMessage.setText("Account doesn't exist");
+            emailExistsError.setVisible(true);
+            emailExistsError.setLayoutX(440);
+            emailExistsError.setText("Account doesn't exist");
             return false;
         }
     }

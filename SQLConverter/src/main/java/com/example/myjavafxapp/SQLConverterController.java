@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import javafx.application.Platform;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.StageStyle;
 import javafx.scene.control.*;
@@ -419,26 +420,46 @@ public class SQLConverterController {
     }
 
     public void goToUserUpdatePage() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("standard-account-page.fxml"));
-        AnchorPane standardAccountPage = fxmlLoader.load();
-        AccountController controller = fxmlLoader.getController();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("update-username-page.fxml"));
+        AnchorPane updateUsernamePage = fxmlLoader.load();
+        SQLConverterController controller = fxmlLoader.getController();
 
         SessionService sessionService = SessionService.getInstance();
         controller.setEmail(sessionService.getEmail());
         this.userConnection = setConnection(sessionService.getConnection());
 
-        Button backButton = (Button) standardAccountPage.lookup("#backButton");
-        backButton.setText("Back");
-
-        Button updateButton = (Button) standardAccountPage.lookup("#updateButton");
-        updateButton.setVisible(true);
-
         Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(standardAccountPage);
-        standardAccountPage.requestFocus();
+        currentScene.setRoot(updateUsernamePage);
+        updateUsernamePage.requestFocus();
 
         Stage stage = (Stage) currentScene.getWindow();
         stage.sizeToScene();
-        stage.setTitle("Update User Info");
+        stage.setTitle("Update Username");
+    }
+
+    @FXML
+    public void onUpdateUsernameBackButtonClick() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("sql-converter.fxml"));
+        AnchorPane sqlConverterPage = fxmlLoader.load();
+        SQLConverterController controller = fxmlLoader.getController();
+
+        SessionService sessionService = SessionService.getInstance();
+        controller.setEmail(sessionService.getEmail());
+        SQLConverterController sqlController = new SQLConverterController();
+        Connection connection = controller.setConnection(sessionService.getConnection());
+        controller.populateStaticRow(connection);
+
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(sqlConverterPage);
+        sqlConverterPage.requestFocus();
+
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle("SQL Converter");
+    }
+
+    @FXML
+    public void onUpdateUsernameUpdateButtonClick() throws IOException {
+
     }
 }

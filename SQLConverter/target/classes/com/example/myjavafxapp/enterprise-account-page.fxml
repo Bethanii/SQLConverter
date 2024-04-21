@@ -54,10 +54,5 @@
          </font>
       </PasswordField>
       <Button fx:id="enterpriseNextButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onEnterpriseAccountNextButtonClick" prefHeight="48.0" prefWidth="246.0" text="Next" />
-        <Button id="backButton" layoutX="38.0" layoutY="28.0" mnemonicParsing="false" onAction="#onEnterpriseAccountBackButtonClick" prefHeight="30.0" prefWidth="62.0" text="Back">
-         <font>
-            <Font size="14.0" />
-         </font>
-        </Button>
     </children>
 </AnchorPane>

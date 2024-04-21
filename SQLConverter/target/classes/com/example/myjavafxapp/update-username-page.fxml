@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="updateUsernamePage" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.SQLConverterController">
+
+    <stylesheets>
+        <URL value="@static/style.css" />
+    </stylesheets>
+
+    <children>
+        <Label fx:id="welcomeText" styleClass="labelStyle" />
+        <Label layoutX="237.0" layoutY="222.0" prefHeight="38.0" prefWidth="80.0" text="Email">
+            <font>
+                <Font size="20.0" />
+            </font>
+        </Label>
+        <TextField fx:id="emailInputField" layoutX="236.0" layoutY="258.0" prefHeight="45.0" prefWidth="251.0" promptText="Email">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </TextField>
+        <Label layoutX="308.0" layoutY="90.0" prefHeight="35.0" prefWidth="480.0" text="Please enter your account information below">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Label>
+        <Label fx:id="standardAccountInputError" layoutX="345.0" layoutY="470.0" text="Password and Confirmation Password don't match" textFill="red" visible="false">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </Label>
+        <Button fx:id="updateButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onUpdateUsernameUpdateButtonClick" prefHeight="48.0" prefWidth="246.0" text="Update" visible="false" />
+        <Button id="backButton" layoutX="38.0" layoutY="28.0" mnemonicParsing="false" onAction="#onUpdateUsernameBackButtonClick" prefHeight="30.0" prefWidth="62.0" text="Back">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Button>
+    </children>
+</AnchorPane>

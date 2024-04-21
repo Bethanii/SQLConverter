@@ -1,7 +1,8 @@
 
 #signInPage, #selectAccountPage, #enterpriseAccountPage, #enterpriseAccountSubUserPage, #securityQuestionPage, #standardAccountPage,
 #userDatabaseSetupPage, #sqlConverterPage, #resetPasswordPage, #confirmationPage, #newPasswordPage, #validateSecurityQuestionsPage,
-#passwordUpdateConfirmationPage, #faqPage, #subUserTempEmailPage, #enterpriseSecurityQuestionPage, #landingPage, #updateUserDBPage {
+#passwordUpdateConfirmationPage, #faqPage, #subUserTempEmailPage, #enterpriseSecurityQuestionPage, #landingPage, #updateUserDBPage,
+ #updateUsernamePage {
     -fx-background-color: #DAF8F0;
     -fx-background-position: center center;
     -fx-background-repeat: no-repeat;
@@ -28,7 +29,7 @@
 #enterpriseAccountButton, #standardAccountButton, #enterpriseNextButton, #securityQuestionNextButton, #enterpriseSubUsersNextButton,
 #standardNextButton, #databaseSetupNextButton, #resetPasswordButton, #newPasswordResetButton, #tempPasswordNextButton,
 #updateDatabaseInfoButton, #testConnectionButton, #connectToDatabaseButton, #updatePasswordButton, #enterPasswordUpdateButton,
- #updateNextButton {
+#updateNextButton {
     -fx-focus-color: transparent;
     -fx-background-radius: 20;
     -fx-font-family: 'Open Sans', sans-serif;

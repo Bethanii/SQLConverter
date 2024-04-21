@@ -55,7 +55,6 @@
         </Label>
         <Button fx:id="standardNextButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onStandardAccountNextButtonClick" prefHeight="48.0" prefWidth="246.0" text="Next" />
         <Button fx:id="updateButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onUpdateButtonClick" prefHeight="48.0" prefWidth="246.0" text="Update" visible="false" />
-        <Button id="backButton" layoutX="38.0" layoutY="28.0" mnemonicParsing="false" onAction="#onStandardAccountBackButtonClick" prefHeight="30.0" prefWidth="62.0" text="Back">
          <font>
             <Font size="14.0" />
          </font>

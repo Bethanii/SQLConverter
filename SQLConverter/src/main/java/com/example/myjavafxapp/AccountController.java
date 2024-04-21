@@ -4,6 +4,7 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.application.Platform;
 import java.sql.PreparedStatement;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.StageStyle;
 import javafx.fxml.FXMLLoader;
@@ -78,17 +79,6 @@ public class AccountController {
     public void setEmails(List<String> emails) {
         this.emails = emails;
     }
-
-    @FXML
-    public void onEnterpriseAccountBackButtonClick() throws IOException {
-        loadPage("select-account-type-page.fxml", "Select Account Type", "", "Controller", false, null);
-    }
-
-    @FXML
-    public void onStandardAccountBackButtonClick() throws IOException {
-        loadPage("select-account-type-page.fxml", "Select Account Type", "", "Controller", false, null);
-    }
-
     @FXML
     protected void onStandardAccountNextButtonClick() throws IOException {
         accountNextButtonClick("standard");
@@ -96,6 +86,24 @@ public class AccountController {
     @FXML
     protected void onEnterpriseAccountNextButtonClick() throws IOException {
         accountNextButtonClick("enterprise");
+    }
+
+    @FXML
+    protected void onEnterpriseSubUsersNextButtonClick() throws IOException {
+        databaseManager.saveEnterpriseSubUserEmails(emails);
+        loadPage("sub-users-temporary-password.fxml", "Enterprise Account Sub-User Temporary Password", this.email, "Account Controller", false, this.emails);
+        AccountController controller = new AccountController();
+        controller.setEmail(this.email);
+        controller.setEmails(emails);
+    }
+
+    @FXML
+    protected void onTempPasswordNextButtonClick() throws IOException {
+        String tempPassword = tempPasswordInputField.getText().trim();
+        for (String email : emails) {
+            databaseManager.setTempPassword(email, tempPassword);
+        }
+        loadPage("enterprise-security-question-page.fxml", "Enterprise Account Security Questions", this.email, "Account Controller", true, null);
     }
 
     @FXML
@@ -344,24 +352,6 @@ public class AccountController {
     }
 
     @FXML
-    protected void onEnterpriseSubUsersNextButtonClick() throws IOException {
-        databaseManager.saveEnterpriseSubUserEmails(emails);
-        loadPage("sub-users-temporary-password.fxml", "Enterprise Account Sub-User Temporary Password", this.email, "Account Controller", false, this.emails);
-        AccountController controller = new AccountController();
-        controller.setEmail(this.email);
-        controller.setEmails(emails);
-    }
-
-    @FXML
-    protected void onTempPasswordNextButtonClick() throws IOException {
-        String tempPassword = tempPasswordInputField.getText().trim();
-        for (String email : emails) {
-            databaseManager.setTempPassword(email, tempPassword);
-        }
-        loadPage("enterprise-security-question-page.fxml", "Enterprise Account Security Questions", this.email, "Account Controller", true, null);
-    }
-
-    @FXML
     protected void addEmailField() throws IOException {
         String emailText = subUserEmailInputField.getText().trim();
         emails.add(emailText);
@@ -376,9 +366,6 @@ public class AccountController {
 
     @FXML
     protected void onUpdateButtonClick() throws IOException {
-        String emailText = subUserEmailInputField.getText().trim();
-        emails.add(emailText);
-        displayEmails(emails);
-        subUserEmailInputField.clear();
+        //database overrid
     }
 }
