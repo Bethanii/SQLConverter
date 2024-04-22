@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import java.net.*?>
 <?import javafx.scene.control.*?>
@@ -19,8 +18,6 @@
                 <VBox fx:id="resultsContainer" spacing="5" />
             </content>
         </ScrollPane>
-
-
         <ScrollPane fx:id="addRowScrollPane" hbarPolicy="NEVER" layoutX="59.0" layoutY="131.0" prefHeight="483.0" prefWidth="448.0">
             <content>
                 <VBox fx:id="dynamicRowsContainer" layoutX="35.0" layoutY="102.0" spacing="10">
@@ -74,7 +71,7 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Database">
               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#goToUserDatabaseSetupPage" text="Update" />
+                  <MenuItem fx:id="updateDatabase" mnemonicParsing="false" onAction="#goToUserDatabaseSetupPage" text="Update" />
               </items>
           </Menu>
         </menus>

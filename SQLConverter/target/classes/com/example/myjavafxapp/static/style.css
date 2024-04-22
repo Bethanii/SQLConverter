@@ -1,7 +1,8 @@
 
 #signInPage, #selectAccountPage, #enterpriseAccountPage, #enterpriseAccountSubUserPage, #securityQuestionPage, #standardAccountPage,
 #userDatabaseSetupPage, #sqlConverterPage, #resetPasswordPage, #confirmationPage, #newPasswordPage, #validateSecurityQuestionsPage,
-#passwordUpdateConfirmationPage, #faqPage, #subUserTempEmailPage, #enterpriseSecurityQuestionPage, #landingPage, #updateUserDBPage {
+#passwordUpdateConfirmationPage, #faqPage, #subUserTempEmailPage, #enterpriseSecurityQuestionPage, #landingPage, #updateUserDBPage,
+#updateUsernamePage, #usernameUpdateConfirmation {
     -fx-background-color: #DAF8F0;
     -fx-background-position: center center;
     -fx-background-repeat: no-repeat;
@@ -22,17 +23,17 @@
     -fx-focus-color: transparent;
     -fx-background-radius: 20;
     -fx-font-family: 'Open Sans', sans-serif;
-    -fx-font-size: 14px;
+    -fx-font-size: 16px;
 }
 
 #enterpriseAccountButton, #standardAccountButton, #enterpriseNextButton, #securityQuestionNextButton, #enterpriseSubUsersNextButton,
 #standardNextButton, #databaseSetupNextButton, #resetPasswordButton, #newPasswordResetButton, #tempPasswordNextButton,
 #updateDatabaseInfoButton, #testConnectionButton, #connectToDatabaseButton, #updatePasswordButton, #enterPasswordUpdateButton,
- #updateNextButton {
+#updateNextButton, #updateUsernameButton {
     -fx-focus-color: transparent;
     -fx-background-radius: 20;
     -fx-font-family: 'Open Sans', sans-serif;
-    -fx-font-size: 18px;
+    -fx-font-size: 20px;
 }
 
 #signInLabelField {
@@ -106,4 +107,10 @@
 
 #serverNameLocationContainer > ComboBox {
     -fx-pref-height: 39.0;
+}
+
+#exitConfirmation {
+    -fx-border-color: black;
+    -fx-border-width: 2px;
+    -fx-border-style: solid;
 }

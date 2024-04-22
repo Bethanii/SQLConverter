@@ -13,12 +13,12 @@
     </stylesheets>
     <children>
         <Label fx:id="welcomeText" styleClass="labelStyle" />
-        <Label layoutX="237.0" layoutY="222.0" prefHeight="38.0" prefWidth="80.0" text="Email">
+        <Label layoutX="237.0" layoutY="222.0" prefHeight="38.0" prefWidth="97.0" text="Username">
             <font>
                 <Font size="20.0" />
             </font>
         </Label>
-        <TextField fx:id="enterpriseEmailInputField" layoutX="236.0" layoutY="258.0" prefHeight="45.0" prefWidth="251.0" promptText="Email">
+        <TextField fx:id="enterpriseUsernameInputField" layoutX="236.0" layoutY="258.0" prefHeight="45.0" prefWidth="251.0" promptText="Username">
          <font>
             <Font size="18.0" />
          </font>
@@ -54,10 +54,6 @@
          </font>
       </PasswordField>
       <Button fx:id="enterpriseNextButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onEnterpriseAccountNextButtonClick" prefHeight="48.0" prefWidth="246.0" text="Next" />
-        <Button id="backButton" layoutX="38.0" layoutY="28.0" mnemonicParsing="false" onAction="#onEnterpriseAccountBackButtonClick" prefHeight="30.0" prefWidth="62.0" text="Back">
-         <font>
-            <Font size="14.0" />
-         </font>
-        </Button>
+        <Button id="exitButton" layoutX="38.0" layoutY="28.0" mnemonicParsing="false" onAction="#onExitButtonClick" prefHeight="30.0" prefWidth="62.0" text="Exit" style="-fx-font-size: 14px" />
     </children>
 </AnchorPane>

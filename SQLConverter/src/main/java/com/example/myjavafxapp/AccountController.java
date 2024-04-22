@@ -2,7 +2,6 @@ package com.example.myjavafxapp;
 
 import javafx.scene.control.ProgressIndicator;
 import javafx.application.Platform;
-import java.sql.PreparedStatement;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.StageStyle;
@@ -10,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
 import java.sql.SQLException;
+import javafx.stage.Window;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import java.io.IOException;
@@ -23,35 +23,37 @@ import java.util.List;
 
 public class AccountController {
 
-    @FXML private Label welcomeText, connectionError, securityQuestionErrorMessage, enterpriseAccountInputError, standardAccountInputError, connectionSuccess;
-    @FXML private TextField standardEmailInputField, standardPasswordInputField, standardConfirmPasswordField, serverNameField, dbUsernameField, dbPasswordField, databaseNameField,
-            firstSecurityQuestionInput, secondSecurityQuestionInput, subUserEmailInputField, enterpriseEmailInputField, enterprisePasswordInputField, enterpriseConfirmPasswordField,
+    @FXML private Label welcomeText, connectionError, securityQuestionErrorMessage, enterpriseAccountInputError, standardAccountInputError,
+            connectionSuccess, errorMessage;
+    @FXML private TextField standardUsernameInputField, standardPasswordInputField, standardConfirmPasswordField, serverNameField,
+            dbUsernameField, dbPasswordField, databaseNameField, firstSecurityQuestionInput, secondSecurityQuestionInput,
+            subUserEmailInputField, enterpriseUsernameInputField, enterprisePasswordInputField, enterpriseConfirmPasswordField,
             tempPasswordInputField;
     @FXML private ChoiceBox<String> firstSecurityQuestion, secondSecurityQuestion;
     @FXML private TextArea emailsDisplayArea;
     @FXML private CheckBox localDBCheckbox;
+    @FXML private Button cancelOption, exitOption;
     private Stage loadingStage;
     private String email;
     private List<String> emails = new ArrayList<>();
     private DatabaseManager databaseManager = new DatabaseManager();
 
-    public void loadPage(String pageFile, String pageTitle, String email, String controllerSelection, boolean setSecurityQuestions, List<String> emails) throws IOException {
+    public void loadPage(String pageFile, String pageTitle, String email, String controllerSelection,
+                         boolean setSecurityQuestions, List<String> emails) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(SQLApplication.class.getResource(pageFile));
         Parent page = fxmlLoader.load();
         Scene currentScene = welcomeText.getScene();
         currentScene.setRoot(page);
         page.requestFocus();
-
-        switch(controllerSelection) {
-            case"Account Controller":
+        switch (controllerSelection) {
+            case "Account Controller":
                 AccountController accountController = fxmlLoader.getController();
                 accountController.setEmail(email);
                 if (email != null) {
                     accountController.setEmail(email);
                 }
-                if(emails != null)
-                {
+                if (emails != null) {
                     accountController.setEmails(emails);
                 }
                 if (setSecurityQuestions) {
@@ -80,27 +82,50 @@ public class AccountController {
     }
 
     @FXML
-    public void onEnterpriseAccountBackButtonClick() throws IOException {
-        loadPage("select-account-type-page.fxml", "Select Account Type", "", "Controller", false, null);
-    }
-
-    @FXML
-    public void onStandardAccountBackButtonClick() throws IOException {
-        loadPage("select-account-type-page.fxml", "Select Account Type", "", "Controller", false, null);
-    }
-
-    @FXML
-    protected void onStandardAccountNextButtonClick() throws IOException {
+    protected void onStandardAccountNextButtonClick() throws IOException, SQLException {
+        SessionService sessionService = SessionService.getInstance();
+        sessionService.setEmail(email);
         accountNextButtonClick("standard");
     }
+
     @FXML
-    protected void onEnterpriseAccountNextButtonClick() throws IOException {
+    protected void onEnterpriseAccountNextButtonClick() throws IOException, SQLException {
+        SessionService sessionService = SessionService.getInstance();
+        sessionService.setEmail(this.email);
         accountNextButtonClick("enterprise");
     }
 
     @FXML
-    protected void accountNextButtonClick(String accountType) throws IOException {
-        TextField emailInputField = accountType.equals("standard") ? standardEmailInputField : enterpriseEmailInputField;
+    protected void onEnterpriseSubUsersNextButtonClick() throws IOException {
+        databaseManager.saveEnterpriseSubUserEmails(emails, this.email);
+        loadPage("sub-users-temporary-password.fxml", "Enterprise Account Sub-User Temporary Password",
+                this.email, "Account Controller", false, emails);
+        AccountController controller = new AccountController();
+        controller.setEmail(this.email);
+        controller.setEmails(emails);
+    }
+
+    @FXML
+    protected void onTempPasswordNextButtonClick() throws IOException {
+        String tempPassword = tempPasswordInputField.getText().trim();
+        if (tempPassword.isEmpty() && !emails.isEmpty()) {
+            errorMessage.setVisible(true);
+            tempPasswordInputField.getStyleClass().add("text-field-error");
+        } else {
+            errorMessage.setVisible(false);
+            for (String email : emails) {
+                databaseManager.setTempPassword(email, tempPassword);
+            }
+            AccountController controller = new AccountController();
+            controller.setEmails(emails);
+            loadPage("enterprise-security-question-page.fxml", "Enterprise Account Security Questions",
+                    this.email, "Account Controller", true, emails);
+        }
+    }
+
+    @FXML
+    protected void accountNextButtonClick(String accountType) throws IOException, SQLException {
+        TextField emailInputField = accountType.equals("standard") ? standardUsernameInputField : enterpriseUsernameInputField;
         TextField passwordInputField = accountType.equals("standard") ? standardPasswordInputField : enterprisePasswordInputField;
         TextField confirmPasswordField = accountType.equals("standard") ? standardConfirmPasswordField : enterpriseConfirmPasswordField;
         Label accountInputError = accountType.equals("standard") ? standardAccountInputError : enterpriseAccountInputError;
@@ -117,7 +142,8 @@ public class AccountController {
         Boolean emailExists = databaseManager.checkIfColumnValueExists(connection, "Email", emailInput);
         Boolean passwordMatches = validatePasswordsMatch(passwordInput, passwordInputConfirmation);
 
-        if(emailInput.isEmpty() || emailInput.isBlank() || passwordInput.isEmpty() || passwordInput.isBlank() || passwordInputConfirmation.isEmpty() || passwordInputConfirmation.isBlank()) {
+        if (emailInput.isEmpty() || emailInput.isBlank() || passwordInput.isEmpty() || passwordInput.isBlank()
+                || passwordInputConfirmation.isEmpty() || passwordInputConfirmation.isBlank()) {
             accountInputError.setText("Fields cannot be blank");
             accountInputError.setLayoutX(450);
             accountInputError.setVisible(true);
@@ -139,7 +165,13 @@ public class AccountController {
                 } else {
                     databaseManager.saveUserDetails(connection, emailInput, passwordInput);
                     this.email = emailInput;
-                    loadPage(nextPageFxml, nextPageTitle, this.email, "Account Controller", isStandard, null);
+                    SessionService sessionService = SessionService.getInstance();
+                    sessionService.setEmail(this.email);
+                    loadPage(nextPageFxml, nextPageTitle, this.email, "Account Controller",
+                            isStandard, null);
+                    if (accountType.equals("enterprise")) {
+                        databaseManager.updateIsAccountOwnerFlag(connection, this.email);
+                    }
                 }
             } else {
                 accountInputError.setVisible(true);
@@ -182,7 +214,8 @@ public class AccountController {
 
     @FXML
     protected boolean securityQuestionMissingQuestions() {
-        if (firstSecurityQuestion.getSelectionModel().getSelectedItem() == null || secondSecurityQuestion.getSelectionModel().getSelectedItem() == null) {
+        if (firstSecurityQuestion.getSelectionModel().getSelectedItem() == null ||
+                secondSecurityQuestion.getSelectionModel().getSelectedItem() == null) {
             securityQuestionErrorMessage.setText("You must select a question from the above dropdowns");
             securityQuestionErrorMessage.setVisible(true);
             return true;
@@ -213,27 +246,32 @@ public class AccountController {
     }
 
     @FXML
-    protected void onSecurityQuestionNextButtonClick() throws IOException {
-        if (!securityQuestionMissingFields(firstSecurityQuestionInput, secondSecurityQuestionInput))
-        {
+    protected void onSecurityQuestionNextButtonClick() throws IOException, SQLException {
+        if (!securityQuestionMissingFields(firstSecurityQuestionInput, secondSecurityQuestionInput)) {
             String firstAnswer = firstSecurityQuestionInput.getText();
             String secondAnswer = secondSecurityQuestionInput.getText();
             if (!securityQuestionMissingQuestions()) {
                 String firstQuestion = firstSecurityQuestion.getSelectionModel().getSelectedItem().toString();
                 String secondQuestion = secondSecurityQuestion.getSelectionModel().getSelectedItem().toString();
                 databaseManager.saveSecurityQuestions(firstAnswer, secondAnswer, firstQuestion, secondQuestion, this.email);
-                loadPage("user-database-setup-page.fxml", "Database Setup Information", this.email, "Account Controller", false, null);
+                boolean isAccountOwner = databaseManager.checkIfAccountOwner(databaseManager.databaseConnection(), this.email);
+                if (isAccountOwner) {
+                    loadPage("user-database-setup-page.fxml", "Database Setup Information", this.email,
+                            "Account Controller", false, emails);
+                } else {
+                    loadPage("user-database-setup-page.fxml", "Database Setup Information", this.email,
+                            "Account Controller", false, null);
+                }
             }
         }
     }
 
     @FXML
-    protected void onDatabaseSetupNextButton() throws IOException {
+    protected void onDatabaseSetupNextButton() throws SQLException, IOException {
         String serverName = serverNameField.getText();
         String databaseName = databaseNameField.getText();
         String dbUsername = dbUsernameField.getText();
         String dbPassword = dbPasswordField.getText();
-        Connection connection = null;
 
         if (serverName.isEmpty() || databaseName.isEmpty() || dbUsername.isEmpty() || dbPassword.isEmpty()) {
             connectionError.setText("Fields cannot be blank");
@@ -244,21 +282,16 @@ public class AccountController {
             dbUsernameField.getStyleClass().add("text-field-error");
             dbPasswordField.getStyleClass().add("text-field-error");
         } else {
-            connection = databaseManager.databaseConnection();
-            String insertSQL = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ? WHERE email = ?";
-            try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
-                pstmt.setString(1, serverName);
-                pstmt.setString(2, databaseName);
-                pstmt.setString(3, dbUsername);
-                pstmt.setString(4, dbPassword);
-                pstmt.setString(5, this.email);
-                pstmt.executeUpdate();
-            } catch (SQLException e) {
-                connectionError.setVisible(true);
-                System.out.println("Failed to insert data, error: " + e.getMessage());
-                e.printStackTrace();
+            Connection connection = databaseManager.databaseConnection();
+            boolean isAccountOwner = databaseManager.checkIfAccountOwner(connection, this.email);
+            if (isAccountOwner) {
+                databaseManager.saveEnterpriseSubUserDBInfo(emails, serverName, databaseName, dbUsername, dbPassword, this.email);
+                databaseManager.saveUserDBInfo(connection, serverName, databaseName, dbUsername, dbPassword, this.email);
+            } else {
+                databaseManager.saveUserDBInfo(connection, serverName, databaseName, dbUsername, dbPassword, this.email);
             }
-            loadPage("account-creation-confirmation-page.fxml", "Account Creation Confirmation", this.email, "Controller", false, null);
+            loadPage("account-creation-confirmation-page.fxml", "Account Creation Confirmation", this.email,
+                    "Controller", false, null);
         }
     }
 
@@ -281,10 +314,8 @@ public class AccountController {
             dbPasswordField.getStyleClass().add("text-field-error");
             return;
         }
-
         Stage primaryStage = (Stage) dbUsernameField.getScene().getWindow();
         showDatabaseLoadingPopup(primaryStage);
-
         new Thread(() -> {
             Connection userConnection = null;
             try {
@@ -344,29 +375,28 @@ public class AccountController {
     }
 
     @FXML
-    protected void onEnterpriseSubUsersNextButtonClick() throws IOException {
-        databaseManager.saveEnterpriseSubUserEmails(emails);
-        loadPage("sub-users-temporary-password.fxml", "Enterprise Account Sub-User Temporary Password", this.email, "Account Controller", false, this.emails);
-        AccountController controller = new AccountController();
-        controller.setEmail(this.email);
-        controller.setEmails(emails);
-    }
-
-    @FXML
-    protected void onTempPasswordNextButtonClick() throws IOException {
-        String tempPassword = tempPasswordInputField.getText().trim();
-        for (String email : emails) {
-            databaseManager.setTempPassword(email, tempPassword);
-        }
-        loadPage("enterprise-security-question-page.fxml", "Enterprise Account Security Questions", this.email, "Account Controller", true, null);
-    }
-
-    @FXML
-    protected void addEmailField() throws IOException {
+    protected void addEmailField() throws SQLException {
         String emailText = subUserEmailInputField.getText().trim();
-        emails.add(emailText);
-        displayEmails(emails);
-        subUserEmailInputField.clear();
+        Connection connection = databaseManager.databaseConnection();
+        boolean usernameExists = databaseManager.checkIfColumnValueExists(connection, "Email", emailText);
+
+        if (usernameExists) {
+            subUserEmailInputField.getStyleClass().add("text-field-error");
+            errorMessage.setVisible(true);
+        } else {
+            if (emails.contains(emailText)) {
+                subUserEmailInputField.getStyleClass().add("text-field-error");
+                errorMessage.setText("Cannot enter duplicate usernames");
+                errorMessage.setLayoutX(380);
+                errorMessage.setVisible(true);
+            } else {
+                subUserEmailInputField.getStyleClass().remove("text-field-error");
+                errorMessage.setVisible(false);
+                emails.add(emailText);
+                displayEmails(emails);
+                subUserEmailInputField.clear();
+            }
+        }
     }
 
     public void displayEmails(List<String> emails) {
@@ -375,10 +405,42 @@ public class AccountController {
     }
 
     @FXML
-    protected void onUpdateButtonClick() throws IOException {
-        String emailText = subUserEmailInputField.getText().trim();
-        emails.add(emailText);
-        displayEmails(emails);
-        subUserEmailInputField.clear();
+    public void onExitButtonClick() {
+        showExitPopup();
+    }
+
+    public void showExitPopup() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("exit-confirmation-popup.fxml"));
+            Parent root = loader.load();
+            Stage popupStage = new Stage();
+            popupStage.setTitle("Exit Account Creation");
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+            popupStage.setScene(new Scene(root));
+            popupStage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void onPopUpCancel() {
+        Stage stage = (Stage) cancelOption.getScene().getWindow();
+        stage.close();
+    }
+
+    public void onPopUpExit() throws IOException, SQLException {
+        for (Window window : Window.getWindows()) {
+            if (window instanceof Stage && !"Landing Page".equals(((Stage) window).getTitle())) {
+                ((Stage) window).close();
+            }
+        }
+        SessionService sessionService = SessionService.getInstance();
+        String email = sessionService.getEmail();
+        Connection connection = databaseManager.databaseConnection();
+        if(databaseManager.checkIfAccountOwner(connection, email)) {
+            databaseManager.deleteSubUserDetails(email);
+        }
+        databaseManager.deleteUserDetails(connection, email);
+        loadPage("landing-page.fxml", "Welcome", null,
+                "Controller", false, null);
     }
 }

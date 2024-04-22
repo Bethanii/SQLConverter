@@ -27,11 +27,12 @@ public class SQLConverterController {
     @FXML private TextField searchField1;
     @FXML private VBox dynamicRowsContainer;
     @FXML private VBox resultsContainer;
-    @FXML private Label welcomeText, connectionError, connectionSuccess;
-    @FXML private TextField activeTextField, serverNameField, databaseNameField, dbUsernameField, dbPasswordField;
+    @FXML private Label welcomeText, connectionError, connectionSuccess, updateSuccessMessage, errorMessage;
+    @FXML private TextField activeTextField, serverNameField, databaseNameField, dbUsernameField, dbPasswordField, updateUsernameInput;
     @FXML private CheckBox localDBCheckbox;
     @FXML private AnchorPane updateUserDBPage, sqlConverterPage, resetPasswordPage, standardAccountPage;
     private Stage loadingStage;
+    @FXML MenuItem updateDatabase;
     private ChoiceBox<String> activeChoiceBox;
     private Connection userConnection;
     private DatabaseManager databaseManager;
@@ -39,7 +40,7 @@ public class SQLConverterController {
     private SessionService sessionService;
 
     @FXML
-    public void initialize() throws IOException {
+    public void initialize() throws IOException, SQLException {
         SessionService sessionService = SessionService.getInstance();
         if (sessionService != null) {
             setEmail(sessionService.getEmail());
@@ -51,7 +52,14 @@ public class SQLConverterController {
         this.email = email;
     }
 
-    public Connection setConnection() throws IOException {
+
+    public void disableUpdateDatabaseMenuItem() {
+        if (updateDatabase != null) {
+            updateDatabase.setDisable(true);
+        }
+    }
+
+    public Connection setConnection() throws SQLException, IOException {
         this.databaseManager = new DatabaseManager();
         String[] dbValues = databaseManager.getUserDBInfo(this.email);
 
@@ -68,7 +76,7 @@ public class SQLConverterController {
         }
     }
 
-    public Connection setConnection(Connection userConnection) throws IOException {
+    public Connection setConnection(Connection userConnection) throws IOException, SQLException {
         this.databaseManager = new DatabaseManager();
         String[] dbValues = databaseManager.getUserDBInfo(this.email);
 
@@ -243,45 +251,42 @@ public class SQLConverterController {
         stage.setTitle("Update User Database Information");
     }
 
-    public void onUpdateDatabaseInfoButton() throws IOException {
+    public void onUpdateDatabaseInfoButton() throws IOException, SQLException {
         String serverName = serverNameField.getText();
         String databaseName = databaseNameField.getText();
         String dbUsername = dbUsernameField.getText();
         String dbPassword = dbPasswordField.getText();
 
-        Connection connection = null;
-        DatabaseManager databaseManager = new DatabaseManager();
-
         if (serverName.isEmpty() || databaseName.isEmpty() || dbUsername.isEmpty() || dbPassword.isEmpty()) {
             connectionError.setText("Fields cannot be blank");
             connectionError.setLayoutX(450);
             connectionError.setVisible(true);
-            return;
-        }
-        if (localDBCheckbox.isSelected()) {
-            connection = databaseManager.databaseConnection();
-            databaseManager.saveIsLocalValue(connection, this.email, 1);
+            serverNameField.getStyleClass().add("text-field-error");
+            databaseNameField.getStyleClass().add("text-field-error");
+            dbUsernameField.getStyleClass().add("text-field-error");
+            dbPasswordField.getStyleClass().add("text-field-error");
         } else {
-            connection = databaseManager.databaseConnection();
-            databaseManager.saveIsLocalValue(connection, this.email, 1);
-        }
-        connection = databaseManager.databaseConnection();
-        String insertSQL = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ? WHERE email = ?";
+            connectionError.setVisible(false);
+            serverNameField.getStyleClass().remove("text-field-error");
+            databaseNameField.getStyleClass().remove("text-field-error");
+            dbUsernameField.getStyleClass().remove("text-field-error");
+            dbPasswordField.getStyleClass().remove("text-field-error");
+            Connection connection = databaseManager.databaseConnection();
 
-        try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
-            pstmt.setString(1, serverName);
-            pstmt.setString(2, databaseName);
-            pstmt.setString(3, dbUsername);
-            pstmt.setString(4, dbPassword);
-            pstmt.setString(5, this.email);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            connectionError.setVisible(true);
-            e.printStackTrace();
+            if (localDBCheckbox.isSelected()) {
+                databaseManager.saveIsLocalValue(connection, this.email, 1);
+            } else {
+                databaseManager.saveIsLocalValue(connection, this.email, 0);
+            }
+            boolean isAccountOwner = databaseManager.checkIfAccountOwner(connection, this.email);
+            if(isAccountOwner) {
+                databaseManager.updateSubUserDBInfo(connection, serverName, databaseName, dbUsername, dbPassword, this.email);
+            }
+            databaseManager.saveUserDBInfo(connection, serverName, databaseName, dbUsername, dbPassword, this.email);
         }
     }
 
-    public void onUpdateDBBackButtonClick() throws IOException {
+    public void onUpdateDBBackButtonClick() throws IOException, SQLException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("sql-converter.fxml"));
         AnchorPane sqlConverterPage = fxmlLoader.load();
         SQLConverterController sqlController = fxmlLoader.getController();
@@ -319,7 +324,8 @@ public class SQLConverterController {
             DatabaseManager databaseManager = new DatabaseManager();
             final Connection[] userConnection = new Connection[1];
             try {
-                userConnection[0] = databaseManager.connectUserDatabase(serverName, databaseName, dbUsername, dbPassword, localDBCheckbox.isSelected());
+                userConnection[0] = databaseManager.connectUserDatabase(serverName, databaseName, dbUsername,
+                        dbPassword, localDBCheckbox.isSelected());
 
                 Platform.runLater(() -> {
                     if (userConnection[0] == null) {
@@ -374,7 +380,7 @@ public class SQLConverterController {
         loadingStage.show();
     }
 
-    public void goToResetPasswordPage() throws IOException {
+    public void goToResetPasswordPage() throws IOException, SQLException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("reset-password-page.fxml"));
         AnchorPane resetPasswordPage = fxmlLoader.load();
         Controller controller = fxmlLoader.getController();
@@ -418,27 +424,90 @@ public class SQLConverterController {
         stage.setTitle("Sign In");
     }
 
-    public void goToUserUpdatePage() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("standard-account-page.fxml"));
-        AnchorPane standardAccountPage = fxmlLoader.load();
-        AccountController controller = fxmlLoader.getController();
+    public void goToUserUpdatePage() throws IOException, SQLException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("update-username-page.fxml"));
+        AnchorPane updateUsernamePage = fxmlLoader.load();
+        SQLConverterController controller = fxmlLoader.getController();
 
         SessionService sessionService = SessionService.getInstance();
         controller.setEmail(sessionService.getEmail());
         this.userConnection = setConnection(sessionService.getConnection());
 
-        Button backButton = (Button) standardAccountPage.lookup("#backButton");
-        backButton.setText("Back");
-
-        Button updateButton = (Button) standardAccountPage.lookup("#updateButton");
-        updateButton.setVisible(true);
-
         Scene currentScene = welcomeText.getScene();
-        currentScene.setRoot(standardAccountPage);
-        standardAccountPage.requestFocus();
+        currentScene.setRoot(updateUsernamePage);
+        updateUsernamePage.requestFocus();
 
         Stage stage = (Stage) currentScene.getWindow();
         stage.sizeToScene();
-        stage.setTitle("Update User Info");
+        stage.setTitle("Update Username");
+    }
+
+    @FXML
+    public void onUpdateUsernameBackButtonClick() throws IOException, SQLException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("sql-converter.fxml"));
+        AnchorPane sqlConverterPage = fxmlLoader.load();
+        SQLConverterController controller = fxmlLoader.getController();
+
+        SessionService sessionService = SessionService.getInstance();
+        controller.setEmail(sessionService.getEmail());
+        SQLConverterController sqlController = new SQLConverterController();
+        Connection connection = controller.setConnection(sessionService.getConnection());
+        controller.setEmail(this.email);
+        controller.populateStaticRow(connection);
+
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(sqlConverterPage);
+        sqlConverterPage.requestFocus();
+
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle("SQL Converter");
+    }
+
+    @FXML
+    public void onUpdateUsernameUpdateButtonClick() throws IOException, SQLException {
+        String emailInput = updateUsernameInput.getText();
+        Connection connection = databaseManager.databaseConnection();
+
+        boolean usernameExists = databaseManager.checkIfColumnValueExists(connection, "Email", emailInput);
+
+        if(usernameExists)
+        {
+            updateUsernameInput.getStyleClass().add("text-field-error");
+            errorMessage.setVisible(true);
+            updateSuccessMessage.setVisible(false);
+        }
+        else
+        {
+            if (databaseManager.updateUsername(connection, this.email, emailInput))
+            {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("username-update-confirmation.fxml"));
+                AnchorPane usernameUpdateConfirmation = fxmlLoader.load();
+                SQLConverterController controller = fxmlLoader.getController();
+
+                Scene currentScene = welcomeText.getScene();
+                currentScene.setRoot(usernameUpdateConfirmation);
+                usernameUpdateConfirmation.requestFocus();
+
+                Stage stage = (Stage) currentScene.getWindow();
+                stage.sizeToScene();
+                stage.setTitle("Username Successfully Updated");
+            }
+        }
+    }
+
+    @FXML
+    protected void onSignInSelectionClick() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("sign-in-page.fxml"));
+        AnchorPane signInPage = fxmlLoader.load();
+        Controller controller = fxmlLoader.getController();
+
+        Scene currentScene = welcomeText.getScene();
+        currentScene.setRoot(signInPage);
+        signInPage.requestFocus();
+
+        Stage stage = (Stage) currentScene.getWindow();
+        stage.sizeToScene();
+        stage.setTitle("Log In");
     }
 }

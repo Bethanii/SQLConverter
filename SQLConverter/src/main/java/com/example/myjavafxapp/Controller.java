@@ -20,10 +20,14 @@ import java.sql.*;
 
 public class Controller
 {
-    @FXML private Label welcomeText, errorMessage, emailExistsError, newPasswordErrorMessage, question1, question2, serverNameLocationAnswer, dbConnectFailureAnswer, passwordChangeAnswer,
-            accountDifferencesAnswer, updateDatebaseInfoAnswer, emptyDropdownAnswer, updateConfirmationLabel;
-    @FXML private TextField signInEmailInputField, signInPasswordInputField, resetEmailField, response1, response2, newPasswordInputField, newConfirmationPasswordField;
+    @FXML private Label welcomeText, errorMessage, emailExistsError, newPasswordErrorMessage, question1, question2, serverNameLocationAnswer,
+            dbConnectFailureAnswer, passwordChangeAnswer, accountDifferencesAnswer, updateDatebaseInfoAnswer, emptyDropdownAnswer, updateConfirmationLabel;
+    @FXML private TextField signInEmailInputField, signInPasswordInputField, resetEmailField, response1, response2, newPasswordInputField,
+            newConfirmationPasswordField;
     @FXML private ComboBox<String> serverNameLocation, dbConnectFailure, passwordChange, accountDifferences, updateDatebaseInfo, emptyDropdown;
+    @FXML private MenuItem updateDatabase;
+    @FXML private AnchorPane updateUserDBPage;
+    @FXML private Button createAccountButton;
     private DatabaseManager databaseManager = new DatabaseManager();
     private boolean isAnswerVisible = false;
     private Stage loadingStage;
@@ -134,16 +138,19 @@ public class Controller
                     showLoadingPopup(primaryStage);
                     new Thread(() -> {
                         try {
+                            boolean isSubUser = databaseManager.checkIfSubUser(databaseManager.databaseConnection(), this.email);
                             Pane sqlConverterPage = fxmlLoader.load();
                             SQLConverterController controller = fxmlLoader.getController();
                             controller.setEmail(this.email);
                             Connection connection = controller.setConnection();
                             controller.setConnection(connection);
-
                             SessionService sessionService = SessionService.getInstance();
                             sessionService.setEmail(this.email);
 
                             Platform.runLater(() -> {
+                                if (isSubUser) {
+                                    controller.disableUpdateDatabaseMenuItem();
+                                }
                                 controller.populateStaticRow(connection);
 
                                 Scene currentScene = welcomeText.getScene();
@@ -156,7 +163,7 @@ public class Controller
 
                                 hideLoadingPopup();
                             });
-                        } catch (IOException e) {
+                        } catch (IOException | SQLException e) {
                             e.printStackTrace();
                             Platform.runLater(this::hideLoadingPopup);
                         }
@@ -166,7 +173,7 @@ public class Controller
         }
     }
 
-    public Connection setConnection(Connection userConnection) throws IOException {
+    public Connection setConnection(Connection userConnection) throws IOException, SQLException {
         this.databaseManager = new DatabaseManager();
         String[] dbValues = databaseManager.getUserDBInfo(this.email);
         if (dbValues == null) {
@@ -256,7 +263,8 @@ public class Controller
     public boolean newPasswordFieldsValidation() {
         String newPasswordInput = newPasswordInputField.getText();
         String newPasswordConfirmationInput = newConfirmationPasswordField.getText();
-        if (newPasswordInput.isEmpty() || newPasswordInput.isBlank() || newPasswordConfirmationInput.isEmpty() || newPasswordConfirmationInput.isBlank()) {
+        if (newPasswordInput.isEmpty() || newPasswordInput.isBlank() ||
+                newPasswordConfirmationInput.isEmpty() || newPasswordConfirmationInput.isBlank()) {
             if (newPasswordInput.isEmpty() || newPasswordInput.isBlank()) {
                 newPasswordErrorMessage.setText("Fields cannot be blank");
                 newPasswordErrorMessage.setLayoutX(440);
@@ -291,17 +299,20 @@ public class Controller
                     return true;
                 } else {
                     emailExistsError.setText("Invalid email or password, please try again");
+                    emailExistsError.setLayoutX(430);
                     emailExistsError.setVisible(true);
                     return false;
                 }
             } else {
                 emailExistsError.setText("Invalid email or password, please try again");
+                emailExistsError.setLayoutX(430);
                 emailExistsError.setVisible(true);
                 return false;
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             emailExistsError.setText("Invalid email or password, please try again");
+            emailExistsError.setLayoutX(430);
             emailExistsError.setVisible(true);
             return false;
         } catch (IOException e) {
@@ -309,16 +320,16 @@ public class Controller
         }
     }
 
-    public boolean userExists(String emailInput) throws IOException {
+    public boolean userExists(String emailInput) throws IOException, SQLException {
         Connection connection = databaseManager.databaseConnection();
         Boolean emailExists = databaseManager.checkIfColumnValueExists(connection, "Email", emailInput);
 
         if (emailExists == true) {
             return true;
         } else {
-            errorMessage.setVisible(true);
-            errorMessage.setLayoutX(440);
-            errorMessage.setText("Account doesn't exist");
+            emailExistsError.setVisible(true);
+            emailExistsError.setLayoutX(440);
+            emailExistsError.setText("Account doesn't exist");
             return false;
         }
     }
@@ -455,7 +466,7 @@ public class Controller
         }
     }
 
-    public void onBackToHomeButtonClick() throws IOException {
+    public void onBackToHomeButtonClick() throws IOException, SQLException {
         SQLConverterController sqlController = setupPage("sql-converter.fxml", "SQL Converter");
         SessionService sessionService = SessionService.getInstance();
         sqlController.setEmail(sessionService.getEmail());
@@ -463,7 +474,7 @@ public class Controller
         sqlController.populateStaticRow(connection);
     }
 
-    public void onUpdatePasswordButtonClick() throws IOException {
+    public void onUpdatePasswordButtonClick() throws IOException, SQLException {
         this.email = resetEmailField.getText();
         if (this.email.isBlank() || this.email.isEmpty()) {
             errorMessage.setVisible(true);

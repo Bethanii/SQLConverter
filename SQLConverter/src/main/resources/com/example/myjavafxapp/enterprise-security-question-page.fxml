@@ -52,5 +52,6 @@
                 <Font size="18.0" />
             </font>
         </Label>
+        <Button id="exitButton" layoutX="38.0" layoutY="28.0" mnemonicParsing="false" onAction="#onExitButtonClick" prefHeight="30.0" prefWidth="62.0" text="Exit" style="-fx-font-size: 14px" />
     </children>
 </AnchorPane>

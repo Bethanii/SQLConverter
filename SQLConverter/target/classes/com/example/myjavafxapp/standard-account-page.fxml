@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import java.net.*?>
 <?import javafx.scene.control.*?>
@@ -13,12 +14,12 @@
 
     <children>
         <Label fx:id="welcomeText" styleClass="labelStyle" />
-        <Label layoutX="237.0" layoutY="222.0" prefHeight="38.0" prefWidth="80.0" text="Email">
+        <Label layoutX="237.0" layoutY="222.0" prefHeight="38.0" prefWidth="106.0" text="Username">
             <font>
                 <Font size="20.0" />
             </font>
         </Label>
-        <TextField fx:id="standardEmailInputField" layoutX="236.0" layoutY="258.0" prefHeight="45.0" prefWidth="251.0" promptText="Email">
+        <TextField fx:id="standardUsernameInputField" layoutX="236.0" layoutY="258.0" prefHeight="45.0" prefWidth="251.0" promptText="Username">
             <font>
                 <Font size="18.0" />
             </font>
@@ -53,12 +54,11 @@
                 <Font size="18.0" />
             </font>
         </Label>
-        <Button fx:id="standardNextButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onStandardAccountNextButtonClick" prefHeight="48.0" prefWidth="246.0" text="Next" />
-        <Button fx:id="updateButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onUpdateButtonClick" prefHeight="48.0" prefWidth="246.0" text="Update" visible="false" />
-        <Button id="backButton" layoutX="38.0" layoutY="28.0" mnemonicParsing="false" onAction="#onStandardAccountBackButtonClick" prefHeight="30.0" prefWidth="62.0" text="Back">
+        <Button fx:id="standardNextButton" layoutX="410.0" layoutY="558.0" mnemonicParsing="false" onAction="#onStandardAccountNextButtonClick" prefHeight="48.0" prefWidth="246.0" text="Next">
          <font>
             <Font size="14.0" />
          </font>
         </Button>
+        <Button id="exitButton" layoutX="38.0" layoutY="28.0" mnemonicParsing="false" onAction="#onExitButtonClick" prefHeight="30.0" prefWidth="62.0" text="Exit" style="-fx-font-size: 14px" />
     </children>
 </AnchorPane>
