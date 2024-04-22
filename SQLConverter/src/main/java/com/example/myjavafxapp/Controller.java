@@ -20,9 +20,10 @@ import java.sql.*;
 
 public class Controller
 {
-    @FXML private Label welcomeText, errorMessage, emailExistsError, newPasswordErrorMessage, question1, question2, serverNameLocationAnswer, dbConnectFailureAnswer, passwordChangeAnswer,
-            accountDifferencesAnswer, updateDatebaseInfoAnswer, emptyDropdownAnswer, updateConfirmationLabel;
-    @FXML private TextField signInEmailInputField, signInPasswordInputField, resetEmailField, response1, response2, newPasswordInputField, newConfirmationPasswordField;
+    @FXML private Label welcomeText, errorMessage, emailExistsError, newPasswordErrorMessage, question1, question2, serverNameLocationAnswer,
+            dbConnectFailureAnswer, passwordChangeAnswer, accountDifferencesAnswer, updateDatebaseInfoAnswer, emptyDropdownAnswer, updateConfirmationLabel;
+    @FXML private TextField signInEmailInputField, signInPasswordInputField, resetEmailField, response1, response2, newPasswordInputField,
+            newConfirmationPasswordField;
     @FXML private ComboBox<String> serverNameLocation, dbConnectFailure, passwordChange, accountDifferences, updateDatebaseInfo, emptyDropdown;
     @FXML private MenuItem updateDatabase;
     @FXML private AnchorPane updateUserDBPage;
@@ -262,7 +263,8 @@ public class Controller
     public boolean newPasswordFieldsValidation() {
         String newPasswordInput = newPasswordInputField.getText();
         String newPasswordConfirmationInput = newConfirmationPasswordField.getText();
-        if (newPasswordInput.isEmpty() || newPasswordInput.isBlank() || newPasswordConfirmationInput.isEmpty() || newPasswordConfirmationInput.isBlank()) {
+        if (newPasswordInput.isEmpty() || newPasswordInput.isBlank() ||
+                newPasswordConfirmationInput.isEmpty() || newPasswordConfirmationInput.isBlank()) {
             if (newPasswordInput.isEmpty() || newPasswordInput.isBlank()) {
                 newPasswordErrorMessage.setText("Fields cannot be blank");
                 newPasswordErrorMessage.setLayoutX(440);

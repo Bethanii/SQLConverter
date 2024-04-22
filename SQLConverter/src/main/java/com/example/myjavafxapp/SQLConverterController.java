@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import javafx.application.Platform;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
-import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.StageStyle;
 import javafx.scene.control.*;
@@ -325,7 +324,8 @@ public class SQLConverterController {
             DatabaseManager databaseManager = new DatabaseManager();
             final Connection[] userConnection = new Connection[1];
             try {
-                userConnection[0] = databaseManager.connectUserDatabase(serverName, databaseName, dbUsername, dbPassword, localDBCheckbox.isSelected());
+                userConnection[0] = databaseManager.connectUserDatabase(serverName, databaseName, dbUsername,
+                        dbPassword, localDBCheckbox.isSelected());
 
                 Platform.runLater(() -> {
                     if (userConnection[0] == null) {

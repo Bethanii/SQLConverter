@@ -13,7 +13,8 @@ public class DatabaseManager {
     private DatabaseManager databaseManager;
     private String email;
 
-    public Connection connectUserDatabase(String serverName, String databaseName, String username, String password, boolean isLocal) throws IOException {
+    public Connection connectUserDatabase(String serverName, String databaseName, String username,
+                                          String password, boolean isLocal) throws IOException {
         String connectionUrl;
         if (isLocal) {
             connectionUrl = "jdbc:sqlserver://" + serverName + ":1433;" +
@@ -40,8 +41,6 @@ public class DatabaseManager {
             return null;
         }
     }
-
-    private static Connection connection;
 
     public Connection databaseConnection() throws SQLException {
         String serverName = "sqlconverterserver.database.windows.net";
@@ -284,19 +283,18 @@ public class DatabaseManager {
         }
     }
 
-    public void saveEnterpriseSubUserDBInfo(List<String> emails, String serverName, String databaseName, String dbUsername, String dbPassword, String mainEmail) {
+    public void saveEnterpriseSubUserDBInfo(List<String> emails, String serverName, String databaseName,
+                                            String dbUsername, String dbPassword, String mainEmail) {
         String sql = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ?, accountOwner = ? WHERE email = ?";
         try (Connection connection = databaseConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             for (String email : emails) {
-                // Correctly bind parameters
                 statement.setString(1, serverName);
                 statement.setString(2, databaseName);
                 statement.setString(3, dbUsername);
                 statement.setString(4, dbPassword);
                 statement.setString(5, mainEmail);
                 statement.setString(6, email);
-
                 statement.addBatch();
             }
             statement.executeBatch();
@@ -358,7 +356,8 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
-    public void saveUserDBInfo(Connection connection, String serverName, String databaseName, String dbUsername, String dbPassword, String email) {
+    public void saveUserDBInfo(Connection connection, String serverName, String databaseName,
+                               String dbUsername, String dbPassword, String email) {
         String insertSQL = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ? WHERE email = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
             pstmt.setString(1, serverName);
@@ -372,7 +371,8 @@ public class DatabaseManager {
         }
     }
 
-    public void updateSubUserDBInfo(Connection connection, String serverName, String databaseName, String dbUsername, String dbPassword, String email) {
+    public void updateSubUserDBInfo(Connection connection, String serverName, String databaseName,
+                                    String dbUsername, String dbPassword, String email) {
         String insertSQL = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ? WHERE accountOwner = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
             pstmt.setString(1, serverName);
@@ -381,6 +381,17 @@ public class DatabaseManager {
             pstmt.setString(4, dbPassword);
             pstmt.setString(5, email);
             pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteSubUserDetails(String email) {
+        String sql = "DELETE FROM Users WHERE accountOwner = ?";
+        try (Connection connection = databaseConnection();
+             PreparedStatement deleteStmt = connection.prepareStatement(sql)) {
+            deleteStmt.setString(1, email);
+            deleteStmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

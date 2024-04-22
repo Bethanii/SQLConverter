@@ -23,9 +23,11 @@ import java.util.List;
 
 public class AccountController {
 
-    @FXML private Label welcomeText, connectionError, securityQuestionErrorMessage, enterpriseAccountInputError, standardAccountInputError, connectionSuccess, errorMessage;
-    @FXML private TextField standardUsernameInputField, standardPasswordInputField, standardConfirmPasswordField, serverNameField, dbUsernameField, dbPasswordField, databaseNameField,
-            firstSecurityQuestionInput, secondSecurityQuestionInput, subUserEmailInputField, enterpriseUsernameInputField, enterprisePasswordInputField, enterpriseConfirmPasswordField,
+    @FXML private Label welcomeText, connectionError, securityQuestionErrorMessage, enterpriseAccountInputError, standardAccountInputError,
+            connectionSuccess, errorMessage;
+    @FXML private TextField standardUsernameInputField, standardPasswordInputField, standardConfirmPasswordField, serverNameField,
+            dbUsernameField, dbPasswordField, databaseNameField, firstSecurityQuestionInput, secondSecurityQuestionInput,
+            subUserEmailInputField, enterpriseUsernameInputField, enterprisePasswordInputField, enterpriseConfirmPasswordField,
             tempPasswordInputField;
     @FXML private ChoiceBox<String> firstSecurityQuestion, secondSecurityQuestion;
     @FXML private TextArea emailsDisplayArea;
@@ -36,14 +38,14 @@ public class AccountController {
     private List<String> emails = new ArrayList<>();
     private DatabaseManager databaseManager = new DatabaseManager();
 
-    public void loadPage(String pageFile, String pageTitle, String email, String controllerSelection, boolean setSecurityQuestions, List<String> emails) throws IOException {
+    public void loadPage(String pageFile, String pageTitle, String email, String controllerSelection,
+                         boolean setSecurityQuestions, List<String> emails) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(SQLApplication.class.getResource(pageFile));
         Parent page = fxmlLoader.load();
         Scene currentScene = welcomeText.getScene();
         currentScene.setRoot(page);
         page.requestFocus();
-
         switch (controllerSelection) {
             case "Account Controller":
                 AccountController accountController = fxmlLoader.getController();
@@ -81,18 +83,23 @@ public class AccountController {
 
     @FXML
     protected void onStandardAccountNextButtonClick() throws IOException, SQLException {
+        SessionService sessionService = SessionService.getInstance();
+        sessionService.setEmail(email);
         accountNextButtonClick("standard");
     }
 
     @FXML
     protected void onEnterpriseAccountNextButtonClick() throws IOException, SQLException {
+        SessionService sessionService = SessionService.getInstance();
+        sessionService.setEmail(this.email);
         accountNextButtonClick("enterprise");
     }
 
     @FXML
     protected void onEnterpriseSubUsersNextButtonClick() throws IOException {
         databaseManager.saveEnterpriseSubUserEmails(emails, this.email);
-        loadPage("sub-users-temporary-password.fxml", "Enterprise Account Sub-User Temporary Password", this.email, "Account Controller", false, emails);
+        loadPage("sub-users-temporary-password.fxml", "Enterprise Account Sub-User Temporary Password",
+                this.email, "Account Controller", false, emails);
         AccountController controller = new AccountController();
         controller.setEmail(this.email);
         controller.setEmails(emails);
@@ -111,7 +118,8 @@ public class AccountController {
             }
             AccountController controller = new AccountController();
             controller.setEmails(emails);
-            loadPage("enterprise-security-question-page.fxml", "Enterprise Account Security Questions", this.email, "Account Controller", true, emails);
+            loadPage("enterprise-security-question-page.fxml", "Enterprise Account Security Questions",
+                    this.email, "Account Controller", true, emails);
         }
     }
 
@@ -134,7 +142,8 @@ public class AccountController {
         Boolean emailExists = databaseManager.checkIfColumnValueExists(connection, "Email", emailInput);
         Boolean passwordMatches = validatePasswordsMatch(passwordInput, passwordInputConfirmation);
 
-        if (emailInput.isEmpty() || emailInput.isBlank() || passwordInput.isEmpty() || passwordInput.isBlank() || passwordInputConfirmation.isEmpty() || passwordInputConfirmation.isBlank()) {
+        if (emailInput.isEmpty() || emailInput.isBlank() || passwordInput.isEmpty() || passwordInput.isBlank()
+                || passwordInputConfirmation.isEmpty() || passwordInputConfirmation.isBlank()) {
             accountInputError.setText("Fields cannot be blank");
             accountInputError.setLayoutX(450);
             accountInputError.setVisible(true);
@@ -156,7 +165,10 @@ public class AccountController {
                 } else {
                     databaseManager.saveUserDetails(connection, emailInput, passwordInput);
                     this.email = emailInput;
-                    loadPage(nextPageFxml, nextPageTitle, this.email, "Account Controller", isStandard, null);
+                    SessionService sessionService = SessionService.getInstance();
+                    sessionService.setEmail(this.email);
+                    loadPage(nextPageFxml, nextPageTitle, this.email, "Account Controller",
+                            isStandard, null);
                     if (accountType.equals("enterprise")) {
                         databaseManager.updateIsAccountOwnerFlag(connection, this.email);
                     }
@@ -202,7 +214,8 @@ public class AccountController {
 
     @FXML
     protected boolean securityQuestionMissingQuestions() {
-        if (firstSecurityQuestion.getSelectionModel().getSelectedItem() == null || secondSecurityQuestion.getSelectionModel().getSelectedItem() == null) {
+        if (firstSecurityQuestion.getSelectionModel().getSelectedItem() == null ||
+                secondSecurityQuestion.getSelectionModel().getSelectedItem() == null) {
             securityQuestionErrorMessage.setText("You must select a question from the above dropdowns");
             securityQuestionErrorMessage.setVisible(true);
             return true;
@@ -243,9 +256,11 @@ public class AccountController {
                 databaseManager.saveSecurityQuestions(firstAnswer, secondAnswer, firstQuestion, secondQuestion, this.email);
                 boolean isAccountOwner = databaseManager.checkIfAccountOwner(databaseManager.databaseConnection(), this.email);
                 if (isAccountOwner) {
-                    loadPage("user-database-setup-page.fxml", "Database Setup Information", this.email, "Account Controller", false, emails);
+                    loadPage("user-database-setup-page.fxml", "Database Setup Information", this.email,
+                            "Account Controller", false, emails);
                 } else {
-                    loadPage("user-database-setup-page.fxml", "Database Setup Information", this.email, "Account Controller", false, null);
+                    loadPage("user-database-setup-page.fxml", "Database Setup Information", this.email,
+                            "Account Controller", false, null);
                 }
             }
         }
@@ -275,7 +290,8 @@ public class AccountController {
             } else {
                 databaseManager.saveUserDBInfo(connection, serverName, databaseName, dbUsername, dbPassword, this.email);
             }
-            loadPage("account-creation-confirmation-page.fxml", "Account Creation Confirmation", this.email, "Controller", false, null);
+            loadPage("account-creation-confirmation-page.fxml", "Account Creation Confirmation", this.email,
+                    "Controller", false, null);
         }
     }
 
@@ -417,12 +433,14 @@ public class AccountController {
                 ((Stage) window).close();
             }
         }
-        AccountController controller = new AccountController();
         SessionService sessionService = SessionService.getInstance();
-        controller.setEmail(sessionService.getEmail());
-
+        String email = sessionService.getEmail();
         Connection connection = databaseManager.databaseConnection();
-        databaseManager.deleteUserDetails(connection, this.email);
-        loadPage("landing-page.fxml", "Welcome", null, "Controller", false, null);
+        if(databaseManager.checkIfAccountOwner(connection, email)) {
+            databaseManager.deleteSubUserDetails(email);
+        }
+        databaseManager.deleteUserDetails(connection, email);
+        loadPage("landing-page.fxml", "Welcome", null,
+                "Controller", false, null);
     }
 }
