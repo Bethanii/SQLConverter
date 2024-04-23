@@ -401,7 +401,11 @@ public class Controller
     protected void displayEmptyDropdownAnswer(MouseEvent event) {
         String message = " Incorrect Permissions: " +
                 "\n The main reason for this is because user you have set for your account likely does not have select permissions enabled. In order to interact " +
-                "\n with the main SQL Converter you must have select permissions enabled. ";
+                "\n with the main SQL Converter you must have select permissions enabled. " +
+                "\n Another reason this could be is that there is an issue with your connection. You can test this by navigating to the database tab and selecting " +
+                "\n the 'Update Database' option. Within this form there is the option to test your connection and validating if there was an error during your " +
+                "\n account creation. If you find that there is an issue you can update your information accordingly. Please note, if you are under the umbrella " +
+                "\n of someone else then you will need to reach out within your organization to handle this update. ";
 
         if (event.getButton() == MouseButton.PRIMARY) {
             displayAnswer(event, message);
@@ -410,6 +414,12 @@ public class Controller
 
     @FXML
     protected void displayPasswordChangeAnswer(MouseEvent event) {
+        String message = " Option 1: " +
+                "\n The first way you can update your password is by navigating to the Log In screen and selecting the 'Forgot Password?' link. Here you will" +
+                "\n be able to follow the steps to validate your account and reset your password. " +
+                "\n Option 2: " +
+                "\n While logged into your account you can also select the Profile option from the top menu bar and then select Reset Password from the list" +
+                "\n of dropdown options. You will similarly be able yo validate your account reset your password.";
         if (event.getButton() == MouseButton.PRIMARY) {
             displayAnswer(event, "password update");
         }
@@ -423,7 +433,6 @@ public class Controller
                 "\n \n Enterprise Account: " +
                 "\n Enterprise Accounts are meant for use in organizational settings whether that is with a large company or a small start-up. These accounts" +
                 "\n allow one main user to establish sub-accounts in order for those within the organization to get access to the database.";
-
         if (event.getButton() == MouseButton.PRIMARY) {
             displayAnswer(event, message);
         }
@@ -431,6 +440,8 @@ public class Controller
 
     @FXML
     protected void updateDatebaseInfoAnswer(MouseEvent event) {
+        String message = " Given you are signed up using a Standard Account or you are the owner of an Enterprise Account, then you can update your database" +
+                "\n information by selecting the Database option from the top menu bar and going to the Update Database option. ";
         if (event.getButton() == MouseButton.PRIMARY) {
             displayAnswer(event, "db info update");
         }

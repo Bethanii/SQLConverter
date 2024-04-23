@@ -13,26 +13,26 @@
     <children>
         <Label fx:id="welcomeText" styleClass="labelStyle" />
 
-        <ScrollPane fx:id="resultsWindow" hbarPolicy="AS_NEEDED" layoutX="535.0" layoutY="131.0" prefHeight="490.0" prefWidth="511.0">
+        <ScrollPane fx:id="resultsWindow" hbarPolicy="AS_NEEDED" vbarPolicy="ALWAYS" layoutX="535.0" layoutY="131.0" prefHeight="490.0" prefWidth="511.0">
             <content>
                 <VBox fx:id="resultsContainer" spacing="5" />
             </content>
         </ScrollPane>
-        <ScrollPane fx:id="addRowScrollPane" hbarPolicy="NEVER" layoutX="59.0" layoutY="131.0" prefHeight="483.0" prefWidth="448.0">
+        <ScrollPane fx:id="addRowScrollPane" hbarPolicy="NEVER" layoutX="59.0" layoutY="131.0" prefHeight="483.0" prefWidth="448.0" fitToWidth="true">
             <content>
                 <VBox fx:id="dynamicRowsContainer" layoutX="35.0" layoutY="102.0" spacing="10">
-                   <children>
-                       <HBox layoutX="35.0" layoutY="97.0" spacing="10">
-                           <children>
-                               <ChoiceBox fx:id="searchRow1" prefHeight="37.0" prefWidth="167.0" />
-                               <TextField fx:id="searchField1" prefHeight="38.0" prefWidth="262.0" promptText="Enter value">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </TextField>
-                           </children>
-                       </HBox>
-                   </children>
+                    <children>
+                        <HBox layoutX="35.0" layoutY="97.0" spacing="10">
+                            <children>
+                                <ChoiceBox fx:id="searchRow1" prefHeight="37.0" prefWidth="167.0" />
+                                <TextField fx:id="searchField1" prefHeight="38.0" prefWidth="262.0" promptText="Enter value">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </TextField>
+                            </children>
+                        </HBox>
+                    </children>
                 </VBox>
             </content>
         </ScrollPane>

@@ -86,8 +86,6 @@
                             <stripDebug>true</stripDebug>
                             <noHeaderFiles>true</noHeaderFiles>
                             <noManpages>true</noManpages>
-                            <!--mainClass>com.example.myjavafxapp/com.example.myjavafxapp.SQLApplication</mainClass-->
-                            <!--this is like the bat file you run -->
                             <launcher>app</launcher>
                             <jlinkZipName>appZip</jlinkZipName>
                             <jlinkImageName>appImage</jlinkImageName>

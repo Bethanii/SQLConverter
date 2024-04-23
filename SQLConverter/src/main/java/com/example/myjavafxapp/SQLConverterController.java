@@ -1,5 +1,7 @@
 package com.example.myjavafxapp;
 
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import java.io.FileNotFoundException;
 import javafx.application.Platform;
@@ -10,7 +12,9 @@ import javafx.stage.StageStyle;
 import javafx.scene.control.*;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Modality;
-import java.util.ArrayList;
+
+import java.util.*;
+
 import javafx.geometry.Pos;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -18,9 +22,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 import javafx.fxml.FXML;
-import java.util.List;
+
 import java.io.File;
 import java.sql.*;
+import java.util.stream.Collectors;
 
 public class SQLConverterController {
     @FXML private ChoiceBox<String> searchRow1;
@@ -103,9 +108,10 @@ public class SQLConverterController {
         }
     }
 
-    @FXML
-    protected void onSearchButtonClick() throws IOException, SQLException {
+ //   @FXML
+  /*  protected void onSearchButtonClick() throws IOException, SQLException {
         List<String> results = new ArrayList<>();
+        List<String> columns = new ArrayList<>();
 
         if (searchRow1.getValue() != null && !searchField1.getText().isEmpty()) {
             results.addAll(querySelectedTables(searchRow1.getValue(), searchField1.getText()));
@@ -117,10 +123,133 @@ public class SQLConverterController {
 
             if (choiceBox.getValue() != null && !textField.getText().isEmpty()) {
                 results.addAll(querySelectedTables(choiceBox.getValue(), textField.getText()));
+                columns = getColumnNames(this.userConnection, choiceBox.getValue());
             }
         }
-        displayQueryResults(results);
+        displayQueryResultsUsingTableView(columns, results);
+      //  displayQueryResults(results);
+    }*/
+
+    @FXML
+    protected void onSearchButtonClick() throws IOException, SQLException {
+        List<List<String>> allResults = new ArrayList<>();
+        List<String> allColumns = new ArrayList<>();
+        Map<String, String> queriedTables = new HashMap<>();
+
+        System.out.println("Static row value: " + searchRow1.getValue() + ", Text: " + searchField1.getText());
+
+        if (searchRow1.getValue() != null && !searchField1.getText().isEmpty()) {
+            String key = searchRow1.getValue() + ":" + searchField1.getText();
+            if (!queriedTables.containsKey(key)) {
+                List<String> results = querySelectedTables(searchRow1.getValue(), searchField1.getText());
+                allResults.add(results);
+                allColumns.addAll(getColumnNames(this.userConnection, searchRow1.getValue()));
+                queriedTables.put(key, searchField1.getText());
+            }
+        }
+
+        dynamicRowsContainer.getChildren().forEach(node -> {
+            if (node instanceof HBox) {
+                HBox hbox = (HBox) node;
+                ChoiceBox<String> choiceBox = (ChoiceBox<String>) hbox.getChildren().get(0);
+                TextField textField = (TextField) hbox.getChildren().get(1);
+
+                if (choiceBox.getValue() != null && !textField.getText().isEmpty()) {
+                    String key = choiceBox.getValue() + ":" + textField.getText();
+                    if (!queriedTables.containsKey(key)) {
+                        try {
+                            List<String> results = querySelectedTables(choiceBox.getValue(), textField.getText());
+                            allResults.add(results);
+                            allColumns.addAll(getColumnNames(this.userConnection, choiceBox.getValue()));
+                            queriedTables.put(key, textField.getText());
+                        } catch (IOException | SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
+
+        displayQueryResultsUsingTableView(allColumns, allResults);
     }
+
+
+
+    private List<String> querySelectedTables(String tableName, String searchText) throws SQLException, IOException {
+        List<String> results = new ArrayList<>();
+        List<String> columnNames = getColumnNames(this.userConnection, tableName);
+
+        for (String columnName : columnNames) {
+            String query = "SELECT * FROM " + tableName + " WHERE " + columnName + " LIKE ?";
+            try (PreparedStatement statement = this.userConnection.prepareStatement(query)) {
+                statement.setString(1, "%" + searchText + "%");
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        StringBuilder row = new StringBuilder();
+                        ResultSetMetaData rsmd = resultSet.getMetaData();
+                        int columnCount = rsmd.getColumnCount();
+                        for (int i = 1; i <= columnCount; i++) {
+                            row.append(rsmd.getColumnName(i)).append(": ").append(resultSet.getString(i));
+                            if (i < columnCount) row.append(", ");
+                        }
+                        results.add(row.toString());
+                    }
+                }
+            }
+        }
+        return results;
+    }
+
+
+    public void displayQueryResultsUsingTableView(List<String> columnNames, List<List<String>> allResults) {
+        TableView<List<String>> tableView = resultsContainer.getChildren().isEmpty() ? new TableView<>() : (TableView<List<String>>) resultsContainer.getChildren().get(0);
+        tableView.getItems().clear();
+
+        if (tableView.getColumns().isEmpty()) {
+            for (int i = 0; i < columnNames.size(); i++) {
+                final int columnIndex = i;
+                TableColumn<List<String>, String> column = new TableColumn<>(columnNames.get(i));
+                column.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(
+                        cellData.getValue().size() > columnIndex ? cellData.getValue().get(columnIndex) : ""
+                ));
+                tableView.getColumns().add(column);
+            }
+        }
+
+        for (List<String> resultRows : allResults) {
+            for (String rowData : resultRows) {
+                List<String> fields = new ArrayList<>(Arrays.asList(rowData.split(", ", -1)));
+                if (fields.stream().allMatch(field -> field != null && !field.trim().isEmpty())) {
+                    tableView.getItems().add(fields);
+                }
+            }
+        }
+        if (resultsContainer.getChildren().isEmpty()) {
+            resultsContainer.getChildren().add(tableView);
+        }
+    }
+
+    @FXML
+    protected void onAddRowButtonClick() {
+        ChoiceBox<String> newChoiceBox = new ChoiceBox<>();
+        newChoiceBox.setPrefWidth(167.0);
+        newChoiceBox.setPrefHeight(33.0);
+        newChoiceBox.getItems().addAll(getTableNames(this.userConnection));
+
+        TextField newTextField = new TextField();
+        newTextField.setPrefWidth(250.0);
+        newTextField.setPrefHeight(33.0);
+        newTextField.setPromptText("Enter value");
+
+        HBox newRow = new HBox(10);
+        newRow.getChildren().addAll(newChoiceBox, newTextField);
+
+        dynamicRowsContainer.getChildren().add(newRow);
+        newTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            System.out.println("New row text changed: " + newValue);
+        });
+    }
+
 
     public List<String> getTableNames(Connection connection) {
         List<String> tableNames = new ArrayList<>();
@@ -150,46 +279,7 @@ public class SQLConverterController {
         return columnNames;
     }
 
-    private List<String> querySelectedTables(String tableName, String searchText) throws SQLException, IOException {
-        List<String> results = new ArrayList<>();
-        SessionService sessionService = SessionService.getInstance();
-
-        SQLConverterController sqlController = new SQLConverterController();
-        sqlController.setEmail(sessionService.getEmail());
-        this.userConnection = setConnection(sessionService.getConnection());
-        List<String> columnNames = getColumnNames(this.userConnection, tableName);
-
-        for (String columnName : columnNames) {
-            String query = "SELECT * FROM " + tableName + " WHERE " + columnName + " LIKE ?";
-            try (PreparedStatement statement = this.userConnection.prepareStatement(query)) {
-                statement.setString(1, "%" + searchText + "%");
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    while (resultSet.next()) {
-                        StringBuilder row = new StringBuilder();
-                        ResultSetMetaData rsmd = resultSet.getMetaData();
-                        int columnCount = rsmd.getColumnCount();
-                        for (int i = 1; i <= columnCount; i++) {
-                            if (i > 1) row.append(", ");
-                            row.append(rsmd.getColumnName(i)).append(": ").append(resultSet.getString(i));
-                        }
-                            results.add(row.toString());
-                        }
-                    }
-                }
-            }
-        return results;
-    }
-
-    public void displayQueryResults(List<String> results) {
-        resultsContainer.getChildren().clear();
-        for (String row : results) {
-            Label rowLabel = new Label(row);
-            rowLabel.setStyle("-fx-padding: 5;");
-            resultsContainer.getChildren().add(rowLabel);
-        }
-    }
-
-    @FXML
+      /*  @FXML
     protected void onAddRowButtonClick() {
         ChoiceBox<String> newChoiceBox = new ChoiceBox<>();
         newChoiceBox.setPrefWidth(167.0);
@@ -212,6 +302,46 @@ public class SQLConverterController {
                 activeTextField = newTextField;
             }
         });
+    } */
+
+
+    /* private List<String> querySelectedTables(String tableName, String searchText) throws SQLException, IOException {
+         List<String> results = new ArrayList<>();
+         SessionService sessionService = SessionService.getInstance();
+
+         SQLConverterController sqlController = new SQLConverterController();
+         sqlController.setEmail(sessionService.getEmail());
+         this.userConnection = setConnection(sessionService.getConnection());
+         List<String> columnNames = getColumnNames(this.userConnection, tableName);
+
+         for (String columnName : columnNames) {
+             String query = "SELECT * FROM " + tableName + " WHERE " + columnName + " LIKE ?";
+             try (PreparedStatement statement = this.userConnection.prepareStatement(query)) {
+                 statement.setString(1, "%" + searchText + "%");
+                 try (ResultSet resultSet = statement.executeQuery()) {
+                     while (resultSet.next()) {
+                         StringBuilder row = new StringBuilder();
+                         ResultSetMetaData rsmd = resultSet.getMetaData();
+                         int columnCount = rsmd.getColumnCount();
+                         for (int i = 1; i <= columnCount; i++) {
+                             if (i > 1) row.append(", ");
+                             row.append(rsmd.getColumnName(i)).append(": ").append(resultSet.getString(i));
+                         }
+                         results.add(row.toString());
+                     }
+                 }
+             }
+         }
+         return results;
+     }     */
+
+    public void displayQueryResults(List<String> results) {
+        resultsContainer.getChildren().clear();
+        for (String row : results) {
+            Label rowLabel = new Label(row);
+            rowLabel.setStyle("-fx-padding: 5;");
+            resultsContainer.getChildren().add(rowLabel);
+        }
     }
 
     @FXML
