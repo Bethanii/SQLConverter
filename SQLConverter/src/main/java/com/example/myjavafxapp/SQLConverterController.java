@@ -1,7 +1,5 @@
 package com.example.myjavafxapp;
 
-import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import java.io.FileNotFoundException;
 import javafx.application.Platform;
@@ -12,8 +10,7 @@ import javafx.stage.StageStyle;
 import javafx.scene.control.*;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Modality;
-
-import java.util.*;
+import javafx.scene.layout.GridPane;
 
 import javafx.geometry.Pos;
 import java.io.IOException;
@@ -22,22 +19,30 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 import javafx.fxml.FXML;
-
 import java.io.File;
+import java.util.*;
 import java.sql.*;
-import java.util.stream.Collectors;
 
 public class SQLConverterController {
-    @FXML private ChoiceBox<String> searchRow1;
-    @FXML private TextField searchField1;
-    @FXML private VBox dynamicRowsContainer;
-    @FXML private VBox resultsContainer;
-    @FXML private Label welcomeText, connectionError, connectionSuccess, updateSuccessMessage, errorMessage;
-    @FXML private TextField activeTextField, serverNameField, databaseNameField, dbUsernameField, dbPasswordField, updateUsernameInput;
-    @FXML private CheckBox localDBCheckbox;
-    @FXML private AnchorPane updateUserDBPage, sqlConverterPage, resetPasswordPage, standardAccountPage;
+    @FXML
+    private ChoiceBox<String> searchRow1;
+    @FXML
+    private TextField searchField1;
+    @FXML
+    private VBox dynamicRowsContainer;
+    @FXML
+    private VBox resultsContainer;
+    @FXML
+    private Label welcomeText, connectionError, connectionSuccess, updateSuccessMessage, errorMessage;
+    @FXML
+    private TextField activeTextField, serverNameField, databaseNameField, dbUsernameField, dbPasswordField, updateUsernameInput;
+    @FXML
+    private CheckBox localDBCheckbox;
+    @FXML
+    private AnchorPane updateUserDBPage, sqlConverterPage, resetPasswordPage, standardAccountPage;
     private Stage loadingStage;
-    @FXML MenuItem updateDatabase;
+    @FXML
+    MenuItem updateDatabase;
     private ChoiceBox<String> activeChoiceBox;
     private Connection userConnection;
     private DatabaseManager databaseManager;
@@ -99,8 +104,7 @@ public class SQLConverterController {
     }
 
     @FXML
-    protected void populateStaticRow(Connection userConnection)
-    {
+    protected void populateStaticRow(Connection userConnection) {
         try {
             searchRow1.getItems().addAll(getTableNames(userConnection));
         } catch (Exception e) {
@@ -108,13 +112,12 @@ public class SQLConverterController {
         }
     }
 
- //   @FXML
-  /*  protected void onSearchButtonClick() throws IOException, SQLException {
-        List<String> results = new ArrayList<>();
-        List<String> columns = new ArrayList<>();
+    @FXML
+    protected void onSearchButtonClick() throws IOException, SQLException {
+        List<List<String>> allResults = new ArrayList<>();
 
         if (searchRow1.getValue() != null && !searchField1.getText().isEmpty()) {
-            results.addAll(querySelectedTables(searchRow1.getValue(), searchField1.getText()));
+            allResults.add(querySelectedTables(searchRow1.getValue(), searchField1.getText()));
         }
 
         for (HBox hbox : dynamicRowsContainer.getChildren().stream().map(node -> (HBox) node).toList()) {
@@ -122,75 +125,135 @@ public class SQLConverterController {
             TextField textField = (TextField) hbox.getChildren().get(1);
 
             if (choiceBox.getValue() != null && !textField.getText().isEmpty()) {
-                results.addAll(querySelectedTables(choiceBox.getValue(), textField.getText()));
-                columns = getColumnNames(this.userConnection, choiceBox.getValue());
+                allResults.add(querySelectedTables(choiceBox.getValue(), textField.getText()));
             }
         }
-        displayQueryResultsUsingTableView(columns, results);
-      //  displayQueryResults(results);
-    }*/
+        displayQueryResults(allResults);
+    }
+
+        public void displayQueryResults(List<List<String>> allResults) {
+        resultsContainer.getChildren().clear();
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(5);
+        int rowIndex = 0;
+
+        for (int datasetIndex = 1; datasetIndex < allResults.size(); datasetIndex++) {
+            List<String> resultSet = allResults.get(datasetIndex);
+            List<String> columnHeaders = getColumnHeaders(resultSet);
+            for (int i = 0; i < columnHeaders.size(); i++) {
+                Label headerLabel = new Label(columnHeaders.get(i).replaceAll(".*:", ""));
+                headerLabel.setStyle("-fx-font-weight: bold;");
+                gridPane.add(headerLabel, i, rowIndex);
+            }
+            rowIndex++;
+            for (String rowData : resultSet) {
+                String[] rowDataArray = rowData.split(", ");
+                for (int columnIndex = 0; columnIndex < rowDataArray.length; columnIndex++) {
+                    Label dataLabel = new Label(rowDataArray[columnIndex].replaceAll(".*:", ""));
+                    gridPane.add(dataLabel, columnIndex, rowIndex);
+                }
+                rowIndex++;
+            }
+            rowIndex++;
+        }
+
+        resultsContainer.getChildren().add(gridPane);
+    }
+
+    private List<String> getColumnHeaders(List<String> results) {
+        Set<String> headers = new LinkedHashSet<>();
+        for (String result : results) {
+            String[] columns = result.split(", ");
+            for (String column : columns) {
+                String columnName = column.split(": ")[0];
+                headers.add(columnName);
+            }
+        }
+        return new ArrayList<>(headers);
+    }
 
     @FXML
-    protected void onSearchButtonClick() throws IOException, SQLException {
-        List<List<String>> allResults = new ArrayList<>();
-        List<String> allColumns = new ArrayList<>();
-        Map<String, String> queriedTables = new HashMap<>();
+    protected void onExportButtonClick() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialFileName("SearchResults.csv");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        File file = fileChooser.showSaveDialog(null);
 
-        System.out.println("Static row value: " + searchRow1.getValue() + ", Text: " + searchField1.getText());
-
-        if (searchRow1.getValue() != null && !searchField1.getText().isEmpty()) {
-            String key = searchRow1.getValue() + ":" + searchField1.getText();
-            if (!queriedTables.containsKey(key)) {
-                List<String> results = querySelectedTables(searchRow1.getValue(), searchField1.getText());
-                allResults.add(results);
-                allColumns.addAll(getColumnNames(this.userConnection, searchRow1.getValue()));
-                queriedTables.put(key, searchField1.getText());
-            }
-        }
-
-        dynamicRowsContainer.getChildren().forEach(node -> {
-            if (node instanceof HBox) {
-                HBox hbox = (HBox) node;
-                ChoiceBox<String> choiceBox = (ChoiceBox<String>) hbox.getChildren().get(0);
-                TextField textField = (TextField) hbox.getChildren().get(1);
-
-                if (choiceBox.getValue() != null && !textField.getText().isEmpty()) {
-                    String key = choiceBox.getValue() + ":" + textField.getText();
-                    if (!queriedTables.containsKey(key)) {
-                        try {
-                            List<String> results = querySelectedTables(choiceBox.getValue(), textField.getText());
-                            allResults.add(results);
-                            allColumns.addAll(getColumnNames(this.userConnection, choiceBox.getValue()));
-                            queriedTables.put(key, textField.getText());
-                        } catch (IOException | SQLException e) {
-                            e.printStackTrace();
+        if (file != null) {
+            try (PrintWriter writer = new PrintWriter(file)) {
+                GridPane gridPane = (GridPane) resultsContainer.getChildren().get(0);
+                int rowCount = gridPane.getRowCount();
+                int columnCount = gridPane.getColumnCount();
+                for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
+                    Node node = getNodeFromGridPane(gridPane, columnIndex, 0);
+                    if (node instanceof Label) {
+                        String text = ((Label) node).getText();
+                        String csvField = "\"" + text.replace("\"", "\"\"") + "\"";
+                        writer.print(csvField);
+                        if (columnIndex < columnCount - 1) {
+                            writer.print(",");
                         }
                     }
                 }
+                writer.println();
+                for (int rowIndex = 1; rowIndex < rowCount; rowIndex++) {
+                    for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
+                        Node node = getNodeFromGridPane(gridPane, columnIndex, rowIndex);
+                        if (node instanceof Label) {
+                            String text = ((Label) node).getText();
+                            String csvField = "\"" + text.replace("\"", "\"\"") + "\"";
+                            writer.print(csvField);
+                            if (columnIndex < columnCount - 1) {
+                                writer.print(",");
+                            }
+                        }
+                    }
+                    writer.println();
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
             }
-        });
-
-        displayQueryResultsUsingTableView(allColumns, allResults);
+        }
     }
 
-
+    private Node getNodeFromGridPane(GridPane gridPane, int column, int row) {
+        for (Node node : gridPane.getChildren()) {
+            if (GridPane.getColumnIndex(node) == column && GridPane.getRowIndex(node) == row) {
+                return node;
+            }
+        }
+        return null;
+    }
 
     private List<String> querySelectedTables(String tableName, String searchText) throws SQLException, IOException {
         List<String> results = new ArrayList<>();
+
+        SessionService sessionService = SessionService.getInstance();
+        SQLConverterController sqlController = new SQLConverterController();
+        sqlController.setEmail(sessionService.getEmail());
+        this.userConnection = setConnection(sessionService.getConnection());
+
         List<String> columnNames = getColumnNames(this.userConnection, tableName);
 
-        for (String columnName : columnNames) {
+        for (String columnName : columnNames)
+        {
             String query = "SELECT * FROM " + tableName + " WHERE " + columnName + " LIKE ?";
-            try (PreparedStatement statement = this.userConnection.prepareStatement(query)) {
+            try (PreparedStatement statement = this.userConnection.prepareStatement(query))
+            {
                 statement.setString(1, "%" + searchText + "%");
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    while (resultSet.next()) {
+
+                try (ResultSet resultSet = statement.executeQuery())
+                {
+                    while (resultSet.next())
+                    {
                         StringBuilder row = new StringBuilder();
                         ResultSetMetaData rsmd = resultSet.getMetaData();
                         int columnCount = rsmd.getColumnCount();
-                        for (int i = 1; i <= columnCount; i++) {
+                        for (int i = 1; i <= columnCount; i++)
+                        {
+                            if (i > 1) row.append(", ");
                             row.append(rsmd.getColumnName(i)).append(": ").append(resultSet.getString(i));
-                            if (i < columnCount) row.append(", ");
                         }
                         results.add(row.toString());
                     }
@@ -200,45 +263,16 @@ public class SQLConverterController {
         return results;
     }
 
-
-    public void displayQueryResultsUsingTableView(List<String> columnNames, List<List<String>> allResults) {
-        TableView<List<String>> tableView = resultsContainer.getChildren().isEmpty() ? new TableView<>() : (TableView<List<String>>) resultsContainer.getChildren().get(0);
-        tableView.getItems().clear();
-
-        if (tableView.getColumns().isEmpty()) {
-            for (int i = 0; i < columnNames.size(); i++) {
-                final int columnIndex = i;
-                TableColumn<List<String>, String> column = new TableColumn<>(columnNames.get(i));
-                column.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(
-                        cellData.getValue().size() > columnIndex ? cellData.getValue().get(columnIndex) : ""
-                ));
-                tableView.getColumns().add(column);
-            }
-        }
-
-        for (List<String> resultRows : allResults) {
-            for (String rowData : resultRows) {
-                List<String> fields = new ArrayList<>(Arrays.asList(rowData.split(", ", -1)));
-                if (fields.stream().allMatch(field -> field != null && !field.trim().isEmpty())) {
-                    tableView.getItems().add(fields);
-                }
-            }
-        }
-        if (resultsContainer.getChildren().isEmpty()) {
-            resultsContainer.getChildren().add(tableView);
-        }
-    }
-
     @FXML
     protected void onAddRowButtonClick() {
         ChoiceBox<String> newChoiceBox = new ChoiceBox<>();
         newChoiceBox.setPrefWidth(167.0);
-        newChoiceBox.setPrefHeight(33.0);
+        newChoiceBox.setPrefHeight(37.0);
         newChoiceBox.getItems().addAll(getTableNames(this.userConnection));
 
         TextField newTextField = new TextField();
-        newTextField.setPrefWidth(250.0);
-        newTextField.setPrefHeight(33.0);
+        newTextField.setPrefWidth(262.0);
+        newTextField.setPrefHeight(38.0);
         newTextField.setPromptText("Enter value");
 
         HBox newRow = new HBox(10);
@@ -277,93 +311,6 @@ public class SQLConverterController {
             e.printStackTrace();
         }
         return columnNames;
-    }
-
-      /*  @FXML
-    protected void onAddRowButtonClick() {
-        ChoiceBox<String> newChoiceBox = new ChoiceBox<>();
-        newChoiceBox.setPrefWidth(167.0);
-        newChoiceBox.setPrefHeight(33.0);
-
-        TextField newTextField = new TextField();
-        newTextField.setPrefWidth(250.0);
-        newTextField.setPrefHeight(33.0);
-        newTextField.setPromptText("Enter value");
-
-        newChoiceBox.getItems().addAll(getTableNames(this.userConnection));
-        HBox newRow = new HBox(10);
-        newRow.getChildren().addAll(newChoiceBox, newTextField);
-
-        dynamicRowsContainer.getChildren().add(newRow);
-        newChoiceBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> activeChoiceBox = newChoiceBox);
-        newTextField.focusedProperty().addListener((obs, wasFocused, isNowFocused) ->
-        {
-            if (isNowFocused) {
-                activeTextField = newTextField;
-            }
-        });
-    } */
-
-
-    /* private List<String> querySelectedTables(String tableName, String searchText) throws SQLException, IOException {
-         List<String> results = new ArrayList<>();
-         SessionService sessionService = SessionService.getInstance();
-
-         SQLConverterController sqlController = new SQLConverterController();
-         sqlController.setEmail(sessionService.getEmail());
-         this.userConnection = setConnection(sessionService.getConnection());
-         List<String> columnNames = getColumnNames(this.userConnection, tableName);
-
-         for (String columnName : columnNames) {
-             String query = "SELECT * FROM " + tableName + " WHERE " + columnName + " LIKE ?";
-             try (PreparedStatement statement = this.userConnection.prepareStatement(query)) {
-                 statement.setString(1, "%" + searchText + "%");
-                 try (ResultSet resultSet = statement.executeQuery()) {
-                     while (resultSet.next()) {
-                         StringBuilder row = new StringBuilder();
-                         ResultSetMetaData rsmd = resultSet.getMetaData();
-                         int columnCount = rsmd.getColumnCount();
-                         for (int i = 1; i <= columnCount; i++) {
-                             if (i > 1) row.append(", ");
-                             row.append(rsmd.getColumnName(i)).append(": ").append(resultSet.getString(i));
-                         }
-                         results.add(row.toString());
-                     }
-                 }
-             }
-         }
-         return results;
-     }     */
-
-    public void displayQueryResults(List<String> results) {
-        resultsContainer.getChildren().clear();
-        for (String row : results) {
-            Label rowLabel = new Label(row);
-            rowLabel.setStyle("-fx-padding: 5;");
-            resultsContainer.getChildren().add(rowLabel);
-        }
-    }
-
-    @FXML
-    protected void onExportButtonClick() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialFileName("SearchResults.csv");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
-        File file = fileChooser.showSaveDialog(null);
-
-        if (file != null) {
-            try (PrintWriter writer = new PrintWriter(file)) {
-                for (Node node : resultsContainer.getChildren()) {
-                    if (node instanceof Label) {
-                        String text = ((Label) node).getText();
-                        String csvLine = text.replace(", ", ",");
-                        writer.println(csvLine);
-                    }
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void goToUserDatabaseSetupPage() throws IOException {

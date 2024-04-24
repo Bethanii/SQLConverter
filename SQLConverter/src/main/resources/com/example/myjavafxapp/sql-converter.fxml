@@ -13,12 +13,12 @@
     <children>
         <Label fx:id="welcomeText" styleClass="labelStyle" />
 
-        <ScrollPane fx:id="resultsWindow" hbarPolicy="AS_NEEDED" vbarPolicy="ALWAYS" layoutX="535.0" layoutY="131.0" prefHeight="490.0" prefWidth="511.0">
+        <ScrollPane fx:id="resultsWindow" hbarPolicy="AS_NEEDED" layoutX="535.0" layoutY="131.0" prefHeight="490.0" prefWidth="511.0">
             <content>
                 <VBox fx:id="resultsContainer" spacing="5" />
             </content>
         </ScrollPane>
-        <ScrollPane fx:id="addRowScrollPane" hbarPolicy="NEVER" layoutX="59.0" layoutY="131.0" prefHeight="483.0" prefWidth="448.0" fitToWidth="true">
+        <ScrollPane fx:id="addRowScrollPane" hbarPolicy="NEVER" layoutX="59.0" layoutY="131.0" prefHeight="483.0" prefWidth="448.0">
             <content>
                 <VBox fx:id="dynamicRowsContainer" layoutX="35.0" layoutY="102.0" spacing="10">
                     <children>
@@ -36,45 +36,45 @@
                 </VBox>
             </content>
         </ScrollPane>
-      <Button id="exportButton" layoutX="717.0" layoutY="632.0" mnemonicParsing="false" onAction="#onExportButtonClick" prefHeight="37.0" prefWidth="119.0" text="Export Data">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Button>
-      <Label layoutX="731.0" layoutY="95.0" prefHeight="17.0" prefWidth="134.0" text="Search Results">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <Button id="addRow" layoutX="118.0" layoutY="632.0" mnemonicParsing="false" onAction="#onAddRowButtonClick" prefHeight="37.0" prefWidth="119.0" text="Add Row">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Button>
-      <Button fx:id="searchButton" layoutX="283.0" layoutY="632.0" mnemonicParsing="false" onAction="#onSearchButtonClick" prefHeight="37.0" prefWidth="119.0" text="Search">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Button>
-      <MenuBar fx:id="menuBar" prefHeight="23.0" prefWidth="1100.0">
-        <menus>
-          <Menu mnemonicParsing="false" text="Profile">
-              <items>
-                  <MenuItem mnemonicParsing="false" onAction="#goToUserUpdatePage" text="Update" />
-              </items>
-              <items>
-                  <MenuItem mnemonicParsing="false" onAction="#goToResetPasswordPage" text="Reset Password" />
-              </items>
-              <items>
-                  <MenuItem mnemonicParsing="false" onAction="#goToSignInPage" text="Logout" />
-              </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Database">
-              <items>
-                  <MenuItem fx:id="updateDatabase" mnemonicParsing="false" onAction="#goToUserDatabaseSetupPage" text="Update" />
-              </items>
-          </Menu>
-        </menus>
-      </MenuBar>
+        <Button id="exportButton" layoutX="717.0" layoutY="632.0" mnemonicParsing="false" onAction="#onExportButtonClick" prefHeight="37.0" prefWidth="119.0" text="Export Data">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Button>
+        <Label layoutX="731.0" layoutY="95.0" prefHeight="17.0" prefWidth="134.0" text="Search Results">
+            <font>
+                <Font size="20.0" />
+            </font>
+        </Label>
+        <Button id="addRow" layoutX="118.0" layoutY="632.0" mnemonicParsing="false" onAction="#onAddRowButtonClick" prefHeight="37.0" prefWidth="119.0" text="Add Row">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Button>
+        <Button fx:id="searchButton" layoutX="283.0" layoutY="632.0" mnemonicParsing="false" onAction="#onSearchButtonClick" prefHeight="37.0" prefWidth="119.0" text="Search">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Button>
+        <MenuBar fx:id="menuBar" prefHeight="23.0" prefWidth="1100.0">
+            <menus>
+                <Menu mnemonicParsing="false" text="Profile">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#goToUserUpdatePage" text="Update" />
+                    </items>
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#goToResetPasswordPage" text="Reset Password" />
+                    </items>
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#goToSignInPage" text="Logout" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Database">
+                    <items>
+                        <MenuItem fx:id="updateDatabase" mnemonicParsing="false" onAction="#goToUserDatabaseSetupPage" text="Update" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
     </children>
 </AnchorPane>
