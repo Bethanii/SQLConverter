@@ -13,12 +13,12 @@
     </stylesheets>
     <children>
         <Label fx:id="welcomeText" styleClass="labelStyle" />
-        <Label layoutX="237.0" layoutY="222.0" prefHeight="38.0" prefWidth="97.0" text="Username">
+        <Label layoutX="237.0" layoutY="222.0" prefHeight="38.0" prefWidth="97.0" text="Email">
             <font>
                 <Font size="20.0" />
             </font>
         </Label>
-        <TextField fx:id="enterpriseUsernameInputField" layoutX="236.0" layoutY="258.0" prefHeight="45.0" prefWidth="251.0" promptText="Username">
+        <TextField fx:id="enterpriseUsernameInputField" layoutX="236.0" layoutY="258.0" prefHeight="45.0" prefWidth="251.0" promptText="Email">
          <font>
             <Font size="18.0" />
          </font>

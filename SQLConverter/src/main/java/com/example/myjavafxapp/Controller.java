@@ -402,6 +402,7 @@ public class Controller
         String message = " Incorrect Permissions: " +
                 "\n The main reason for this is because user you have set for your account likely does not have select permissions enabled. In order to interact " +
                 "\n with the main SQL Converter you must have select permissions enabled. " +
+                "\n\n Connection Issue: " +
                 "\n Another reason this could be is that there is an issue with your connection. You can test this by navigating to the database tab and selecting " +
                 "\n the 'Update Database' option. Within this form there is the option to test your connection and validating if there was an error during your " +
                 "\n account creation. If you find that there is an issue you can update your information accordingly. Please note, if you are under the umbrella " +
@@ -421,7 +422,7 @@ public class Controller
                 "\n While logged into your account you can also select the Profile option from the top menu bar and then select Reset Password from the list" +
                 "\n of dropdown options. You will similarly be able yo validate your account reset your password.";
         if (event.getButton() == MouseButton.PRIMARY) {
-            displayAnswer(event, "password update");
+            displayAnswer(event, message);
         }
     }
 
@@ -443,7 +444,7 @@ public class Controller
         String message = " Given you are signed up using a Standard Account or you are the owner of an Enterprise Account, then you can update your database" +
                 "\n information by selecting the Database option from the top menu bar and going to the Update Database option. ";
         if (event.getButton() == MouseButton.PRIMARY) {
-            displayAnswer(event, "db info update");
+            displayAnswer(event, message);
         }
     }
 
