@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="landingPage" fx:id="landingPage" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.myjavafxapp.Controller">
+
+    <stylesheets>
+        <URL value="@static/style.css" />
+    </stylesheets>
+
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+
+    <children>
+        <Label fx:id="welcomeText" styleClass="labelStyle" />
+        <Button fx:id="createAccountButton" layoutX="615.0" layoutY="338.0" mnemonicParsing="false" onAction="#onCreateAccountButtonClick" prefHeight="48.0" prefWidth="218.0" text="Create an Account" />
+        <Button id="signInButton" layoutX="252.0" layoutY="338.0" mnemonicParsing="false" onAction="#onSignInSelectionClick" prefHeight="48.0" prefWidth="218.0" text="Sign In" />
+        <Text id="signInText" layoutX="268.0" layoutY="296.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Have an account?" textAlignment="CENTER" />
+        <Text id="createAccountText" layoutX="622.0" layoutY="296.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Not registered yet?" textAlignment="CENTER" />
+    </children>
+</AnchorPane>

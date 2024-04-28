@@ -299,6 +299,22 @@ public class SQLConverterController {
         return tableNames;
     }
 
+    public static void filterByName(Connection connection, String str) throws SQLException {
+        try {
+            PreparedStatement tableSearch = connection.prepareStatement("SHOW TABLES LIKE ?");
+            tableSearch.setString(1, str);
+            ResultSet tableSearchResult = tableSearch.executeQuery();
+
+            while (tableSearchResult.next()) {
+                String tableName = tableSearchResult.getString(1);
+                System.out.println("Table: " + tableName);
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<String> getColumnNames(Connection connection, String tableName) {
         List<String> columnNames = new ArrayList<>();
         try {
