@@ -38,6 +38,16 @@ public class AccountController {
     private List<String> emails = new ArrayList<>();
     private DatabaseManager databaseManager = new DatabaseManager();
 
+    /**
+     * Loads a specif page, sets the controller, and updates the current scene.
+     * @param pageFile Path to the FXML file.
+     * @param pageTitle Title for the page.
+     * @param email User's email to set in the controller.
+     * @param controllerSelection Sets which controller to configure.
+     * @param setSecurityQuestions Determines whether to set security questions.
+     * @param emails List of emails to set in the controller.
+     * @throws IOException If an error occurs during loading.
+     */
     public void loadPage(String pageFile, String pageTitle, String email, String controllerSelection,
                          boolean setSecurityQuestions, List<String> emails) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
@@ -73,14 +83,27 @@ public class AccountController {
         stage.setTitle(pageTitle);
     }
 
+    /**
+     * Sets the user email.
+     * @param email The email to set.
+     */
     public void setEmail(String email) {
         this.email = email;
     }
 
+    /**
+     * Sets user's email.
+     * @param emails The emails to set.
+     */
     public void setEmails(List<String> emails) {
         this.emails = emails;
     }
 
+    /**
+     * Sets the user email and navigates to the Security Question page.
+     * @throws IOException If an I/O error occurs.
+     * @throws SQLException If a database access error occurs.
+     */
     @FXML
     protected void onStandardAccountNextButtonClick() throws IOException, SQLException {
         SessionService sessionService = SessionService.getInstance();
@@ -88,6 +111,11 @@ public class AccountController {
         accountNextButtonClick("standard");
     }
 
+    /**
+     * Sets the user email and navigates to the Sub-User Info page.
+     * @throws IOException If an I/O error occurs.
+     * @throws SQLException If a database access error occurs.
+     */
     @FXML
     protected void onEnterpriseAccountNextButtonClick() throws IOException, SQLException {
         SessionService sessionService = SessionService.getInstance();
@@ -95,6 +123,10 @@ public class AccountController {
         accountNextButtonClick("enterprise");
     }
 
+    /**
+     * Saves the sub-users emails and loads the temporary password setup page.
+     * @throws IOException If an I/O error occurs.
+     */
     @FXML
     protected void onEnterpriseSubUsersNextButtonClick() throws IOException {
         databaseManager.saveEnterpriseSubUserEmails(emails, this.email);
@@ -105,6 +137,10 @@ public class AccountController {
         controller.setEmails(emails);
     }
 
+    /**
+     * Sets the temporary password for sub-users and navigates to the Enterprise Security Question page.
+     * @throws IOException If an error occurs while loading the security question page.
+     */
     @FXML
     protected void onTempPasswordNextButtonClick() throws IOException {
         String tempPassword = tempPasswordInputField.getText().trim();
@@ -123,6 +159,13 @@ public class AccountController {
         }
     }
 
+    /**
+     * Validates required account set-uo fields are missing and validates if email already exists
+     * If no required fields are missing and email does not exist the next page based on account type will display.
+     * @param accountType The account type.
+     * @throws IOException If an error occurs while loading the next page.
+     * @throws SQLException If a database error occurs.
+     */
     @FXML
     protected void accountNextButtonClick(String accountType) throws IOException, SQLException {
         TextField emailInputField = accountType.equals("standard") ? standardUsernameInputField : enterpriseUsernameInputField;
@@ -182,6 +225,12 @@ public class AccountController {
         }
     }
 
+    /**
+     * Validates that password input match
+     * @param password The first password.
+     * @param passwordConfirmation The confirmation password.
+     * @return true if both passwords match, false if not.
+     */
     public boolean validatePasswordsMatch(String password, String passwordConfirmation) {
         if (!Objects.equals(password, passwordConfirmation)) {
             return false;
@@ -190,6 +239,9 @@ public class AccountController {
         }
     }
 
+    /**
+     * Sets security question dropdowns and listeners to handle selection changes.
+     */
     public void setSecurityQuestionOptions() {
         firstSecurityQuestion.getItems().addAll(
                 "What was your first pet's name?",
@@ -212,6 +264,10 @@ public class AccountController {
         });
     }
 
+    /**
+     * Validates if security question dropdown selections are missing.
+     * @return true if a dropdown is unselected, false if not.
+     */
     @FXML
     protected boolean securityQuestionMissingQuestions() {
         if (firstSecurityQuestion.getSelectionModel().getSelectedItem() == null ||
@@ -224,6 +280,12 @@ public class AccountController {
         }
     }
 
+    /**
+     * Checks if required fields are missing on the Security Question page.
+     * @param fields Fields on the Security Question page.
+     * @return true if any field is missing, false if not.
+     * @throws IOException If an I/O error occurs.
+     */
     @FXML
     protected boolean securityQuestionMissingFields(TextField... fields) throws IOException {
         boolean blankFields = false;
@@ -245,6 +307,11 @@ public class AccountController {
         return blankFields;
     }
 
+    /**
+     * Validates whether required fields are missing, if not the user questions and answers are saved.
+     * @throws IOException If an error occurs while loading.
+     * @throws SQLException If an database connection error occurs.
+     */
     @FXML
     protected void onSecurityQuestionNextButtonClick() throws IOException, SQLException {
         if (!securityQuestionMissingFields(firstSecurityQuestionInput, secondSecurityQuestionInput)) {
@@ -266,6 +333,12 @@ public class AccountController {
         }
     }
 
+    /**
+     * Checks if required fields are missing from the Database Set-Up page and if the current
+     * user is an account owner, then saves the user database information.
+     * @throws SQLException If a database access error occurs.
+     * @throws IOException  If an I/O error occurs.
+     */
     @FXML
     protected void onDatabaseSetupNextButton() throws SQLException, IOException {
         String serverName = serverNameField.getText();
@@ -295,6 +368,11 @@ public class AccountController {
         }
     }
 
+    /**
+     * Gets the input values for server name, database name, database username, and password.
+     * If no fields are missing a loading popup will display while attempting to connect to the user database
+     * @throws IOException If an I/O error occurs.
+     */
     @FXML
     protected void onTestConnectionButton() throws IOException {
         String serverName = serverNameField.getText();
@@ -341,6 +419,10 @@ public class AccountController {
         }).start();
     }
 
+    /**
+     * Displays a loading popup while testing the database connection.
+     * @param primaryStage The primary stage owning the popup.
+     */
     public void showDatabaseLoadingPopup(Stage primaryStage) {
         if (loadingStage != null) {
             loadingStage.close();
@@ -368,6 +450,9 @@ public class AccountController {
         loadingStage.show();
     }
 
+    /**
+     * Hides the loading popup.
+     */
     private void hideLoadingPopup() {
         if (loadingStage != null) {
             loadingStage.close();
@@ -422,6 +507,7 @@ public class AccountController {
             e.printStackTrace();
         }
     }
+
     public void onPopUpCancel() {
         Stage stage = (Stage) cancelOption.getScene().getWindow();
         stage.close();

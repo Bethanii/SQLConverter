@@ -402,6 +402,12 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * Checks if the selected email belongs to a sub-user.
+     * @param connection A database connection.
+     * @param emailInput The user's email to check.
+     * @return true if the user is a sub-user, false if not.
+     */
     public boolean checkIfSubUser(Connection connection, String emailInput) {
         String sql = "SELECT isSubUser FROM Users WHERE Email = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -417,6 +423,13 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * Updates the user's email in the database.
+     * @param connection A database connection.
+     * @param email The current email to be updated.
+     * @param emailInput The new email address to replace the previous.
+     * @return true if the update is successful, false if not.
+     */
     public boolean updateUsername(Connection connection, String email, String emailInput) {
         String sql = "UPDATE Users SET Email = ? WHERE Email = ?;";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -430,6 +443,12 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * Checks if the selected email is an account owner.
+     * @param connection A database connection.
+     * @param emailInput The email of the user to check.
+     * @return true if the user is an account owner, false if not.
+     */
     public boolean checkIfAccountOwner(Connection connection, String emailInput) {
         String sql = "SELECT isAccountOwner FROM Users WHERE Email = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -445,6 +464,11 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * Updates the 'isAccountOwner' flag for a user in context.
+     * @param connection A database connection.
+     * @param email The user's email.
+     */
     public void updateIsAccountOwnerFlag(Connection connection, String email) {
         String sql = "UPDATE Users SET isAccountOwner = ? WHERE Email = ?;";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -455,6 +479,16 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Updates the database connection details for a selected user.
+     * @param connection A database connection.
+     * @param serverName The database server name.
+     * @param databaseName The database name.
+     * @param dbUsername The database username.
+     * @param dbPassword The database password.
+     * @param email The user's email.
+     */
     public void saveUserDBInfo(Connection connection, String serverName, String databaseName,
                                String dbUsername, String dbPassword, String email) {
         String insertSQL = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ? WHERE email = ?";
@@ -470,6 +504,15 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * Updates the database connection details for the sub-users associated with the selected account owner.
+     * @param connection A database connection.
+     * @param serverName The new server name for the sub-users.
+     * @param databaseName The new database name for the sub-users.
+     * @param dbUsername The new database username for the sub-users.
+     * @param dbPassword The new database password for the sub-users.
+     * @param email The email of the account owner.
+     */
     public void updateSubUserDBInfo(Connection connection, String serverName, String databaseName,
                                     String dbUsername, String dbPassword, String email) {
         String insertSQL = "UPDATE Users SET serverName = ?, databaseName = ?, dbUsername = ?, dbPassword = ? WHERE accountOwner = ?";
@@ -485,6 +528,10 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * Deletes the sub-user records associated with a selected account owner.
+     * @param email The email of the account owner.
+     */
     public void deleteSubUserDetails(String email) {
         String sql = "DELETE FROM Users WHERE accountOwner = ?";
         try (Connection connection = databaseConnection();
@@ -496,6 +543,11 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * Deletes a user from the database.
+     * @param connection A database connection.
+     * @param email The email of the user to be deleted.
+     */
     public void deleteUserDetails(Connection connection, String email) {
         String sql = "DELETE FROM Users WHERE Email = ?";
         try (PreparedStatement deleteStmt = connection.prepareStatement(sql)) {
