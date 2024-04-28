@@ -49,6 +49,11 @@ public class SQLConverterController {
     private String email;
     private SessionService sessionService;
 
+    /**
+     * Initializes the controller.
+     * @throws IOException  If an I/O exception occurs.
+     * @throws SQLException If a SQL exception occurs.
+     */
     @FXML
     public void initialize() throws IOException, SQLException {
         SessionService sessionService = SessionService.getInstance();
@@ -58,17 +63,29 @@ public class SQLConverterController {
         }
     }
 
+    /**
+     * Sets user email
+     * @param email The email to set.
+     */
     public void setEmail(String email) {
         this.email = email;
     }
 
-
+    /**
+     * Disables the update database menu item.
+     */
     public void disableUpdateDatabaseMenuItem() {
         if (updateDatabase != null) {
             updateDatabase.setDisable(true);
         }
     }
 
+    /**
+     * Sets the user's connection to the database.
+     * @return The user's database connection.
+     * @throws SQLException If a SQL exception occurs.
+     * @throws IOException  If an I/O exception occurs.
+     */
     public Connection setConnection() throws SQLException, IOException {
         this.databaseManager = new DatabaseManager();
         String[] dbValues = databaseManager.getUserDBInfo(this.email);
@@ -86,6 +103,13 @@ public class SQLConverterController {
         }
     }
 
+    /**
+     * Sets the user's connection to the database.
+     * @param userConnection The user's database connection.
+     * @return The user's database connection.
+     * @throws SQLException If a SQL exception occurs.
+     * @throws IOException  If an I/O exception occurs.
+     */
     public Connection setConnection(Connection userConnection) throws IOException, SQLException {
         this.databaseManager = new DatabaseManager();
         String[] dbValues = databaseManager.getUserDBInfo(this.email);
@@ -103,6 +127,10 @@ public class SQLConverterController {
         }
     }
 
+    /**
+     * Populates the initial dropdown with static row values.
+     * @param userConnection The user's database connection.
+     */
     @FXML
     protected void populateStaticRow(Connection userConnection) {
         try {
@@ -112,6 +140,11 @@ public class SQLConverterController {
         }
     }
 
+    /**
+     * Queries database based on the text in the static and dyanmic rows
+     * @throws IOException  If an I/O exception occurs.
+     * @throws SQLException If a SQL exception occurs.
+     */
     @FXML
     protected void onSearchButtonClick() throws IOException, SQLException {
         List<List<String>> allResults = new ArrayList<>();
@@ -119,7 +152,6 @@ public class SQLConverterController {
         if (searchRow1.getValue() != null && !searchField1.getText().isEmpty()) {
             allResults.add(querySelectedTables(searchRow1.getValue(), searchField1.getText()));
         }
-
         for (HBox hbox : dynamicRowsContainer.getChildren().stream().map(node -> (HBox) node).toList()) {
             ChoiceBox<String> choiceBox = (ChoiceBox<String>) hbox.getChildren().get(0);
             TextField textField = (TextField) hbox.getChildren().get(1);
@@ -131,7 +163,11 @@ public class SQLConverterController {
         displayQueryResults(allResults);
     }
 
-        public void displayQueryResults(List<List<String>> allResults) {
+    /**
+     * Displays the user query results in the results window.
+     * @param allResults A list containing the results.
+     */
+    public void displayQueryResults(List<List<String>> allResults) {
         resultsContainer.getChildren().clear();
         GridPane gridPane = new GridPane();
         gridPane.setHgap(10);
@@ -157,10 +193,14 @@ public class SQLConverterController {
             }
             rowIndex++;
         }
-
         resultsContainer.getChildren().add(gridPane);
     }
 
+    /**
+     * Reteives column headers from the list of query results.
+     * @param results The list of database results.
+     * @return A list containing the column headers.
+     */
     private List<String> getColumnHeaders(List<String> results) {
         Set<String> headers = new LinkedHashSet<>();
         for (String result : results) {
@@ -173,6 +213,9 @@ public class SQLConverterController {
         return new ArrayList<>(headers);
     }
 
+    /**
+     * Allows user to export search results to a CSV file.
+     */
     @FXML
     protected void onExportButtonClick() {
         FileChooser fileChooser = new FileChooser();
@@ -217,6 +260,13 @@ public class SQLConverterController {
         }
     }
 
+    /**
+     * Preparing the results to be exported to a csv file.
+     * @param gridPane GridPane to search the node.
+     * @param column Node column index.
+     * @param row Node row index.
+     * @return The node for the specified column and row.
+     */
     private Node getNodeFromGridPane(GridPane gridPane, int column, int row) {
         for (Node node : gridPane.getChildren()) {
             if (GridPane.getColumnIndex(node) == column && GridPane.getRowIndex(node) == row) {
@@ -226,14 +276,20 @@ public class SQLConverterController {
         return null;
     }
 
+    /**
+     * Queries the selected table for rows containing the search text.
+     * @param tableName The table name to query.
+     * @param searchText The text pattern to search for.
+     * @return A list of strings matching the search criteria.
+     * @throws IOException  If an I/O exception occurs.
+     * @throws SQLException If a SQL exception occurs.
+     */
     private List<String> querySelectedTables(String tableName, String searchText) throws SQLException, IOException {
         List<String> results = new ArrayList<>();
-
         SessionService sessionService = SessionService.getInstance();
         SQLConverterController sqlController = new SQLConverterController();
         sqlController.setEmail(sessionService.getEmail());
         this.userConnection = setConnection(sessionService.getConnection());
-
         List<String> columnNames = getColumnNames(this.userConnection, tableName);
 
         for (String columnName : columnNames)
@@ -263,6 +319,9 @@ public class SQLConverterController {
         return results;
     }
 
+    /**
+     * Adds a new row when the 'Add a Row' button is clicked.
+     */
     @FXML
     protected void onAddRowButtonClick() {
         ChoiceBox<String> newChoiceBox = new ChoiceBox<>();
@@ -280,11 +339,14 @@ public class SQLConverterController {
 
         dynamicRowsContainer.getChildren().add(newRow);
         newTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            System.out.println("New row text changed: " + newValue);
         });
     }
 
-
+    /**
+     * Retrieves all the table names in the database.
+     * @param connection The database connection to retrieve table names from.
+     * @return A list of table names in the database.
+     */
     public List<String> getTableNames(Connection connection) {
         List<String> tableNames = new ArrayList<>();
         try {
@@ -299,22 +361,12 @@ public class SQLConverterController {
         return tableNames;
     }
 
-    public static void filterByName(Connection connection, String str) throws SQLException {
-        try {
-            PreparedStatement tableSearch = connection.prepareStatement("SHOW TABLES LIKE ?");
-            tableSearch.setString(1, str);
-            ResultSet tableSearchResult = tableSearch.executeQuery();
-
-            while (tableSearchResult.next()) {
-                String tableName = tableSearchResult.getString(1);
-                System.out.println("Table: " + tableName);
-
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
+    /**
+     * Gets the column names for a selected table in the database.
+     * @param connection The database connection.
+     * @param tableName  The name of the table for where to get the column names.
+     * @return A list of column names for the selected table.
+     */
     public List<String> getColumnNames(Connection connection, String tableName) {
         List<String> columnNames = new ArrayList<>();
         try {
@@ -329,6 +381,10 @@ public class SQLConverterController {
         return columnNames;
     }
 
+    /**
+     * Switches user to the Update User Database Information page.
+     * @throws IOException Thrown if there is a loading error.
+     */
     public void goToUserDatabaseSetupPage() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("update-database-info.fxml"));
         AnchorPane updateUserDBPage = fxmlLoader.load();
@@ -344,6 +400,13 @@ public class SQLConverterController {
         stage.setTitle("Update User Database Information");
     }
 
+    /**
+     * Validates if required fields are missing from the Update Database Info page and whether
+     * the current user is an account owner. If not, the updated database information is saved
+     * to the database.
+     * @throws IOException if there is a loading error.
+     * @throws SQLException if there is an SQL exception.
+     */
     public void onUpdateDatabaseInfoButton() throws IOException, SQLException {
         String serverName = serverNameField.getText();
         String databaseName = databaseNameField.getText();
@@ -379,6 +442,11 @@ public class SQLConverterController {
         }
     }
 
+    /**
+     * Switches the user back to the SQL Converter page.
+     * @throws IOException  if an I/O error occurs.
+     * @throws SQLException if a database access error occurs.
+     */
     public void onUpdateDBBackButtonClick() throws IOException, SQLException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("sql-converter.fxml"));
         AnchorPane sqlConverterPage = fxmlLoader.load();
@@ -398,6 +466,10 @@ public class SQLConverterController {
         stage.setTitle("SQL Converter");
     }
 
+    /**
+     * Gets the input values for server name, database name, database username, and password.
+     * If no fields are missing a loading popup will display while attempting to connect to the user database
+     */
     public void onUpdateDBTestConnectionButton() {
         String serverName = serverNameField.getText();
         String databaseName = databaseNameField.getText();
@@ -440,12 +512,19 @@ public class SQLConverterController {
         }).start();
     }
 
+    /**
+     * Hides the loading popup.
+     */
     private void hideLoadingPopup() {
         if (loadingStage != null) {
             loadingStage.close();
         }
     }
 
+    /**
+     * Displays a loading popup while testing the database connection.
+     * @param primaryStage The primary stage owning the popup.
+     */
     private void showDatabaseLoadingPopup(Stage primaryStage) {
         if (loadingStage != null) {
             loadingStage.close();
@@ -473,6 +552,11 @@ public class SQLConverterController {
         loadingStage.show();
     }
 
+    /**
+     * Navigates user to the Reset Password page.
+     * @throws IOException  if an I/O error occurs.
+     * @throws SQLException if a database access error occurs.
+     */
     public void goToResetPasswordPage() throws IOException, SQLException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("reset-password-page.fxml"));
         AnchorPane resetPasswordPage = fxmlLoader.load();
@@ -500,6 +584,10 @@ public class SQLConverterController {
         stage.setTitle("Update Password");
     }
 
+    /**
+     * Navigates user to the Sign-In page.
+     * @throws IOException if an I/O error occurs.
+     */
     public void goToSignInPage() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("sign-in-page.fxml"));
         AnchorPane signInPage = fxmlLoader.load();
@@ -517,6 +605,11 @@ public class SQLConverterController {
         stage.setTitle("Sign In");
     }
 
+    /**
+     * Navigates user to the Email Update page .
+     * @throws IOException  if an I/O error occurs.
+     * @throws SQLException if a database access error occurs.
+     */
     public void goToUserUpdatePage() throws IOException, SQLException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("update-username-page.fxml"));
         AnchorPane updateUsernamePage = fxmlLoader.load();
@@ -535,6 +628,11 @@ public class SQLConverterController {
         stage.setTitle("Update Username");
     }
 
+    /**
+     * Navigates user to the SQL Converter page from the Update Username page.
+     * @throws IOException  if an I/O error occurs.
+     * @throws SQLException if a database access error occurs.
+     */
     @FXML
     public void onUpdateUsernameBackButtonClick() throws IOException, SQLException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("sql-converter.fxml"));
@@ -557,11 +655,15 @@ public class SQLConverterController {
         stage.setTitle("SQL Converter");
     }
 
+    /**
+     * Checks if the input email exists and if not updates the user's email
+     * @throws IOException  if an I/O error occurs.
+     * @throws SQLException if a database access error occurs.
+     */
     @FXML
     public void onUpdateUsernameUpdateButtonClick() throws IOException, SQLException {
         String emailInput = updateUsernameInput.getText();
         Connection connection = databaseManager.databaseConnection();
-
         boolean usernameExists = databaseManager.checkIfColumnValueExists(connection, "Email", emailInput);
 
         if(usernameExists)
@@ -589,6 +691,10 @@ public class SQLConverterController {
         }
     }
 
+    /**
+     * Switches the user to the Sign-In page.
+     * @throws IOException if an I/O error occurs.
+     */
     @FXML
     protected void onSignInSelectionClick() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("sign-in-page.fxml"));

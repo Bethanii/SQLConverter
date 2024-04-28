@@ -459,6 +459,11 @@ public class AccountController {
         }
     }
 
+    /**
+     * Checks if the sub-user entered already exists and if not, adds that
+     * email to the list of sub-user emails.
+     * @throws SQLException If an SQL exception occurs during database access.
+     */
     @FXML
     protected void addEmailField() throws SQLException {
         String emailText = subUserEmailInputField.getText().trim();
@@ -484,16 +489,26 @@ public class AccountController {
         }
     }
 
+    /**
+     * Displays emails in the emails display area.
+     * @param emails List of emails to display.
+     */
     public void displayEmails(List<String> emails) {
         String content = String.join("\n", emails);
         emailsDisplayArea.setText(content);
     }
 
+    /**
+     * Displays an exit popup.
+     */
     @FXML
     public void onExitButtonClick() {
         showExitPopup();
     }
 
+    /**
+     * Shows an exit confirmation popup.
+     */
     public void showExitPopup() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("exit-confirmation-popup.fxml"));
@@ -508,11 +523,20 @@ public class AccountController {
         }
     }
 
+    /**
+     * Closes the popup window.
+     */
     public void onPopUpCancel() {
         Stage stage = (Stage) cancelOption.getScene().getWindow();
         stage.close();
     }
 
+    /**
+     * Closes all windows except the landing page.
+     * and navigates to the landing page.
+     * @throws IOException  If an I/O exception occurs.
+     * @throws SQLException If an SQL exception occurs during database access.
+     */
     public void onPopUpExit() throws IOException, SQLException {
         for (Window window : Window.getWindows()) {
             if (window instanceof Stage && !"Landing Page".equals(((Stage) window).getTitle())) {
