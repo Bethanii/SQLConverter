@@ -33,12 +33,23 @@ public class Controller
     private Stage loadingStage;
     private String email;
 
+    /**
+     * Loads an FXML file and returns the FXMLLoader.
+     * @param page The path to the FXML file.
+     * @return The FXMLLoader instance.
+     * @throws IOException If the FXML file cannot be found.
+     */
     private FXMLLoader loadPage(String page) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(page));
         fxmlLoader.load();
         return fxmlLoader;
     }
 
+    /**
+     * Sets root for the scene containing the given AnchorPane.
+     * @param anchorPane The AnchorPane to set as the root of the scene.
+     * @return The scene object.
+     */
     public Scene setRootAndGetScene(AnchorPane anchorPane) {
         Scene currentScene = welcomeText.getScene();
         currentScene.setRoot(anchorPane);
@@ -46,12 +57,24 @@ public class Controller
         return currentScene;
     }
 
+    /**
+     * Sets the stage for the scene in context.
+     * @param currentScene The scene to update the stage with.
+     * @param title The new title for the stage.
+     */
     public void setStage(Scene currentScene, String title) {
         Stage stage = (Stage) currentScene.getWindow();
         stage.sizeToScene();
         stage.setTitle(title);
     }
 
+    /**
+     * Loads an FXML file, sets up the scene and stage, and returns the controller of that page
+     * @param pagePath The path to the FXML file.
+     * @param title The title to set for the stage.
+     * @return The controller for the loaded FXML file.
+     * @throws IOException If the FXML file cannot be loaded.
+     */
     public <T> T setupPage(String pagePath, String title) throws IOException {
         FXMLLoader fxmlLoader = loadPage(pagePath);
         AnchorPane pageRoot = fxmlLoader.getRoot();
@@ -61,68 +84,130 @@ public class Controller
         return controller;
     }
 
+    /**
+     * Sets the user's email.
+     * @param email The email to set.
+     */
     public void setEmail(String email) {
         this.email = email;
     }
 
+    /**
+     * This method will change from the Sign-In page to the landing page.
+     * when the 'Back' button is clicked.
+     * @throws IOException If the landing page cannot be loaded.
+     */
     @FXML
     public void onSignInBackButtonClick() throws IOException {
         setupPage("landing-page.fxml", "Welcome");
     }
 
+    /**
+     * This method will change from the Select Account page to the landing page.
+     * when the 'Back' button is clicked.
+     * @throws IOException If the landing page cannot be loaded.
+     */
     @FXML
     public void onSelectAccountBackButtonClick() throws IOException {
         setupPage("landing-page.fxml", "Welcome");
     }
 
+    /**
+     * This method will change from the 'FAQ' to the landing page.
+     * when the 'Back' button is clicked.
+     * @throws IOException If the landing page cannot be loaded.
+     */
     @FXML
     protected void onFAQBackButtonClick() throws IOException {
         setupPage("sign-in-page.fxml", "Log In");
     }
 
+    /**
+     * This method will navigate to the FAQ page from the Sign-In page.
+     * @throws IOException If the FAQ page cannot be loaded.
+     */
     @FXML
     public void onSignInFAQLink() throws Exception {
         goToFAQPage();
     }
 
+    /**
+     * This method switches the user to the Sign-In page
+     * when the Sign-In option is selected from the main landing page
+     * @throws IOException If the Sign-In page cannot be loaded.
+     */
     @FXML
     protected void onSignInSelectionClick() throws IOException {
         setupPage("sign-in-page.fxml", "Log In");
     }
 
+    /**
+     * This method switches the user to the Reset Password page
+     * when the Forgot Password link is selected from the Sign-In page
+     * @throws IOException If the Reset Password page cannot be loaded.
+     */
     @FXML
     protected void onForgotPasswordLinkClick() throws IOException {
         setupPage("reset-password-page.fxml", "Reset Password");
     }
 
+    /**
+     * This method switches the user to the Enterprise Account creation page
+     * when the Enterprise Account option is selected from the Select Account page
+     * @throws IOException If the Enterprise Account page cannot be loaded.
+     */
     @FXML
     protected void onEnterpriseAccountButtonClick() throws IOException {
         setupPage("enterprise-account-page.fxml", "Enterprise Account Information");
     }
 
+    /**
+     * This method switches the user to the Standard Account creation page
+     * when the Enterprise Account option is selected from the Select Account page
+     * @throws IOException If the Standard Account page cannot be loaded.
+     */
     @FXML
     protected void onStandardAccountButtonClick() throws IOException {
         setupPage("standard-account-page.fxml", "Standard Account Information");
     }
 
+    /**
+     * This method switches the user to the Select Account page
+     * when the Creation Account option is selected from the main landing page
+     * @throws IOException If the Create Account page cannot be loaded.
+     */
     @FXML
     protected void onCreateAccountButtonClick() throws IOException {
         setupPage("select-account-type-page.fxml", "Select Account Type");
     }
 
+    /**
+     * This method switches the user to the Sign-In page
+     * when the Sign-In button is selected after the user's password has been updated
+     * @throws IOException If the Sign-In page cannot be loaded.
+     */
     @FXML
-    protected void onPasswordUpdateSignInButtonClick() throws IOException, SQLException {
+    protected void onPasswordUpdateSignInButtonClick() throws IOException {
         setupPage("sign-in-page.fxml", "Log In");
     }
 
+    /**
+     * This method switches the user to the FAQ page
+     * when the 'Need Help?' link is clicked
+     * @throws IOException If the FAQ page cannot be loaded.
+     */
     @FXML
     public void goToFAQPage() throws IOException {
         setupPage("faq-page.fxml", "Frequently Asked Questions");
     }
 
+    /**
+     * This method checks for missing required fields and validates the user's login credentials
+     * when the Sign-In button is clicked.
+     * @throws IOException If an error occurs during loading.
+     */
     public void onSignInButtonClick() throws IOException {
         boolean missingFields = requiredFieldsMissing();
-
         if (missingFields == false) {
             boolean validLogin = loginValidation();
             if (validLogin == true) {
@@ -173,6 +258,13 @@ public class Controller
         }
     }
 
+    /**
+     * Establishes a connection with the user's database.
+     * @param userConnection The existing user's database connection, which can be null.
+     * @return A new or updated database connection if successful, or null if unsuccessful.
+     * @throws IOException If an error occurs during the database setup.
+     * @throws SQLException If a database error occurs.
+     */
     public Connection setConnection(Connection userConnection) throws IOException, SQLException {
         this.databaseManager = new DatabaseManager();
         String[] dbValues = databaseManager.getUserDBInfo(this.email);
@@ -189,6 +281,10 @@ public class Controller
         }
     }
 
+    /**
+     * Displays a loading popup with a spinning indicator.
+     * @param primaryStage The stage owning the modal dialog.
+     */
     private void showLoadingPopup(Stage primaryStage) {
         loadingStage = new Stage(StageStyle.UNDECORATED);
         loadingStage.initModality(Modality.APPLICATION_MODAL);
@@ -213,12 +309,19 @@ public class Controller
         loadingStage.show();
     }
 
+    /**
+     * Hides the loading popup.
+     */
     private void hideLoadingPopup() {
         if (loadingStage != null) {
             loadingStage.close();
         }
     }
 
+    /**
+     * Validates the user's email and navigates to the security questions page.
+     * @throws Exception If there is a database connection or email validation issue.
+     */
     @FXML
     protected void onResetPasswordButton() throws Exception {
         this.email = resetEmailField.getText();
@@ -247,6 +350,11 @@ public class Controller
         }
     }
 
+    /**
+     * This method checks if new password inputs are valid and updates user's password.
+     * @throws IOException If there is a loading issue.
+     * @throws SQLException If there is a database error.
+     */
     @FXML
     protected void onNewPasswordResetButtonClick() throws IOException, SQLException {
         if (!newPasswordFieldsValidation()) {
@@ -259,6 +367,10 @@ public class Controller
         }
     }
 
+    /**
+     * Validates the new password and confirmation password fields.
+     * @return true if there is a validation error, otherwise false.
+     */
     @FXML
     public boolean newPasswordFieldsValidation() {
         String newPasswordInput = newPasswordInputField.getText();
@@ -287,6 +399,10 @@ public class Controller
         }
     }
 
+    /**
+     * Validates the user's login credentials against those in the database.
+     * @return true if the credentials are valid, otherwise false.
+     */
     public boolean loginValidation() {
         String emailInput = signInEmailInputField.getText();
         String passwordInput = signInPasswordInputField.getText();
@@ -320,6 +436,13 @@ public class Controller
         }
     }
 
+    /**
+     * Checks if the user's email exists in the database.
+     * @param emailInput The user's email to validate in the database.
+     * @return true if the user exists, false if not.
+     * @throws IOException If an IO exception occurs.
+     * @throws SQLException If an SQL exception occurs.
+     */
     public boolean userExists(String emailInput) throws IOException, SQLException {
         Connection connection = databaseManager.databaseConnection();
         Boolean emailExists = databaseManager.checkIfColumnValueExists(connection, "Email", emailInput);
@@ -334,6 +457,10 @@ public class Controller
         }
     }
 
+    /**
+     * Checks if the sign-in required fields are missing.
+     * @return true if there is a required field missing, false if not.
+     */
     public boolean requiredFieldsMissing() {
         String emailInput = signInEmailInputField.getText();
         String passwordInput = signInPasswordInputField.getText();
@@ -357,7 +484,10 @@ public class Controller
         return false;
     }
 
-
+    /**
+     * Answers the FAQ regarding how users can find their server name.
+     * @param event The mouse event triggering the method.
+     */
     @FXML
     protected void displayServerNameAnswer(MouseEvent event) {
         String message = " There are a few different ways to find your server name. Here are a few suggestions:" +
@@ -377,6 +507,10 @@ public class Controller
         }
     }
 
+    /**
+     * Answers the FAQ regarding what users can do in the instance of a database connection failure.
+     * @param event The mouse event triggering the method.
+     */
     @FXML
     protected void displayDBFailureAnswer(MouseEvent event) {
         String message = " Please see the following for a list of possible reason your database connection is failing." +
@@ -397,24 +531,47 @@ public class Controller
         }
     }
 
+    /**
+     * Answers the FAQ regarding how users can resolve the issue of their search dropdown being empty.
+     * @param event The mouse event triggering the method.
+     */
     @FXML
     protected void displayEmptyDropdownAnswer(MouseEvent event) {
         String message = " Incorrect Permissions: " +
                 "\n The main reason for this is because user you have set for your account likely does not have select permissions enabled. In order to interact " +
-                "\n with the main SQL Converter you must have select permissions enabled. ";
+                "\n with the main SQL Converter you must have select permissions enabled. " +
+                "\n\n Connection Issue: " +
+                "\n Another reason this could be is that there is an issue with your connection. You can test this by navigating to the database tab and selecting " +
+                "\n the 'Update Database' option. Within this form there is the option to test your connection and validating if there was an error during your " +
+                "\n account creation. If you find that there is an issue you can update your information accordingly. Please note, if you are under the umbrella " +
+                "\n of someone else then you will need to reach out within your organization to handle this update. ";
 
         if (event.getButton() == MouseButton.PRIMARY) {
             displayAnswer(event, message);
         }
     }
 
+    /**
+     * Answers the FAQ regarding how users can update their password.
+     * @param event The mouse event triggering the method.
+     */
     @FXML
     protected void displayPasswordChangeAnswer(MouseEvent event) {
+        String message = " Option 1: " +
+                "\n The first way you can update your password is by navigating to the Log In screen and selecting the 'Forgot Password?' link. Here you will" +
+                "\n be able to follow the steps to validate your account and reset your password. " +
+                "\n Option 2: " +
+                "\n While logged into your account you can also select the Profile option from the top menu bar and then select Reset Password from the list" +
+                "\n of dropdown options. You will similarly be able yo validate your account reset your password.";
         if (event.getButton() == MouseButton.PRIMARY) {
-            displayAnswer(event, "password update");
+            displayAnswer(event, message);
         }
     }
 
+    /**
+     * Answers the FAQ regarding the differences between Enterprise and Standard accounts.
+     * @param event The mouse event triggering the method.
+     */
     @FXML
     protected void displayAccountDifferencesAnswer(MouseEvent event) {
         String message = " Standard Account: " +
@@ -423,19 +580,29 @@ public class Controller
                 "\n \n Enterprise Account: " +
                 "\n Enterprise Accounts are meant for use in organizational settings whether that is with a large company or a small start-up. These accounts" +
                 "\n allow one main user to establish sub-accounts in order for those within the organization to get access to the database.";
-
         if (event.getButton() == MouseButton.PRIMARY) {
             displayAnswer(event, message);
         }
     }
 
+    /**
+     * Answers the FAQ regarding how users can update their database information.
+     * @param event The mouse event triggering the method.
+     */
     @FXML
     protected void updateDatebaseInfoAnswer(MouseEvent event) {
+        String message = " Given you are signed up using a Standard Account or you are the owner of an Enterprise Account, then you can update your database" +
+                "\n information by selecting the Database option from the top menu bar and going to the Update Database option. ";
         if (event.getButton() == MouseButton.PRIMARY) {
-            displayAnswer(event, "db info update");
+            displayAnswer(event, message);
         }
     }
 
+    /**
+     * Handles displaying answers based on the user's selection on the FAQ page.
+     * @param event The MouseEvent that triggered the method.
+     * @param message The message to display for the selected question.
+     */
     @FXML
     protected void displayAnswer(MouseEvent event, String message) {
         ComboBox<String> comboBox = (ComboBox<String>) event.getSource();
@@ -466,6 +633,11 @@ public class Controller
         }
     }
 
+    /**
+     * Navigates the user back to the SQL Converter page.
+     * @throws IOException If an error occurs during setup.
+     * @throws SQLException If a database error occurs.
+     */
     public void onBackToHomeButtonClick() throws IOException, SQLException {
         SQLConverterController sqlController = setupPage("sql-converter.fxml", "SQL Converter");
         SessionService sessionService = SessionService.getInstance();
@@ -474,6 +646,13 @@ public class Controller
         sqlController.populateStaticRow(connection);
     }
 
+    /**
+     * This method checks if required fields are blank and if not navigates user
+     * to the Security Question Validation page.
+     * for user authentication via security questions.
+     * @throws IOException If there is an error loading the page.
+     * @throws SQLException If there is a database access issue.
+     */
     public void onUpdatePasswordButtonClick() throws IOException, SQLException {
         this.email = resetEmailField.getText();
         if (this.email.isBlank() || this.email.isEmpty()) {
@@ -504,6 +683,12 @@ public class Controller
         }
     }
 
+    /**
+     * This method validates the password update fields and updates the password in the database
+     * if not required fields are missing.
+     * @throws IOException If there is an error loading the page.
+     * @throws SQLException If there is a database error.
+     */
     @FXML
     protected void onEnterPasswordUpdateButtonClick() throws IOException, SQLException {
         if (!newPasswordFieldsValidation()) {
@@ -520,6 +705,11 @@ public class Controller
         }
     }
 
+    /**
+     * This method validates if the required security question fields are missing and if
+     * not validates the user's responses against the answers in the database.
+     * @throws Exception General exception in the case of an error.
+     */
     @FXML
     protected void onValidateSecurityQuestionsUpdateClick() throws Exception {
         String response1Input = response1.getText();

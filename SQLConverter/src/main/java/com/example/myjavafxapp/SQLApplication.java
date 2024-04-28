@@ -1,17 +1,23 @@
 package com.example.myjavafxapp;
 
 import javafx.application.Application;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
+import javafx.fxml.FXMLLoader;
 import java.io.IOException;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.fxml.FXML;
 
 public class SQLApplication extends Application
 {
     @FXML
     private AnchorPane landingPage;
+
+    /**
+     * Starts the application by loading the landing page.
+     * @param stage The primary stage of the application.
+     * @throws IOException If an I/O exception occurs while loading.
+     */
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(SQLApplication.class.getResource("landing-page.fxml"));
@@ -23,6 +29,9 @@ public class SQLApplication extends Application
         stage.show();
     }
 
+    /**
+     * Main method to launch the application.
+     */
     public static void main(String[] args) {
         launch();
     }
