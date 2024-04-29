@@ -13,17 +13,17 @@
 
     <children>
         <Label fx:id="welcomeText" styleClass="labelStyle" />
-        <TextField fx:id="updateUsernameInput" layoutX="410.0" layoutY="328.0" prefHeight="45.0" prefWidth="251.0" promptText="Username">
+        <TextField fx:id="updateUsernameInput" layoutX="410.0" layoutY="328.0" prefHeight="45.0" prefWidth="251.0" promptText="Email">
             <font>
                 <Font size="18.0" />
             </font>
         </TextField>
-        <Label layoutX="308.0" layoutY="90.0" prefHeight="35.0" prefWidth="517.0" text="Use the field below to update your username">
+        <Label layoutX="308.0" layoutY="90.0" prefHeight="35.0" prefWidth="517.0" text="Use the field below to update your email">
             <font>
                 <Font size="24.0" />
             </font>
         </Label>
-        <Label fx:id="errorMessage" layoutX="345.0" layoutY="457.0" text="Username not available, please choose another" textFill="red" visible="false">
+        <Label fx:id="errorMessage" layoutX="345.0" layoutY="457.0" text="Email not available, please choose another" textFill="red" visible="false">
             <font>
                 <Font size="18.0" />
             </font>

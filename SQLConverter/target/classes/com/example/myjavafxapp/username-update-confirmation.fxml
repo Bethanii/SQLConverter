@@ -18,7 +18,7 @@
                 <Font size="24.0" />
             </font></Label>
         <Button id="signInPageButton" layoutX="410.0" layoutY="365.0" mnemonicParsing="false" onAction="#onSignInSelectionClick" prefHeight="43.0" prefWidth="258.0" text="Sign In" />
-        <Label layoutX="305.0" layoutY="201.0" text="Your username has been successfully updated ">
+        <Label layoutX="305.0" layoutY="201.0" text="Your email has been successfully updated ">
             <font>
                 <Font size="24.0" />
             </font></Label>

@@ -37,11 +37,11 @@
             </content>
         </ScrollPane>
         <Button fx:id="enterpriseSubUsersNextButton" layoutX="412.0" layoutY="575.0" mnemonicParsing="false" onAction="#onEnterpriseSubUsersNextButtonClick" prefHeight="48.0" prefWidth="246.0" text="Next" />
-          <TextField fx:id="subUserEmailInputField" layoutX="245.0" layoutY="164.0" prefHeight="45.0" prefWidth="474.0" promptText="Username">
+          <TextField fx:id="subUserEmailInputField" layoutX="245.0" layoutY="164.0" prefHeight="45.0" prefWidth="474.0" promptText="Email">
          <font>
             <Font size="16.0" />
          </font></TextField>
-      <Label fx:id="errorMessage" layoutX="362.0" layoutY="521.0" prefHeight="27.0" prefWidth="373.0" text="Username already exists, please enter another" textFill="red" visible="false" >
+      <Label fx:id="errorMessage" layoutX="362.0" layoutY="521.0" prefHeight="27.0" prefWidth="373.0" text="Email already exists, please enter another" textFill="red" visible="false" >
          <font>
             <Font size="18.0" />
          </font>
