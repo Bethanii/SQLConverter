@@ -15,7 +15,7 @@
             <Font size="24.0" />
          </font></Label>
 
-        <Label layoutX="246.0" layoutY="126.0" prefHeight="30.0" prefWidth="246.0" text="Enter Sub-User Username">
+        <Label layoutX="246.0" layoutY="126.0" prefHeight="30.0" prefWidth="246.0" text="Enter Sub-User Email">
             <font>
                 <Font size="20.0" />
             </font>
@@ -23,7 +23,7 @@
 
         <VBox fx:id="emailFieldsVBox" layoutX="105.0" layoutY="141.0" prefWidth="559.0" spacing="10" />
 
-        <Button layoutX="731.0" layoutY="169.0" mnemonicParsing="false" onAction="#addEmailField" prefHeight="35.0" prefWidth="112.0" text="Add Username">
+        <Button layoutX="731.0" layoutY="169.0" mnemonicParsing="false" onAction="#addEmailField" prefHeight="35.0" prefWidth="112.0" text="Add Email">
          <font>
             <Font size="14.0" />
          </font></Button>
@@ -37,11 +37,11 @@
             </content>
         </ScrollPane>
         <Button fx:id="enterpriseSubUsersNextButton" layoutX="412.0" layoutY="575.0" mnemonicParsing="false" onAction="#onEnterpriseSubUsersNextButtonClick" prefHeight="48.0" prefWidth="246.0" text="Next" />
-          <TextField fx:id="subUserEmailInputField" layoutX="245.0" layoutY="164.0" prefHeight="45.0" prefWidth="474.0" promptText="Username">
+          <TextField fx:id="subUserEmailInputField" layoutX="245.0" layoutY="164.0" prefHeight="45.0" prefWidth="474.0" promptText="Email">
          <font>
             <Font size="16.0" />
          </font></TextField>
-      <Label fx:id="errorMessage" layoutX="362.0" layoutY="521.0" prefHeight="27.0" prefWidth="373.0" text="Username already exists, please enter another" textFill="red" visible="false" >
+      <Label fx:id="errorMessage" layoutX="362.0" layoutY="521.0" prefHeight="27.0" prefWidth="373.0" text="Email already exists, please enter another" textFill="red" visible="false" >
          <font>
             <Font size="18.0" />
          </font>

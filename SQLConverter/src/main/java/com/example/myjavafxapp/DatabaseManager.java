@@ -73,7 +73,6 @@ public class DatabaseManager {
                 + "loginTimeout=30;";
 
         Connection connection = DriverManager.getConnection(connectionUrl);
-        System.out.println("Connected to Azure SQL Database successfully.");
         return connection;
     }
 

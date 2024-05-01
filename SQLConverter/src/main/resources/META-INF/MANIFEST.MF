@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: com.example.myjavafxapp.FakeMain
+Main-Class: com.example.myjavafxapp.MainJar
 
