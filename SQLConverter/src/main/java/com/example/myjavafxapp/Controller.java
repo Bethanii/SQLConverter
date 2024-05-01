@@ -390,6 +390,7 @@ public class Controller
         if(!newPasswordInput.equals(newPasswordConfirmationInput)) {
             newPasswordErrorMessage.setText("Password and Confirmation Password don't match");
             newPasswordErrorMessage.setLayoutX(340);
+            newPasswordErrorMessage.setLayoutY(430);
             newPasswordErrorMessage.setVisible(true);
             newPasswordInputField.getStyleClass().add("text-field-error");
             newConfirmationPasswordField.getStyleClass().add("text-field-error");
